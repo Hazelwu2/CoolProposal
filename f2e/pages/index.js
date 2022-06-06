@@ -13,6 +13,7 @@ import {
   Flex,
   Box
 } from "@chakra-ui/react";
+import Proposal from '../components/Proposal';
 import HowItWork from '../components/HowItWork';
 
 export default function Home() {
@@ -56,6 +57,8 @@ export default function Home() {
               </Button>
             </NextLink>
           </Container>
+
+          <Proposal />
 
           <HowItWork />
         </Box>

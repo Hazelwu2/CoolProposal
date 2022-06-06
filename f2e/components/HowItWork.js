@@ -39,7 +39,7 @@ function Feature({ title, desc, icon }) {
 
 export default function HowItWork() {
   return (
-    <Container maxW={"6xl"} align={"left"} mt={'16'}>
+    <Container maxW={"6xl"} align={"left"} mt={'16'} id="howitworks">
       <HStack spacing={2}>
         <SkeletonCircle size="4" />
         <Heading as="h2" size="lg">

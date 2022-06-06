@@ -5,20 +5,40 @@ import {
   Heading,
   Stack,
   Button,
-  useColorModeValue
+  useColorModeValue,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from '@chakra-ui/react'
+import { ChevronDownIcon } from "@chakra-ui/icons"
 import NextLink from 'next/link'
 // Component
 import ModeSwitch from './ModeSwitch'
+// Wallet
+import { useAccount, useConnect, useEnsName, useDisconnect } from 'wagmi'
+import { InjectedConnector } from 'wagmi/connectors/injected'
+
 
 export default function Navbar() {
+  const { data: account } = useAccount()
+  const { disconnect } = useDisconnect()
+  const { data: ensName } = useEnsName({ address: account?.address })
+  const { connect, connectors } = useConnect({
+    connector: new InjectedConnector(),
+  })
+
   return (
     <Box>
       <Flex
         color={useColorModeValue("gray.600", "white")}
         py={{ base: 2 }}
         px={{ base: 4 }}
+        borderBottom={1}
+        borderStyle={"solid"}
+        borderColor={useColorModeValue("gray.200", "gray.600")}
         w={"full"}
+        minH={"80px"}
         boxShadow={"sm"}
         justify={"center"}
         css={{
@@ -29,8 +49,8 @@ export default function Navbar() {
           ),
         }}
       >
-        <Container as={Flex} align={"center"}>
-          <Flex flex={{ base: 1 }}>
+        <Container as={Flex} align={"center"} maxW={"6xl"}>
+          <Flex>
             <Heading
               textAlign="left"
               fontFamily={"heading"}
@@ -53,16 +73,16 @@ export default function Navbar() {
                   zIndex: -1,
                 }}
               >
-                <NextLink href="/">眾籌平台</NextLink>
+                <NextLink href="/">Crowdfunding</NextLink>
               </Box>
             </Heading>
           </Flex>
 
           <Stack
-            flex={{ base: 1, md: 0 }}
+            flex={{ base: 1 }}
             justify={"flex-end"}
             direction={"row"}
-            spacing={6}
+            spacing={4}
             display={{ base: "none", md: "flex" }}
           >
             <Button
@@ -82,19 +102,35 @@ export default function Navbar() {
               <NextLink href="/#howitworks">說明</NextLink>
             </Button>
 
-            <Button
-              fontSize={"md"}
-              fontWeight={600}
-              color={"white"}
-              bg={"teal.400"}
-              href={"#"}
-              mr={"2"}
-              _hover={{
-                bg: "teal.300",
-              }}
-            >
-              連接錢包
-            </Button>
+            {account ?
+              <Menu>
+                <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                  {ensName ?? account.address.substr(0, 10) + "..."}
+                </MenuButton>
+                <MenuList>
+                  <MenuItem onClick={disconnect}>
+                    取消連接錢包
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+              :
+              <div>
+                <Button
+                  fontSize={"md"}
+                  fontWeight={600}
+                  color={"white"}
+                  bg={"teal.400"}
+                  href={"#"}
+                  mr={"2"}
+                  _hover={{
+                    bg: "teal.300",
+                  }}
+                  onClick={() => connect()}
+                >
+                  連接錢包
+                </Button>
+              </div>
+            }
             <ModeSwitch />
           </Stack>
 
