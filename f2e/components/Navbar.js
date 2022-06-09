@@ -73,7 +73,7 @@ export default function Navbar() {
                   zIndex: -1,
                 }}
               >
-                <NextLink href="/">Crowdfunding</NextLink>
+                <NextLink href="/">來個酷提案</NextLink>
               </Box>
             </Heading>
           </Flex>

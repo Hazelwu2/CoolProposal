@@ -20,7 +20,7 @@ export default function Home() {
   return (
     <div>
       <Head>
-        <title>群眾集資平台</title>
+        <title>來個酷提案</title>
         <meta
           name="description"
           content="群眾集資平台 Crowdfunding，讓美好的事物發生"
