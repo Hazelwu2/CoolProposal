@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { utils } from 'ethers'
-
+import { useForm } from "react-hook-form"
 import {
   Box,
   Flex,
@@ -33,6 +33,9 @@ import {
 import { InfoIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import NextLink from "next/link";
 import Confetti from "react-confetti";
+// Wallet
+import { useAccount, useConnect, useEnsName, useDisconnect } from 'wagmi'
+import { InjectedConnector } from 'wagmi/connectors/injected'
 
 
 function InfoCard({ title, tip, content }) {
@@ -77,6 +80,32 @@ function InfoCard({ title, tip, content }) {
 export default function SingleProposal({
   name, desc, id, balance
 }) {
+  const { handleSubmit, register, formState, reset } = useForm({
+    mode: 'onChange'
+  })
+
+  const [error, setError] = useState()
+  const [isSubmitted, setIsSubmitted] = useState(false)
+  const { data: account } = useAccount()
+
+  // 送出表單
+  async function submitForm(data) {
+    console.log(data)
+    try {
+      // TODO: 呼叫合約方法-Donate
+
+      setIsSubmitted(true)
+      setError(false)
+
+      // 重置表單
+      reset('', { keepValues: false })
+    } catch (error) {
+      console.error(error)
+      setError(err)
+    }
+  }
+
+
   return (
     <div>
       <Head>
@@ -220,7 +249,76 @@ export default function SingleProposal({
                 </StatNumber>
               </Stat>
             </Box>
+
+            {/* Donate */}
+            <Stack
+              bg={useColorModeValue("white", "gray.700")}
+              boxShadow={"lg"}
+              rounded={"xl"}
+              p={{ base: 4, sm: 6, md: 8 }}
+              spacing={{ base: 6 }}
+            >
+              <Heading
+                lineHeight={1.1}
+                fontSize={{ base: "md", sm: "md" }}
+                color={useColorModeValue("teal.600", "teal.200")}
+              >
+                贊助酷提案
+              </Heading>
+
+              <Box mt={10}>
+                <form onSubmit={handleSubmit(submitForm)}>
+                  <FormControl id="amount">
+
+                    <FormLabel>
+                      贊助金額
+                    </FormLabel>
+                    <InputGroup>
+                      <Input
+                        {...register('amount', { required: true })}
+                        isDisabled={formState.isSubmitting}
+                        type="number"
+                        min="0"
+                      />
+                      <InputRightAddon children="ETH" />
+                    </InputGroup>
+                  </FormControl>
+
+                  {/* 錯誤訊息 */}
+                  {error ? (
+                    <Alert status="error" mt="2">
+                      <AlertIcon />
+                      <AlertDescription mr={2}> {error}</AlertDescription>
+                    </Alert>
+                  ) : null}
+
+                  <Stack spacing={10}>
+                    {account ? (
+                      <Button
+                        mt={4}
+                        w={"full"}
+                        bgGradient="linear(to-r, teal.300,blue.400)"
+                        color={"white"}
+                        isLoading={formState.isSubmitting}
+                        type="submit"
+                      >
+                        贊助
+                      </Button>)
+                      : (
+                        <Alert status="warning" mt={4}>
+                          <AlertIcon />
+                          <AlertDescription mr={2}>
+                            請先連接錢包，才能贊助這個酷提案
+                          </AlertDescription>
+                        </Alert>
+                      )
+                    }
+                  </Stack>
+                </form>
+              </Box>
+            </Stack>
           </Stack>
+
         </Container>
       </main>
     </div>
