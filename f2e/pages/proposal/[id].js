@@ -301,15 +301,15 @@ export default function SingleProposal({
                         type="submit"
                       >
                         贊助
-                      </Button>)
-                      : (
-                        <Alert status="warning" mt={4}>
-                          <AlertIcon />
-                          <AlertDescription mr={2}>
-                            請先連接錢包，才能贊助這個酷提案
-                          </AlertDescription>
-                        </Alert>
-                      )
+                      </Button>
+                    ) : (
+                      <Alert status="warning" mt={4}>
+                        <AlertIcon />
+                        <AlertDescription mr={2}>
+                          請先連接錢包，才能贊助這個酷提案
+                        </AlertDescription>
+                      </Alert>
+                    )
                     }
                   </Stack>
                 </form>
