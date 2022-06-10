@@ -16,17 +16,27 @@ import NextLink from 'next/link'
 // Component
 import ModeSwitch from './ModeSwitch'
 // Wallet
-import { useAccount, useConnect, useEnsName, useDisconnect } from 'wagmi'
+import { useAccount, useConnect, useEnsName, useDisconnect, useNetwork, chain } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
+import { useEffect } from 'react'
 
 
 export default function Navbar() {
+  const { activeChain, switchNetwork } = useNetwork({
+    chainId: chain.localhost.id
+  })
   const { data: account } = useAccount()
   const { disconnect } = useDisconnect()
   const { data: ensName } = useEnsName({ address: account?.address })
   const { connect, connectors } = useConnect({
     connector: new InjectedConnector(),
   })
+
+  useEffect(() => {
+    if (activeChain && activeChain.id !== chain.rinkeby.id) {
+      switchNetwork();
+    }
+  }, [activeChain, switchNetwork])
 
   return (
     <Box>
