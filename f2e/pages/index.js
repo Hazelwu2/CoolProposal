@@ -18,8 +18,6 @@ import ProposalComponent from '../components/Proposal';
 import HowItWork from '../components/HowItWork';
 // Web3
 import { useAccount, useContractRead, chain, useContract } from 'wagmi'
-import contract from '../../artifacts/contracts/Proposal.sol/ProposalFactory.json'
-import proposalContract from '../../artifacts/contracts/Proposal.sol/Proposal.json'
 import Proposal from '../contract/proposal'
 import ProposalFactory from '../contract/ProposalFactory'
 import { getEthPrice } from '../utils/convert'
