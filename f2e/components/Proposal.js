@@ -10,7 +10,8 @@ import {
   Flex,
   Text,
   useColorModeValue,
-  Progress
+  Progress,
+  Skeleton
 } from "@chakra-ui/react";
 // API
 import { getEthPrice } from '../utils/convert'
@@ -111,7 +112,7 @@ function ProposalCard({ name, proposer, id, balance }) {
   )
 }
 
-export default function Proposal() {
+export default function Proposal({ proposalList }) {
   const [proposal, setProposal] = useState([])
   const [ethPrice, updateEthPrice] = useState(null)
 
@@ -128,49 +129,31 @@ export default function Proposal() {
 
   return (
     <div>
-      <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10} py={8} mt={6} mb={6}>
-        <ProposalCard
-          name="鍵盤本身就是觸控板！相容 98% 的平板電腦、手機，多個裝置切換，辦公生活不受限！"
-          proposer="Hazel"
-          id="1"
-          balance="1000000000000000"
-        />
-        <ProposalCard
-          name="鍵盤本身就是觸控板！相容 98% 的平板電腦、手機，多個裝置切換，辦公生活不受限！"
-          proposer="Hazel"
-          id="1"
-          balance="1000000000000000"
-        />
-        <ProposalCard
-          name="鍵盤本身就是觸控板！相容 98% 的平板電腦、手機，多個裝置切換，辦公生活不受限！"
-          proposer="Hazel"
-          id="1"
-          balance="1000000000000000"
-        />
-        <ProposalCard
-          name="鍵盤本身就是觸控板！相容 98% 的平板電腦、手機，多個裝置切換，辦公生活不受限！"
-          proposer="Hazel"
-          id="1"
-          balance="1000000000000000"
-        />
-        <ProposalCard
-          name="鍵盤本身就是觸控板！相容 98% 的平板電腦、手機，多個裝置切換，辦公生活不受限！"
-          proposer="Hazel"
-          id="1"
-          balance="1000000000000000"
-        />
-        <ProposalCard
-          name="鍵盤本身就是觸控板！相容 98% 的平板電腦、手機，多個裝置切換，辦公生活不受限！"
-          proposer="Hazel"
-          id="1"
-          balance="1000000000000000"
-        />
-      </SimpleGrid>
+      {proposalList.length > 0 ? (
+        <SimpleGrid
+          columns={{ base: 1, md: 3 }}
+          spacing={10}
+          py={8}
+          mt={6}
+          mb={6}
+        >
+          {proposalList.map((proposal, index) => {
+            return (
+              <div key={index}>
+                <ProposalCard
+                  name={proposal[5]}
+                />
+              </div>
+            )
+          })}
+        </SimpleGrid>
+      ) : (
+        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10} py={8}>
+          <Skeleton height="20rem" />
+          <Skeleton height="20rem" />
+          <Skeleton height="20rem" />
+        </SimpleGrid>
+      )}
     </div>
-    // <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10} py={8}>
-    //   <Skeleton height="25rem" />
-    //   <Skeleton height="25rem" />
-    //   <Skeleton height="25rem" />
-    // </SimpleGrid>
   )
 }
