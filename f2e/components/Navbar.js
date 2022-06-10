@@ -28,7 +28,7 @@ export default function Navbar() {
   const { data: account } = useAccount()
   const { disconnect } = useDisconnect()
   const { data: ensName } = useEnsName({ address: account?.address })
-  const { connect, connectors } = useConnect({
+  const { connect } = useConnect({
     connector: new InjectedConnector(),
   })
 
@@ -68,7 +68,7 @@ export default function Navbar() {
               size="lg"
             >
               <Box
-                as={"span"}
+                as={"div"}
                 color={useColorModeValue("teal.400", "teal.300")}
                 position={"relative"}
                 zIndex={10}

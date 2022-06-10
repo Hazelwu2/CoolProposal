@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import NextLink from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 // Chakra UI
 import {
   Heading,
@@ -13,10 +13,53 @@ import {
   Flex,
   Box
 } from "@chakra-ui/react";
-import Proposal from '../components/Proposal';
+// Components
+import ProposalComponent from '../components/Proposal';
 import HowItWork from '../components/HowItWork';
+// Web3
+import { useAccount, useContractRead, chain, useContract } from 'wagmi'
+import contract from '../../artifacts/contracts/Proposal.sol/ProposalFactory.json'
+import proposalContract from '../../artifacts/contracts/Proposal.sol/Proposal.json'
+import Proposal from '../contract/proposal'
+import ProposalFactory from '../contract/ProposalFactory'
 
-export default function Home() {
+// Server 端取得已部署的所有提案
+export async function getServerSideProps() {
+  const proposals = await ProposalFactory.methods.getProposalList().call()
+  console.log('proposals', proposals)
+
+  return {
+    props: { proposals }
+  }
+}
+
+export default function Home({ proposals }) {
+  // Address List
+  const [proposalList, setProposalList] = useState([])
+  const { data: account } = useAccount()
+
+  async function getSummary() {
+    try {
+      const summary = await Promise.all(
+        proposals.map((item, i) =>
+          Proposal(item).methods.getProposalSummary().call()
+        )
+      );
+      // const ETHPrice = await getETHPrice();
+      // updateEthPrice(ETHPrice);
+      console.error("summary ", summary);
+      setProposalList(summary);
+
+      return summary;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    getSummary();
+  }, []);
+
   return (
     <div>
       <Head>
@@ -42,7 +85,7 @@ export default function Home() {
             >
               Crowdfunding in Blockchain，<br />讓我們集合力量，讓美好的事物發生。
             </Heading>
-            <NextLink href="/campaign/new" mt={{ base: 2 }}>
+            <NextLink href="/proposal/new" mt={{ base: 2 }}>
               <Button
                 display={{ sm: "inline-flex" }}
                 fontSize={"md"}
@@ -59,12 +102,9 @@ export default function Home() {
           </Container>
 
           <HowItWork />
-          <Proposal />
+          <ProposalComponent proposalList={proposalList} />
 
         </Box>
-
-
-
       </main>
 
     </div>

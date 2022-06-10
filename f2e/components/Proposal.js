@@ -16,7 +16,7 @@ import {
 // API
 import { getEthPrice } from '../utils/convert'
 
-function ProposalCard({ name, proposer, id, balance }) {
+function ProposalCard({ name, proposer, id, balance, imageUrl }) {
 
   return (
     <NextLink href={`/proposal/${id}`}>
@@ -37,7 +37,7 @@ function ProposalCard({ name, proposer, id, balance }) {
       >
         <Box height="18em">
           <Img
-            src={"https://www.aljazeera.com/wp-content/uploads/2021/04/GettyImages-1232454404.jpg?resize=770%2C513"}
+            src={imageUrl}
             roundedTop="lg"
             objectFit="cover"
             w="full"
@@ -66,7 +66,7 @@ function ProposalCard({ name, proposer, id, balance }) {
               提案 by
             </Text>
             <Text fontSize="sm" color={'blue.300'} pr={2}>
-              {proposer}
+              {proposer ? proposer.substr(0, 18) + '...' : null}
             </Text>
           </Flex>
 
@@ -113,23 +113,22 @@ function ProposalCard({ name, proposer, id, balance }) {
 }
 
 export default function Proposal({ proposalList }) {
-  const [proposal, setProposal] = useState([])
-  const [ethPrice, updateEthPrice] = useState(null)
+  // const [ethPrice, updateEthPrice] = useState(null)
 
   // 更新 Eth 價格
-  async function getPrice() {
-    const eth = await getEthPrice()
-    updateEthPrice(eth)
-  }
+  // async function getPrice() {
+  //   const eth = await getEthPrice()
+  //   updateEthPrice(eth)
+  // }
 
-  useEffect(() => {
-    getPrice()
-  }, [])
+  // useEffect(() => {
+  //   getPrice()
+  // }, [])
 
 
   return (
     <div>
-      {proposalList.length > 0 ? (
+      {proposalList?.length > 0 ? (
         <SimpleGrid
           columns={{ base: 1, md: 3 }}
           spacing={10}
@@ -141,7 +140,11 @@ export default function Proposal({ proposalList }) {
             return (
               <div key={index}>
                 <ProposalCard
-                  name={proposal[5]}
+                  name={proposal[4]}
+                  proposer={proposal[3]}
+                  id={index}
+                  balance={proposal[1]}
+                  imageUrl={proposal[6]}
                 />
               </div>
             )
