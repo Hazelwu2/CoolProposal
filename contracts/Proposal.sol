@@ -91,6 +91,7 @@ contract Proposal {
             uint256,
             uint256,
             uint256,
+            uint256,
             address,
             string memory,
             string memory,
@@ -100,6 +101,7 @@ contract Proposal {
     {
         return (
             address(this).balance,
+            targetAmount,
             requests.length,
             approversCount,
             proposer,
