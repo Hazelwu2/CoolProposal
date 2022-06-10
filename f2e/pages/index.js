@@ -107,6 +107,7 @@ export default function Home({ proposals }) {
           <ProposalComponent
             proposalList={proposalList}
             ethPrice={ethPrice}
+            proposals={proposals}
           />
 
         </Box>

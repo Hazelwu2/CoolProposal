@@ -111,7 +111,7 @@ function ProposalCard(
   )
 }
 
-export default function Proposal({ proposalList, ethPrice = 0 }) {
+export default function Proposal({ proposalList, ethPrice, proposals }) {
   return (
     <div>
       {proposalList?.length > 0 ? (
@@ -133,7 +133,7 @@ export default function Proposal({ proposalList, ethPrice = 0 }) {
                   desc={proposal[6]}
                   imageUrl={proposal[7]}
                   ethPrice={ethPrice}
-                  id={index}
+                  id={proposals[index]}
                 />
               </div>
             )

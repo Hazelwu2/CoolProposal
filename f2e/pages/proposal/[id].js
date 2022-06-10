@@ -36,9 +36,36 @@ import Confetti from "react-confetti";
 // Wallet
 import { useAccount, useConnect, useEnsName, useDisconnect } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
+import Proposal from '../../contract/proposal'
+import { getEthPrice, getWEIPriceInUSD } from '../../utils/convert';
 
+export async function getServerSideProps({ params }) {
+  const id = params.id
+  console.log(id)
+  const proposal = Proposal(id)
+  console.log(proposal)
+  const summary = await proposal.methods.getProposalSummary().call()
+  const ethPrice = await getEthPrice()
 
-function InfoCard({ title, tip, content }) {
+  return {
+    props: {
+      id,
+      balance: summary[0],
+      targetAmount: summary[1],
+      requestsCount: summary[2],
+      approversCount: summary[3],
+      proposer: summary[4],
+      name: summary[5],
+      desc: summary[6],
+      imageUrl: summary[7],
+      ethPrice
+    }
+  }
+}
+
+function InfoCard({
+  title, tip, content
+}) {
   return (
     <Stat
       bg={useColorModeValue("white", "gray.700")}
@@ -77,7 +104,17 @@ function InfoCard({ title, tip, content }) {
 }
 
 export default function SingleProposal({
-  name, desc, id, balance
+  id,
+  balance,
+  targetAmount,
+  requestsCount,
+  approversCount,
+  proposer,
+  name,
+  desc,
+  imageUrl,
+  ethPrice
+  // name, desc, id, balance
 }) {
   const { handleSubmit, register, formState, reset } = useForm({
     mode: 'onChange'
@@ -103,6 +140,8 @@ export default function SingleProposal({
       setError(err)
     }
   }
+
+  const target = utils.formatEther(targetAmount) + ' ETH'
 
 
   return (
@@ -147,22 +186,22 @@ export default function SingleProposal({
               <SimpleGrid columns={{ base: 1 }} spacing={{ base: 5 }}>
                 <InfoCard
                   title="目標"
-                  content="0.002 ETH"
-                  tip="目標金額"
+                  content={target}
+                  tip="目標金額 (ETH)"
                 />
                 <InfoCard
                   title="提案人"
-                  content="0x977e01DDd064e404227eea9E30a5a36ABFDeF93D"
+                  content={proposer}
                   tip="提案人的錢包地址"
                 />
                 <InfoCard
                   title="請求數"
-                  content="1"
+                  content={requestsCount}
                   tip="Number of Requests，提案人申請從合約提款，需要經過批准者的同意"
                 />
                 <InfoCard
                   title="贊助人數"
-                  content="6"
+                  content={approversCount}
                   tip="Number of Approvers"
                 />
               </SimpleGrid>
@@ -203,18 +242,10 @@ export default function SingleProposal({
                     pt="2"
                   >
                     <Text as="span" fontWeight={"bold"}>
-                      3
-                      {/* {balance > 0
-                        ? utils.fromWei(balance, "ether")
-                        : "0, Become a Donor 😄"} */}
-                    </Text>
-                    <Text
-                      as="span"
-                      display={"inline"}
-                      pl={2}
-                      fontWeight={"bold"}
-                    >
-                      ETH
+                      {balance > 0
+                        ? utils.formatEther(balance) + ' ETH'
+                        : "0, 成為第一位贊助者"
+                      }
                     </Text>
                     <Text
                       as="span"
@@ -224,8 +255,7 @@ export default function SingleProposal({
                       pl={2}
                       color={useColorModeValue("gray.500", "gray.200")}
                     >
-                      ( $30 )
-                      {/* (${getWEIPriceInUSD(ETHPrice, balance)}) */}
+                      (${getWEIPriceInUSD(ethPrice, balance)})
                     </Text>
                   </Box>
 
@@ -233,16 +263,14 @@ export default function SingleProposal({
                     fontSize={"sm"}
                     fontWeight="light"
                     color={useColorModeValue("gray.500", "gray.200")}>
-                    目標 ETH 10
+                    目標 {target}
                   </Text>
                   <Progress
                     colorScheme="teal"
                     size="sm"
                     mt={4}
-                    value={3}
-                    max={10}
-                  // value={utils.fromWei(balance, "ether")}
-                  // max={utils.fromWei(target, "ether")}
+                    value={utils.formatEther(balance)}
+                    max={utils.formatEther(targetAmount)}
                   />
                 </StatNumber>
               </Stat>
