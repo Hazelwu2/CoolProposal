@@ -50,7 +50,7 @@ function InfoCard({ title, tip, content }) {
       spacing={{ base: 8 }}
     >
       <StatLabel fontWeight={"medium"}>
-        <Text as="span" isTruncated mr={2}>
+        <Text as="span" mr={2}>
           {title}
         </Text>
         <Tooltip
@@ -68,7 +68,6 @@ function InfoCard({ title, tip, content }) {
       <StatNumber
         fontSize={"base"}
         fontWeight={"bold"}
-        isTruncated
         maxW={{ base: "	10rem", sm: "sm" }}
       >
         {content}
@@ -181,7 +180,7 @@ export default function SingleProposal({
                 spacing={{ base: 8 }}
               >
                 <StatLabel fontWeight={"medium"}>
-                  <Text as="span" isTruncated mr={2}>
+                  <Text as="span" mr={2}>
                     贊助
                   </Text>
                   <Tooltip
@@ -200,7 +199,6 @@ export default function SingleProposal({
                 <StatNumber>
                   <Box
                     fontSize={"2xl"}
-                    isTruncated
                     maxW={{ base: "	15rem", sm: "sm" }}
                     pt="2"
                   >

@@ -71,7 +71,6 @@ function ProposalCard({ name, proposer, id, balance }) {
 
           <Flex py={2}>
             <Box
-              isTruncated
               maxW={{ base: "15rem", sm: "sm" }}
               pt="2"
               w="full"
