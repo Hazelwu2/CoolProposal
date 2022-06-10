@@ -22,11 +22,11 @@ import contract from '../../artifacts/contracts/Proposal.sol/ProposalFactory.jso
 import proposalContract from '../../artifacts/contracts/Proposal.sol/Proposal.json'
 import Proposal from '../contract/proposal'
 import ProposalFactory from '../contract/ProposalFactory'
+import { getEthPrice } from '../utils/convert'
 
 // Server 端取得已部署的所有提案
 export async function getServerSideProps() {
   const proposals = await ProposalFactory.methods.getProposalList().call()
-  console.log('proposals', proposals)
 
   return {
     props: { proposals }
@@ -34,8 +34,9 @@ export async function getServerSideProps() {
 }
 
 export default function Home({ proposals }) {
-  // Address List
   const [proposalList, setProposalList] = useState([])
+  const [ethPrice, updateEthPrice] = useState(null);
+
   const { data: account } = useAccount()
 
   async function getSummary() {
@@ -45,9 +46,10 @@ export default function Home({ proposals }) {
           Proposal(item).methods.getProposalSummary().call()
         )
       );
-      // const ETHPrice = await getETHPrice();
-      // updateEthPrice(ETHPrice);
-      console.error("summary ", summary);
+      const ETHPrice = await getEthPrice();
+      console.error('[ETHPRICE]', ETHPrice)
+      updateEthPrice(3);
+      console.error("[summary] ", summary);
       setProposalList(summary);
 
       return summary;
@@ -102,7 +104,10 @@ export default function Home({ proposals }) {
           </Container>
 
           <HowItWork />
-          <ProposalComponent proposalList={proposalList} />
+          <ProposalComponent
+            proposalList={proposalList}
+            ethPrice={ethPrice}
+          />
 
         </Box>
       </main>

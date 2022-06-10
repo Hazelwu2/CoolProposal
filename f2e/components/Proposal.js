@@ -13,10 +13,9 @@ import {
   Progress,
   Skeleton
 } from "@chakra-ui/react";
-// API
-import { getEthPrice } from '../utils/convert'
 
-function ProposalCard({ name, proposer, id, balance, imageUrl }) {
+function ProposalCard(
+  { name, desc, proposer, id, balance, imageUrl, ethPrice, targetAmount }) {
 
   return (
     <NextLink href={`/proposal/${id}`}>
@@ -32,7 +31,7 @@ function ProposalCard({ name, proposer, id, balance, imageUrl }) {
         cursor="pointer"
         transition={"transform 0.3s ease"}
         _hover={{
-          // transform: "translateX(-12px)",
+          transform: "translateX(-12px)",
         }}
       >
         <Box height="18em">
@@ -88,20 +87,20 @@ function ProposalCard({ name, proposer, id, balance, imageUrl }) {
                   : "0, 成為第一位贊助者"
                 }
               </Text>
+              {/* 目標金額 */}
               <Text
                 as="span"
                 fontWeight={"300"}
                 color={useColorModeValue("gray.500", "gray.200")}
               >
-                {/* TODO: 轉換美金 */}
-                ($2150.87)
+                {parseFloat(utils.formatEther(targetAmount)).toFixed(2)} ETH
               </Text>
 
               <Progress
                 colorScheme="teal"
                 size="sm"
-                value={30}
-                max={100}
+                value={utils.formatEther(balance)}
+                max={utils.formatEther(targetAmount)}
                 mt="2"
               />
             </Box>
@@ -112,20 +111,7 @@ function ProposalCard({ name, proposer, id, balance, imageUrl }) {
   )
 }
 
-export default function Proposal({ proposalList }) {
-  // const [ethPrice, updateEthPrice] = useState(null)
-
-  // 更新 Eth 價格
-  // async function getPrice() {
-  //   const eth = await getEthPrice()
-  //   updateEthPrice(eth)
-  // }
-
-  // useEffect(() => {
-  //   getPrice()
-  // }, [])
-
-
+export default function Proposal({ proposalList, ethPrice = 0 }) {
   return (
     <div>
       {proposalList?.length > 0 ? (
@@ -140,11 +126,14 @@ export default function Proposal({ proposalList }) {
             return (
               <div key={index}>
                 <ProposalCard
-                  name={proposal[4]}
-                  proposer={proposal[3]}
+                  balance={proposal[0]}
+                  targetAmount={proposal[1]}
+                  proposer={proposal[4]}
+                  name={proposal[5]}
+                  desc={proposal[6]}
+                  imageUrl={proposal[7]}
+                  ethPrice={ethPrice}
                   id={index}
-                  balance={proposal[1]}
-                  imageUrl={proposal[6]}
                 />
               </div>
             )
