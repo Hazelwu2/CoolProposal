@@ -19,7 +19,7 @@ import HowItWork from '../components/HowItWork';
 // Web3
 import { useAccount, useContractRead, chain, useContract } from 'wagmi'
 import Proposal from '../contract/proposal'
-import ProposalFactory from '../contract/ProposalFactory'
+import { instance as ProposalFactory } from '../contract/ProposalFactory'
 import { getEthPrice } from '../utils/convert'
 
 // Server 端取得已部署的所有提案
@@ -45,7 +45,7 @@ export default function Home({ proposals }) {
         )
       );
       const ETHPrice = await getEthPrice();
-      console.error('[ETHPRICE]', ETHPrice)
+      console.error('[ETHPRICE]', ETHPrice);
       updateEthPrice(3);
       console.error("[summary] ", summary);
       setProposalList(summary);
