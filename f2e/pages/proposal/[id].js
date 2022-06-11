@@ -114,45 +114,11 @@ export default function SingleProposal() {
     mode: 'onChange'
   })
   const [amountInUSD, setAmountInUSD] = useState();
-  const [name, setName] = useState('');
-  const [desc, setDesc] = useState('');
-  const [balance, setBalance] = useState(0);
   const [targetAmount, setTargetAmount] = useState(0);
-  const [requestsCount, setRequestsCount] = useState(0);
-  const [proposer, setProposer] = useState('');
-  const [approversCount, setApproversCount] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
   const [ethPrice, setEthPrice] = useState(0);
-  const [targetToAchieve, setTargetToAchieve] = useState(false);
   const [error, setError] = useState()
-  const [isSubmitted, setIsSubmitted] = useState(false)
   const { data: account } = useAccount()
   const [isSSR, setIsSSR] = useState(true);
-  const [summary, setSummary] = useState([])
-
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     if (id) {
-
-  //       const summary = await Proposal(id).methods.getProposalSummary().call()
-  // setProposals(proposals)
-  //       debug.$log('[summary]', summary)
-  // setBalance(utils.formatEther(summaryOutput[0]))
-  // setTargetAmount(utils.formatEther(summaryOutput[1]))
-  // setRequestsCount(utils.formatEther(summaryOutput[2]))
-  // setApproversCount(utils.formatEther(summaryOutput[3]))
-  // setProposer(summaryOutput[4])
-  // setName(summaryOutput[5])
-  // setDesc(summaryOutput[6])
-  // setImageUrl(summaryOutput[7])
-  // setTargetToAchieve(summaryOutput[8])
-  //       setSummary(summary)
-  //       setIsSSR(false)
-  //     }
-  //   }
-
-  //   if (id !== null) fetchData()
-  // }, [])
 
   const {
     data: summaryOutput,
@@ -199,6 +165,7 @@ export default function SingleProposal() {
       setIsSubmitted(true);
       setError(false);
 
+
       // 重置表單
       reset('', { keepValues: false })
     } catch (error) {
@@ -217,7 +184,7 @@ export default function SingleProposal() {
         <link rel="icon" href="/logo.svg" />
       </Head>
 
-      {!isSSR && id && summaryOutput.length > 0 ?
+      {!isSSR && id && summaryOutput?.length > 0 ?
         (
           <main>
 
