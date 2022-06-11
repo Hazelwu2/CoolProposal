@@ -25,14 +25,15 @@ import { getEthPrice } from '../utils/convert'
 import { checkNetwork } from '../utils/handle-error'
 
 // Server 端取得已部署的所有提案
-// export async function getServerSideProps() {
-//   // const proposals = await ProposalFactory.methods.getProposalList().call()
-//   // console.error('[proposals]', proposals)
+export async function getServerSideProps() {
+  console.log('ProposalFactory', ProposalFactory)
+  const proposals = await ProposalFactory.methods.getProposalList().call()
+  console.error('[proposals]', proposals)
 
-//   // return {
-//   //   props: { proposals }
-//   // }
-// }
+  return {
+    props: { proposals }
+  }
+}
 
 export default function Home({ proposals }) {
   const [proposalList, setProposalList] = useState([])
@@ -40,6 +41,8 @@ export default function Home({ proposals }) {
   const { activeChain } = useNetwork({
     chainId: chain.rinkeby.id
   })
+
+  console.log('[proposals]', proposals)
 
   const { data: account } = useAccount()
 
