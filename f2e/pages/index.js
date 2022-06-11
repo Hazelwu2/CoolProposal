@@ -17,10 +17,12 @@ import {
 import ProposalComponent from '../components/Proposal';
 import HowItWork from '../components/HowItWork';
 // Web3
-import { useAccount, useContractRead, chain, useContract } from 'wagmi'
+import { useAccount, useContractRead, chain, useNetwork } from 'wagmi'
 import Proposal from '../contract/proposal'
 import { instance as ProposalFactory } from '../contract/ProposalFactory'
 import { getEthPrice } from '../utils/convert'
+// Utils
+import { checkNetwork } from '../utils/handle-error'
 
 // Server 端取得已部署的所有提案
 export async function getServerSideProps() {
@@ -34,6 +36,9 @@ export async function getServerSideProps() {
 export default function Home({ proposals }) {
   const [proposalList, setProposalList] = useState([])
   const [ethPrice, updateEthPrice] = useState(null);
+  const { activeChain } = useNetwork({
+    chainId: chain.rinkeby.id
+  })
 
   const { data: account } = useAccount()
 
@@ -56,9 +61,10 @@ export default function Home({ proposals }) {
     }
   }
 
-  // useEffect(() => {
-  //   getSummary();
-  // }, []);
+  useEffect(() => {
+    if (checkNetwork(activeChain)) getSummary()
+    else setProposalList([])
+  }, [account, activeChain]);
 
   return (
     <div>
@@ -102,11 +108,11 @@ export default function Home({ proposals }) {
           </Container>
 
           <HowItWork />
-          {/* <ProposalComponent
+          <ProposalComponent
             proposalList={proposalList}
             ethPrice={ethPrice}
             proposals={proposals}
-          /> */}
+          />
 
         </Box>
       </main>
