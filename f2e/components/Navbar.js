@@ -101,7 +101,7 @@ export default function Navbar() {
               variant={"link"}
               display={{ base: "none", md: "inline-flex" }}
             >
-              <NextLink href="/campaign/new">提案</NextLink>
+              <NextLink href="/proposal/new">我有個酷提案</NextLink>
             </Button>
             <Button
               fontSize={"md"}
