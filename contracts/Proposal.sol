@@ -78,6 +78,8 @@ contract Proposal {
 
     // 贊助
     function donate() public payable {
+        require(msg.sender != proposer, "proposer can't donate");
+        require(msg.value > 0 , "unenough value");
         sponsor.push(msg.sender);
         approvers[msg.sender] = true;
         approversCount++;
