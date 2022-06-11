@@ -28,9 +28,11 @@ Web版群眾集資平台，實現夢想，透過 Web3 與區塊鏈技術，讓�
 
 ### 📱 Dapp
 Install
-```
+```bash
 $ cd ./f2e
 $ yarn install && yarn dev
+$ yarn build # 打包
+$ yarn start # 屬於 Production 發布使用，執行前需先跑 yarn build
 ```
 📱 開啟 `http://localhost:3000/kcrypto-camp-final-project-team` ，便可看到 Dapp 開發環境<br>
 👨🏼‍💻 複製 .env.example，另取名 `.env` 設定 REACT_APP_INFURA_ID [Infura](https://infura.io/) 申請 Project 取得 ID
