@@ -39,6 +39,7 @@ import {
   chain
 } from 'wagmi'
 import { utils } from "ethers"
+import debug from '../../utils/debug'
 
 // Wallet
 import { instance as ProposalFactory } from "../../contract/ProposalFactory";
@@ -62,7 +63,7 @@ export default function NewProposal() {
   const { connect } = useConnect({
     connector: new InjectedConnector(),
   })
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [minContriInUSD, setMinContriInUSD] = useState();
   const [targetInUSD, setTargetInUSD] = useState();
   const [ETHPrice, setETHPrice] = useState(0);
@@ -82,21 +83,15 @@ export default function NewProposal() {
     }
   }, [activeChain, switchNetwork])
 
-  async function onSubmit(data) {
-    console.error('[表單使用者填寫的參數]',
-      data.name,
-      data.description,
-      data.imageUrl,
-      data.target
-    );
-
+  // 送出表單
+  async function onSubmit({ name, description, imageUrl, target }) {
     try {
       createProposal({
         args: [
-          utils.parseEther(data.target),
-          data.name,
-          data.description,
-          data.imageUrl
+          utils.parseEther(target),
+          name,
+          description,
+          imageUrl
         ],
         overrides: { from: account.address },
       })
@@ -123,6 +118,7 @@ export default function NewProposal() {
     hash: createProposalOutput?.hash,
     onSuccess(data) {
       // return home page after tx success
+      debug.$error(data)
       router.push("/");
     },
   })
@@ -193,7 +189,7 @@ export default function NewProposal() {
                   </InputGroup>
                   {targetInUSD ? (
                     <FormHelperText>
-                      ~$ {getETHPriceInUSD(ETHPrice, targetInUSD)}
+                      美金約 $ {getETHPriceInUSD(ETHPrice, targetInUSD)}
                     </FormHelperText>
                   ) : null}
                 </FormControl>
