@@ -9,7 +9,7 @@ import { InjectedConnector } from "wagmi/connectors/injected";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 // Hardhat 測試鏈
-import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
+// import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 // ENV
 const REACT_APP_INFURA_ID = process.env.REACT_APP_INFURA_ID
 
@@ -19,7 +19,7 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [chain.rinkeby, chain.localhost],
+  [chain.rinkeby],
   [
     // 測試鏈 Hardhat
     // jsonRpcProvider({

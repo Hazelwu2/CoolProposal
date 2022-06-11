@@ -4,8 +4,10 @@ let web3
 if (typeof window !== "undefined"
   && typeof window.web3 !== "undefined") {
   // we are in the browser and meta mask is installed
+  console.error(1)
   web3 = new Web3(window.ethereum);
 } else {
+  console.error(2)
   // we are on the server *OR* meta mask is not running
   // creating our own provider
   const provider = new Web3.providers.HttpProvider(
