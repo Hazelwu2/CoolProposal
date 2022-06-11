@@ -14,8 +14,8 @@
      <!-- <a href="https://hiippo.gitbook.io/trustnews-dao/" target="blank">白皮書</a> -->
 </p>
 
-## 🚤 Purpose
-### 👩‍👩‍👧‍👧 成為可信任的資訊提供平台
+## 🚤 Introduce
+### 👩‍👩‍👧‍👧 來點酷提案吧
 Web版群眾集資平台，實現夢想，透過 Web3 與區塊鏈技術，讓金流更透明，需要達到贊助人數 50% 以上同意，提案者才可領取款項。
 
 <!-- [🧐 更多說明](https://hiippo.gitbook.io/trustnews-dao/) -->
@@ -72,28 +72,6 @@ $ npx hardhat run srcripts/deploy.js --network rinkeby # 部署到Rinkby測試�
 |:---|:---|:---|:---|
 |v1|2022/06/11|Hazel|Readme初版|
 
-
-
-
-
-
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
-```
-
-# Rinkeby
-ProposalFactory
-0x931852Af71Bfc78aFf3dB6e9b024b43Fc8EA048F
-
-Proposal
-- 0x40Cd938671115946033D15fcdfFD7b98E05Ef4bD
-- 0x29697961C96EDf25a3C89bf79eBdA12949735fBd
 
 https://www.aljazeera.com/wp-content/uploads/2021/04/GettyImages-1232454404.jpg?resize=770%2C513
 
