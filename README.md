@@ -34,7 +34,7 @@ $ yarn install && yarn dev
 $ yarn build # 打包
 $ yarn start # 屬於 Production 發布使用，執行前需先跑 yarn build
 ```
-📱 開啟 `http://localhost:3000/kcrypto-camp-final-project-team` ，便可看到 Dapp 開發環境<br>
+📱 開啟 `http://localhost:3000` ，便可看到 Dapp 開發環境<br>
 👨🏼‍💻 複製 .env.example，另取名 `.env` 設定 REACT_APP_INFURA_ID [Infura](https://infura.io/) 申請 Project 取得 ID
 
 ### 👨‍💻 Solidity
@@ -73,6 +73,7 @@ $ npx hardhat run srcripts/deploy.js --network rinkeby # 部署到Rinkby測試�
 |版本|編輯時間|編輯人|說明|
 |:---|:---|:---|:---|
 |v1|2022/06/11|Hazel|Readme初版|
+|v2|2022/06/11|Hazel|更改說明|
 
 
 https://www.aljazeera.com/wp-content/uploads/2021/04/GettyImages-1232454404.jpg?resize=770%2C513
