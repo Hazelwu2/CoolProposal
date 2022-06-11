@@ -79,11 +79,20 @@ contract Proposal {
     // 贊助
     function donate() public payable {
         require(msg.sender != proposer, "proposer can't donate");
-        require(msg.value > 0 , "unenough value");
+        require(msg.value > 0, "unenough value");
         sponsor.push(msg.sender);
         approvers[msg.sender] = true;
         approversCount++;
     }
+
+    // 建立提款
+    function createRequest() public {}
+
+    // 贊助者同意對方提款
+    function approveRequest() public {}
+
+    // 完成提款，偵測如果同意數 > 50% (贊助人數)，就call finalizeRequest
+    function finalizeRequest() public {}
 
     // 取得提案
     function getProposalSummary()
