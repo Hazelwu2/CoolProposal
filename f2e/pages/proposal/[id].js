@@ -302,7 +302,7 @@ export default function SingleProposal({
                         {...register('amount', { required: true })}
                         isDisabled={formState.isSubmitting}
                         type="number"
-                        min="0"
+                        min={0.0001}
                       />
                       <InputRightAddon children="ETH" />
                     </InputGroup>
