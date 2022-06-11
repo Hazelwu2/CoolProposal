@@ -23,7 +23,7 @@ import { useEffect } from 'react'
 
 export default function Navbar() {
   const { activeChain, switchNetwork } = useNetwork({
-    chainId: chain.localhost.id
+    chainId: chain.rinkeby.id
   })
   const { data: account } = useAccount()
   const { disconnect } = useDisconnect()

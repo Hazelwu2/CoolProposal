@@ -37,12 +37,12 @@ import {
   chain
 } from 'wagmi'
 // Wallet
-import ProposalFactory from "../../contract/ProposalFactory";
+import { instance as ProposalFactory } from "../../contract/ProposalFactory";
 import web3 from "../../contract/web3";
 
 export default function NewProposal() {
   const { activeChain, switchNetwork } = useNetwork({
-    chainId: chain.localhost.id
+    chainId: chain.rinkeby.id
   })
   const {
     handleSubmit,
