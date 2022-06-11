@@ -1,10 +1,16 @@
-import { ethers } from 'ethers'
 import web3 from './web3'
-// import Proposal from '../../artifacts/contracts/Proposal.sol/Proposal.json'
 import Proposal from './json/proposal.json'
 
+const ProposalABI = Proposal.abi
 
-
-export default (address) => {
+// export default (address) => {
+//   return new web3.eth.Contract(Proposal.abi, address);
+// };
+const instance = (address) => {
   return new web3.eth.Contract(Proposal.abi, address);
 };
+
+export {
+  instance,
+  ProposalABI
+}

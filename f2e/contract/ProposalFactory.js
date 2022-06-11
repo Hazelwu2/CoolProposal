@@ -8,10 +8,9 @@ const ProposalFactoryAddress = '0x5AFf3F2fcB339a1AD476C477605B5d88Be57Ae05'
 
 const instance = new web3.eth.Contract(
   ProposalFactoryABI,
-  // '0x931852Af71Bfc78aFf3dB6e9b024b43Fc8EA048F'
   ProposalFactoryAddress
 )
-// export default instance
+
 export {
   instance,
   ProposalFactoryABI,
