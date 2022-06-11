@@ -56,9 +56,9 @@ export default function Home({ proposals }) {
     }
   }
 
-  useEffect(() => {
-    getSummary();
-  }, []);
+  // useEffect(() => {
+  //   getSummary();
+  // }, []);
 
   return (
     <div>
@@ -102,11 +102,11 @@ export default function Home({ proposals }) {
           </Container>
 
           <HowItWork />
-          <ProposalComponent
+          {/* <ProposalComponent
             proposalList={proposalList}
             ethPrice={ethPrice}
             proposals={proposals}
-          />
+          /> */}
 
         </Box>
       </main>

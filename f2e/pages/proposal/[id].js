@@ -41,9 +41,7 @@ import { getEthPrice, getWEIPriceInUSD } from '../../utils/convert';
 
 export async function getServerSideProps({ params }) {
   const id = params.id
-  console.log(id)
   const proposal = Proposal(id)
-  console.log(proposal)
   const summary = await proposal.methods.getProposalSummary().call()
   const ethPrice = await getEthPrice()
 
