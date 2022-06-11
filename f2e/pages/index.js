@@ -17,8 +17,8 @@ import {
 import ProposalComponent from '../components/Proposal';
 import HowItWork from '../components/HowItWork';
 // Web3
-import { useAccount, useContractRead, chain, useNetwork } from 'wagmi'
-import { instance as Proposal } from '../contract/proposal'
+import { useAccount, chain, useNetwork } from 'wagmi'
+import { instance as Proposal } from '../contract/Proposal'
 import { instance as ProposalFactory } from '../contract/ProposalFactory'
 import { getEthPrice } from '../utils/convert'
 // Utils
