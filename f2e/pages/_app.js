@@ -19,15 +19,14 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 
 const { chains, provider, webSocketProvider } = configureChains(
-  // [chain.localhost],
-  [chain.rinkeby],
+  [chain.rinkeby, chain.localhost],
   [
     // 測試鏈 Hardhat
-    // jsonRpcProvider({
-    //   rpc: (chain) => ({
-    //     http: `http://localhost:8545`,
-    //   }),
-    // }),
+    jsonRpcProvider({
+      rpc: (chain) => ({
+        http: `http://localhost:8545`,
+      }),
+    }),
     infuraProvider({ infuraId: REACT_APP_INFURA_ID }),
     publicProvider()
   ],
