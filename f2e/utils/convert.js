@@ -7,7 +7,7 @@ export const getEthPrice = async () => {
     const ethPrice = data[0]?.current_price
     return parseFloat(ethPrice).toFixed(2)
   } catch (error) {
-    cconsole.error('[Error]', error)
+    console.error('[🚸🚸]', error);
   }
 }
 

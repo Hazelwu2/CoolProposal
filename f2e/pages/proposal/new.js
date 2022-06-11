@@ -38,12 +38,12 @@ import {
   useWaitForTransaction,
   chain
 } from 'wagmi'
-import {utils} from "ethers"
+import { utils } from "ethers"
 
 // Wallet
 import { instance as ProposalFactory } from "../../contract/ProposalFactory";
 import web3 from "../../contract/web3";
-import {ProposalFactoryAddress, ProposalFactoryABI} from "../../contract/ProposalFactory"
+import { ProposalFactoryAddress, ProposalFactoryABI } from "../../contract/ProposalFactory"
 
 export default function NewProposal() {
   const { activeChain, switchNetwork } = useNetwork({
@@ -72,7 +72,7 @@ export default function NewProposal() {
       const result = await getEthPrice();
       setETHPrice(result);
     } catch (error) {
-      console.log(error);
+      console.error('[🚸🚸]', error);
     }
   }, []);
 
@@ -89,16 +89,16 @@ export default function NewProposal() {
       data.imageUrl,
       data.target
     );
- 
+
     try {
       createProposal({
-        args:[
+        args: [
           utils.parseEther(data.target),
           data.name,
           data.description,
           data.imageUrl
         ],
-        overrides:{from:account.address},
+        overrides: { from: account.address },
       })
     } catch (err) {
       setError(err.message);
@@ -107,10 +107,10 @@ export default function NewProposal() {
   }
 
   const {
-    data: createProposalOutput, 
-    isError: isCreateProposalError, 
-    isLoading: isCreateProposalLoading, 
-    write:createProposal 
+    data: createProposalOutput,
+    isError: isCreateProposalError,
+    isLoading: isCreateProposalLoading,
+    write: createProposal
   } = useContractWrite(
     {
       addressOrName: ProposalFactoryAddress,
@@ -119,7 +119,7 @@ export default function NewProposal() {
     'createProposal',
   )
 
-  const {isError: txError, isLoading: txLoading } = useWaitForTransaction({
+  const { isError: txError, isLoading: txLoading } = useWaitForTransaction({
     hash: createProposalOutput?.hash,
     onSuccess(data) {
       // return home page after tx success
@@ -134,8 +134,8 @@ export default function NewProposal() {
         <meta name="description" content="建立個酷提案" />
         <link rel="icon" href="/logo.svg" />
       </Head>
-      {(txLoading || isCreateProposalLoading) && 
-      <div>Loading ...</div>}
+      {(txLoading || isCreateProposalLoading) &&
+        <div>Loading ...</div>}
       <main>
         <Stack spacing={8} mx={"auto"} maxW={"2xl"} py={12} px={6}>
           <Text fontSize={"lg"} color={"teal.400"}>

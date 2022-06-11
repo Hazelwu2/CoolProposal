@@ -134,7 +134,7 @@ export default function SingleProposal({
       // 重置表單
       reset('', { keepValues: false })
     } catch (error) {
-      console.error(error)
+      console.error('[🚸🚸]', error);
       setError(err)
     }
   }

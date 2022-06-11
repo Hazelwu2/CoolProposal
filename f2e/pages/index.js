@@ -23,19 +23,8 @@ import { instance as ProposalFactory } from '../contract/ProposalFactory'
 import { getEthPrice } from '../utils/convert'
 // Utils
 import { checkNetwork } from '../utils/handle-error'
+import debug from '../utils/debug'
 
-// Server 端取得已部署的所有提案
-// export async function getServerSideProps() {
-//   console.log('ProposalFactory', ProposalFactory)
-//   const proposals = await ProposalFactory.methods.getProposalList().call()
-//   console.error('[proposals]', proposals)
-
-//   return {
-//     props: { proposals }
-//   }
-// }
-
-// export default function Home({ proposals }) {
 export default function Home() {
   const [proposals, setProposals] = useState([])
   const [proposalList, setProposalList] = useState([])
@@ -46,10 +35,9 @@ export default function Home() {
 
   useEffect(() => {
     async function fetchData() {
-      console.error('fetchData')
       const proposals = await ProposalFactory.methods.getProposalList().call()
       setProposals(proposals)
-      console.log('[proposals]', proposals)
+      debug.$log('[proposals]', proposals)
     }
 
     fetchData()
@@ -61,19 +49,19 @@ export default function Home() {
   async function getSummary() {
     try {
       const summary = await Promise.all(
-        proposals.map((item, i) =>
+        proposals.map((item) =>
           Proposal(item).methods.getProposalSummary().call()
         )
       );
       const ETHPrice = await getEthPrice();
-      console.error('[ETHPRICE]', ETHPrice);
-      updateEthPrice(3);
-      console.error("[summary] ", summary);
+      debug.$error('ethPrice', ETHPrice);
+      updateEthPrice(ETHPrice);
+      debug.$error("[summary] ", summary);
       setProposalList(summary);
 
       return summary;
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.error('[🚸🚸]', error);
     }
   }
 
@@ -85,7 +73,7 @@ export default function Home() {
   return (
     <div>
       <Head>
-        <title>來個酷提案</title>
+        <title>來點酷提案</title>
         <meta
           name="description"
           content="群眾集資平台 Crowdfunding，讓美好的事物發生"
@@ -118,7 +106,7 @@ export default function Home() {
                   bg: "teal.300",
                 }}
               >
-                發起提案
+                我有個酷提案
               </Button>
             </NextLink>
           </Container>
