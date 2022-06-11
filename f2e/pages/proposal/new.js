@@ -34,11 +34,15 @@ import {
   useDisconnect,
   useConnect,
   useContractRead,
+  useContractWrite,
   chain
 } from 'wagmi'
+import {utils} from "ethers"
+
 // Wallet
 import { instance as ProposalFactory } from "../../contract/ProposalFactory";
 import web3 from "../../contract/web3";
+import {ProposalFactoryAddress, ProposalFactoryABI} from "../../contract/ProposalFactory"
 
 export default function NewProposal() {
   const { activeChain, switchNetwork } = useNetwork({
@@ -72,7 +76,7 @@ export default function NewProposal() {
   }, []);
 
   useEffect(() => {
-    if (activeChain && activeChain.id !== chain.rinkeby.id) {
+    if (activeChain && switchNetwork && activeChain.id !== chain.rinkeby.id) {
       switchNetwork();
     }
   }, [activeChain, switchNetwork])
@@ -84,17 +88,38 @@ export default function NewProposal() {
       data.imageUrl,
       data.target
     );
-
+ 
     try {
       // TODO: 呼叫智能合約 createProposal
       // 呼叫 ProposalFactory 執行建立提案方法
-
-      router.push("/");
+      createProposal({
+        args:[
+          utils.parseEther(data.target),
+          data.name,
+          data.description,
+          data.imageUrl
+        ],
+        overrides:{from:account.address},
+      })
+      // router.push("/");
     } catch (err) {
       setError(err.message);
       console.log(err);
     }
   }
+
+  const {
+    data: createProposalOutput, 
+    isError: isCreateProposalError, 
+    isLoading: isCreateProposalLoading, 
+    write:createProposal 
+  } = useContractWrite(
+    {
+      addressOrName: ProposalFactoryAddress,
+      contractInterface: ProposalFactoryABI,
+    },
+    'createProposal',
+  )
 
   return (
     <div>
