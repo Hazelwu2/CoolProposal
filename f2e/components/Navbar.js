@@ -118,7 +118,7 @@ export default function Navbar() {
               <NextLink href="/#howitworks">說明</NextLink>
             </Button>
 
-            {!isSSR && account?.address && ensName ?
+            {!isSSR && account?.address ?
               (<Menu>
                 <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
                   {account.address
