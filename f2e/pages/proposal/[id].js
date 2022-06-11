@@ -42,8 +42,7 @@ import { InjectedConnector } from 'wagmi/connectors/injected'
 import { getEthPrice, getETHPriceInUSD, getWEIPriceInUSD } from '../../utils/convert';
 import debug from '../../utils/debug'
 // Contract
-import { instance as Proposal } from '../../contract/proposal'
-import { ProposalABI } from "../../contract/Proposal"
+import { instance as Proposal, ProposalABI } from "../../contract/Proposal"
 
 
 // export async function getServerSideProps({ params }) {
