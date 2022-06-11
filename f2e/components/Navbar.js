@@ -18,7 +18,7 @@ import ModeSwitch from './ModeSwitch'
 // Wallet
 import { useAccount, useConnect, useEnsName, useDisconnect, useNetwork, chain } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 
 export default function Navbar() {
@@ -32,8 +32,14 @@ export default function Navbar() {
     connector: new InjectedConnector(),
   })
 
+  const [isSSR, setIsSSR] = useState(true);
+
   useEffect(() => {
-    if (activeChain && activeChain.id !== chain.rinkeby.id) {
+    setIsSSR(false);
+  }, []);
+
+  useEffect(() => {
+    if (activeChain && switchNetwork && activeChain.id !== chain.rinkeby.id) {
       switchNetwork();
     }
   }, [activeChain, switchNetwork])
@@ -112,19 +118,21 @@ export default function Navbar() {
               <NextLink href="/#howitworks">說明</NextLink>
             </Button>
 
-            {account ?
-              <Menu>
+            {!isSSR && account?.address && ensName ?
+              (<Menu>
                 <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                  {ensName ?? account.address.substr(0, 10) + "..."}
+                  {account.address
+                    ? account.address.substr(0, 10) + "..."
+                    : null}
                 </MenuButton>
                 <MenuList>
                   <MenuItem onClick={disconnect}>
                     取消連接錢包
                   </MenuItem>
                 </MenuList>
-              </Menu>
+              </Menu>)
               :
-              <div>
+              (<div>
                 <Button
                   fontSize={"md"}
                   fontWeight={600}
@@ -139,7 +147,7 @@ export default function Navbar() {
                 >
                   連接錢包
                 </Button>
-              </div>
+              </div>)
             }
             <ModeSwitch />
           </Stack>
