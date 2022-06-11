@@ -195,9 +195,9 @@ export default function SingleProposal({
                   tip="提案人的錢包地址"
                 />
                 <InfoCard
-                  title="請求數"
+                  title="同意人數"
                   content={requestsCount}
-                  tip="Number of Requests，提案人申請從合約提款，需要經過批准者的同意"
+                  tip="Number of Requests，提案人申請從合約提款，需要經過批准者的同意，贊助人數的50%"
                 />
                 <InfoCard
                   title="贊助人數"
