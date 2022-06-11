@@ -35,6 +35,7 @@ import {
   useConnect,
   useContractRead,
   useContractWrite,
+  useWaitForTransaction,
   chain
 } from 'wagmi'
 import {utils} from "ethers"
@@ -90,8 +91,6 @@ export default function NewProposal() {
     );
  
     try {
-      // TODO: 呼叫智能合約 createProposal
-      // 呼叫 ProposalFactory 執行建立提案方法
       createProposal({
         args:[
           utils.parseEther(data.target),
@@ -101,7 +100,6 @@ export default function NewProposal() {
         ],
         overrides:{from:account.address},
       })
-      // router.push("/");
     } catch (err) {
       setError(err.message);
       console.log(err);
@@ -121,6 +119,14 @@ export default function NewProposal() {
     'createProposal',
   )
 
+  const {isError: txError, isLoading: txLoading } = useWaitForTransaction({
+    hash: createProposalOutput?.hash,
+    onSuccess(data) {
+      // return home page after tx success
+      router.push("/");
+    },
+  })
+
   return (
     <div>
       <Head>
@@ -128,6 +134,8 @@ export default function NewProposal() {
         <meta name="description" content="建立個酷提案" />
         <link rel="icon" href="/logo.svg" />
       </Head>
+      {(txLoading || isCreateProposalLoading) && 
+      <div>Loading ...</div>}
       <main>
         <Stack spacing={8} mx={"auto"} maxW={"2xl"} py={12} px={6}>
           <Text fontSize={"lg"} color={"teal.400"}>
