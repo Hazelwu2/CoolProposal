@@ -80,7 +80,7 @@ export default function Home() {
   useEffect(() => {
     if (checkNetwork(activeChain)) getSummary()
     else setProposalList([])
-  }, [account, activeChain]);
+  }, [account, activeChain, proposals]);
 
   return (
     <div>
