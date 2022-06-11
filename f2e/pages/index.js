@@ -69,7 +69,6 @@ export default function Home() {
       console.error('[ETHPRICE]', ETHPrice);
       updateEthPrice(3);
       console.error("[summary] ", summary);
-      console.error("[summary] ");
       setProposalList(summary);
 
       return summary;
