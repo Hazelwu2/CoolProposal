@@ -128,6 +128,31 @@ export default function SingleProposal() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const { data: account } = useAccount()
   const [isSSR, setIsSSR] = useState(true);
+  const [summary, setSummary] = useState([])
+
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     if (id) {
+
+  //       const summary = await Proposal(id).methods.getProposalSummary().call()
+  // setProposals(proposals)
+  //       debug.$log('[summary]', summary)
+  // setBalance(utils.formatEther(summaryOutput[0]))
+  // setTargetAmount(utils.formatEther(summaryOutput[1]))
+  // setRequestsCount(utils.formatEther(summaryOutput[2]))
+  // setApproversCount(utils.formatEther(summaryOutput[3]))
+  // setProposer(summaryOutput[4])
+  // setName(summaryOutput[5])
+  // setDesc(summaryOutput[6])
+  // setImageUrl(summaryOutput[7])
+  // setTargetToAchieve(summaryOutput[8])
+  //       setSummary(summary)
+  //       setIsSSR(false)
+  //     }
+  //   }
+
+  //   if (id !== null) fetchData()
+  // }, [])
 
   const {
     data: summaryOutput,
@@ -150,18 +175,8 @@ export default function SingleProposal() {
     https://reactjs.org/link/rules-of-hooks
   */
   useEffect(() => {
-    if (id && !isLoading && summaryOutput && summaryOutput.length > 0) {
-      setBalance(utils.formatEther(summaryOutput[0]))
-      setTargetAmount(utils.formatEther(summaryOutput[1]))
-      setRequestsCount(utils.formatEther(summaryOutput[2]))
-      setApproversCount(utils.formatEther(summaryOutput[3]))
-      setProposer(summaryOutput[4])
-      setName(summaryOutput[5])
-      setDesc(summaryOutput[6])
-      setImageUrl(summaryOutput[7])
-      setTargetToAchieve(summaryOutput[8])
-      setIsSSR(false)
-    }
+    setIsSSR(false)
+    // }
   }, [id])
 
   useAsync(async () => {
@@ -202,7 +217,7 @@ export default function SingleProposal() {
         <link rel="icon" href="/logo.svg" />
       </Head>
 
-      {!isSSR && id ?
+      {!isSSR && id && summaryOutput.length > 0 ?
         (
           <main>
 
@@ -222,7 +237,8 @@ export default function SingleProposal() {
                       lineHeight={1.1}
                       fontSize={{ base: "3xl", sm: "4xl", md: "5xl" }}
                     >
-                      {name}
+                      {/* name */}
+                      {summaryOutput[5]}
                     </Heading>
                     <Text
                       mt={2}
@@ -230,7 +246,8 @@ export default function SingleProposal() {
                       color={useColorModeValue("gray.600", "gray.200")}
                       fontSize={{ base: "lg" }}
                     >
-                      {desc}
+                      {/* desc */}
+                      {summaryOutput[6]}
                     </Text>
                     <Link
                       color="teal.500"
@@ -269,24 +286,28 @@ export default function SingleProposal() {
 
                         <Box mx={"auto"} w={"full"}>
                           <SimpleGrid columns={{ base: 1 }} spacing={{ base: 5 }}>
+                            {/* targetAmount */}
                             <InfoCard
                               title="目標集資金額"
-                              content={target}
+                              content={utils.formatEther(summaryOutput[1])}
                               tip="提案最少要募集到的金額 (ETH)"
                             />
+                            {/* proposer */}
                             <InfoCard
                               title="提案人"
-                              content={proposer}
+                              content={summaryOutput[4]}
                               tip="提案人的錢包地址"
                             />
+                            {/* requestsCount */}
                             <InfoCard
                               title="同意人數"
-                              content={requestsCount}
+                              content={utils.formatEther(summaryOutput[2])}
                               tip="Number of Requests，提案人申請從合約提款，需要經過批准者的同意，贊助人數的50%"
                             />
+                            {/* approversCount */}
                             <InfoCard
                               title="贊助人數"
-                              content={approversCount}
+                              content={utils.formatEther(summaryOutput[3])}
                               tip="Number of Approvers"
                             />
                           </SimpleGrid>
@@ -355,8 +376,8 @@ export default function SingleProposal() {
                           pt="2"
                         >
                           <Text as="span" fontWeight={"bold"}>
-                            {balance > 0
-                              ? utils.formatEther(balance) + ' ETH'
+                            {summaryOutput[0] > 0
+                              ? utils.formatEther(summaryOutput[0]) + ' ETH'
                               : "0, 成為第一位贊助者"
                             }
                           </Text>
@@ -368,7 +389,9 @@ export default function SingleProposal() {
                             pl={2}
                             color={useColorModeValue("gray.500", "gray.200")}
                           >
-                            (${getWEIPriceInUSD(ethPrice, balance)})
+                            (${getWEIPriceInUSD(ethPrice,
+                              // balance
+                              utils.formatEther(summaryOutput[0]))})
                           </Text>
                         </Box>
 
@@ -376,14 +399,14 @@ export default function SingleProposal() {
                           fontSize={"sm"}
                           fontWeight="light"
                           color={useColorModeValue("gray.500", "gray.200")}>
-                          目標 {target}
+                          目標 {utils.formatEther(summaryOutput[1])}
                         </Text>
                         <Progress
                           colorScheme="teal"
                           size="sm"
                           mt={4}
-                          value={balance}
-                          max={targetAmount}
+                          value={utils.formatEther(summaryOutput[0])}
+                          max={utils.formatEther(summaryOutput[1])}
                         />
                       </StatNumber>
                     </Stat>
