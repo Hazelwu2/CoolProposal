@@ -23,6 +23,7 @@
     "react-hook-form": "^7.31.3",
     "react-icons": "^4.4.0",
     "react-use": "^17.4.0",
+    "sweetalert2": "^11.4.17",
     "wagmi": "^0.4.1",
     "web3": "^1.7.3"
   },
