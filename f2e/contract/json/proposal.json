@@ -55,6 +55,13 @@
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "approveRequest",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
       "inputs": [{
         "internalType": "address",
         "name": "",
@@ -82,9 +89,23 @@
     },
     {
       "inputs": [],
+      "name": "createRequest",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
       "name": "donate",
       "outputs": [],
       "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "finalizeRequest",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {

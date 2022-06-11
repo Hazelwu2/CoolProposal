@@ -4,7 +4,7 @@ import web3 from './web3'
 // hazel github
 import ProposalFactory from './json/proposalFactory.json'
 const ProposalFactoryABI = ProposalFactory.abi
-const ProposalFactoryAddress = '0xbACdAEc9039253b2e88f66FEb3205d1F7C49C351'
+const ProposalFactoryAddress = '0x5AFf3F2fcB339a1AD476C477605B5d88Be57Ae05'
 
 const instance = new web3.eth.Contract(
   ProposalFactoryABI,
