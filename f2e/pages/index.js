@@ -25,42 +25,54 @@ import { getEthPrice } from '../utils/convert'
 import { checkNetwork } from '../utils/handle-error'
 
 // Server 端取得已部署的所有提案
-export async function getServerSideProps() {
-  console.log('ProposalFactory', ProposalFactory)
-  const proposals = await ProposalFactory.methods.getProposalList().call()
-  console.error('[proposals]', proposals)
+// export async function getServerSideProps() {
+//   console.log('ProposalFactory', ProposalFactory)
+//   const proposals = await ProposalFactory.methods.getProposalList().call()
+//   console.error('[proposals]', proposals)
 
-  return {
-    props: { proposals }
-  }
-}
+//   return {
+//     props: { proposals }
+//   }
+// }
 
-export default function Home({ proposals }) {
+// export default function Home({ proposals }) {
+export default function Home() {
+  const [proposals, setProposals] = useState([])
   const [proposalList, setProposalList] = useState([])
   const [ethPrice, updateEthPrice] = useState(null);
   const { activeChain } = useNetwork({
     chainId: chain.rinkeby.id
   })
 
-  console.log('[proposals]', proposals)
+  useEffect(() => {
+    async function fetchData() {
+      console.error('fetchData')
+      const proposals = await ProposalFactory.methods.getProposalList().call()
+      setProposals(proposals)
+      console.log('[proposals]', proposals)
+    }
+
+    fetchData()
+  }, [])
+
 
   const { data: account } = useAccount()
 
   async function getSummary() {
     try {
-      // const summary = await Promise.all(
-      //   proposals.map((item, i) =>
-      //     Proposal(item).methods.getProposalSummary().call()
-      //   )
-      // );
-      // const ETHPrice = await getEthPrice();
-      // console.error('[ETHPRICE]', ETHPrice);
-      // updateEthPrice(3);
-      // console.error("[summary] ", summary);
+      const summary = await Promise.all(
+        proposals.map((item, i) =>
+          Proposal(item).methods.getProposalSummary().call()
+        )
+      );
+      const ETHPrice = await getEthPrice();
+      console.error('[ETHPRICE]', ETHPrice);
+      updateEthPrice(3);
+      console.error("[summary] ", summary);
       console.error("[summary] ");
-      // setProposalList(summary);
+      setProposalList(summary);
 
-      // return summary;
+      return summary;
     } catch (e) {
       console.log(e);
     }
