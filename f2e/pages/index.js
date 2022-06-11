@@ -25,13 +25,14 @@ import { getEthPrice } from '../utils/convert'
 import { checkNetwork } from '../utils/handle-error'
 
 // Server 端取得已部署的所有提案
-export async function getServerSideProps() {
-  const proposals = await ProposalFactory.methods.getProposalList().call()
+// export async function getServerSideProps() {
+//   // const proposals = await ProposalFactory.methods.getProposalList().call()
+//   // console.error('[proposals]', proposals)
 
-  return {
-    props: { proposals }
-  }
-}
+//   // return {
+//   //   props: { proposals }
+//   // }
+// }
 
 export default function Home({ proposals }) {
   const [proposalList, setProposalList] = useState([])
@@ -44,18 +45,19 @@ export default function Home({ proposals }) {
 
   async function getSummary() {
     try {
-      const summary = await Promise.all(
-        proposals.map((item, i) =>
-          Proposal(item).methods.getProposalSummary().call()
-        )
-      );
-      const ETHPrice = await getEthPrice();
-      console.error('[ETHPRICE]', ETHPrice);
-      updateEthPrice(3);
-      console.error("[summary] ", summary);
-      setProposalList(summary);
+      // const summary = await Promise.all(
+      //   proposals.map((item, i) =>
+      //     Proposal(item).methods.getProposalSummary().call()
+      //   )
+      // );
+      // const ETHPrice = await getEthPrice();
+      // console.error('[ETHPRICE]', ETHPrice);
+      // updateEthPrice(3);
+      // console.error("[summary] ", summary);
+      console.error("[summary] ");
+      // setProposalList(summary);
 
-      return summary;
+      // return summary;
     } catch (e) {
       console.log(e);
     }
