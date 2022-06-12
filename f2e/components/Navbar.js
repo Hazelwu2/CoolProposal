@@ -15,6 +15,7 @@ import { ChevronDownIcon } from "@chakra-ui/icons"
 import NextLink from 'next/link'
 // Component
 import ModeSwitch from './ModeSwitch'
+import { useToastHook } from './Toast'
 // Wallet
 import { useAccount, useConnect, useEnsName, useDisconnect, useNetwork, chain } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
@@ -33,6 +34,8 @@ export default function Navbar() {
   })
 
   const [isSSR, setIsSSR] = useState(true);
+  const [state, newToast] = useToastHook();
+
 
   useEffect(() => {
     setIsSSR(false);
@@ -41,6 +44,7 @@ export default function Navbar() {
   useEffect(() => {
     if (activeChain && switchNetwork && activeChain.id !== chain.rinkeby.id) {
       switchNetwork();
+      newToast({ message: '⚠錯誤網路，請切換至 Rinkby', status: "error" });
     }
   }, [activeChain, switchNetwork])
 
