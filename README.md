@@ -11,14 +11,18 @@
 <p align="center">
     <a href="https://cool-proposal.vercel.app/" target="blank">Online Demo</a>
     ·
-     <!-- <a href="https://hiippo.gitbook.io/trustnews-dao/" target="blank">白皮書</a> -->
+     <a href="https://ku-ti-an-de-bai-pi-shu.gitbook.io/come-up-with-a-cool-proposal/" target="blank">白皮書</a>
 </p>
 
-## 🚤 Introduce
+## 🚤 Introduce 專案簡介
 ### 👩‍👩‍👧‍👧 來點酷提案吧
 Web版群眾集資平台，實現夢想，透過 Web3 與區塊鏈技術，讓金流更透明，需要達到贊助人數 50% 以上同意，提案者才可領取款項。
 
-<!-- [🧐 更多說明](https://hiippo.gitbook.io/trustnews-dao/) -->
+[🧐 更多說明在白皮書](https://ku-ti-an-de-bai-pi-shu.gitbook.io/come-up-with-a-cool-proposal/)
+
+
+## 🛠️ 操作教學
+...
 
 
 ## 🛠️ 開發
