@@ -112,7 +112,7 @@ export default function SingleProposal() {
     },
     'getProposalSummary',
     { chainId: 4 },
-    {watch : true},
+    { watch: true },
   )
 
   /* 
@@ -142,7 +142,7 @@ export default function SingleProposal() {
     console.log(data.amount)
     try {
       debug.$error('[表單填寫的資料]', data)
-      
+
       donate({
         overrides: {
           from: account.address,
@@ -165,10 +165,10 @@ export default function SingleProposal() {
 
   const showAmount = (amount) => `${utils.formatEther(amount)} ETH`
   const {
-    data: donateOutput, 
-    isError: isDonateError, 
-    isLoading: isDonateLoading, 
-    write:donate 
+    data: donateOutput,
+    isError: isDonateError,
+    isLoading: isDonateLoading,
+    write: donate
   } = useContractWrite(
     {
       addressOrName: id,
@@ -177,10 +177,9 @@ export default function SingleProposal() {
     'donate',
   )
 
-  useEffect( () => {
-    if(summaryOutput)
-    {console.log("summaryOutput[3] = " ,utils.formatUnits(summaryOutput[3],"wei"))}
-  },[donateOutput]);
+  useEffect(() => {
+    if (summaryOutput) { console.log("summaryOutput[3] = ", utils.formatUnits(summaryOutput[3], "wei")) }
+  }, [donateOutput]);
 
   const target = targetAmount + ' ETH'
 
@@ -285,6 +284,12 @@ export default function SingleProposal() {
                               title="贊助人數"
                               content={parseInt(summaryOutput[3])}
                               tip="Number of Approvers"
+                            />
+                            {/* approversCount */}
+                            <InfoCard
+                              title="最小贊助金額"
+                              content={showAmount(summaryOutput[9])}
+                              tip="最小贊助金額"
                             />
                           </SimpleGrid>
                         </Box>
@@ -410,6 +415,10 @@ export default function SingleProposal() {
 
                           <FormLabel>
                             贊助金額
+                            <Text fontSize={'md'} color={'gray.500'}>
+                              (最低贊助金額 {showAmount(summaryOutput[9])})
+                              {utils.formatEther(summaryOutput[9])}
+                            </Text>
                           </FormLabel>
                           <InputGroup>
                             <Input
@@ -418,6 +427,7 @@ export default function SingleProposal() {
                               onChange={(e) => {
                                 setAmountInUSD(Math.abs(e.target.value));
                               }}
+                              min={utils.formatEther(summaryOutput[9])}
                               type="number"
                               step="any"
                             />
