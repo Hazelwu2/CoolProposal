@@ -16,6 +16,7 @@ import {
 // Components
 import ProposalComponent from '../components/Proposal';
 import HowItWork from '../components/HowItWork';
+import Team from '../components/Team';
 // Web3
 import { useAccount, chain, useNetwork } from 'wagmi'
 import { instance as Proposal } from '../contract/Proposal'
@@ -117,6 +118,8 @@ export default function Home() {
             ethPrice={ethPrice}
             proposals={proposals}
           />
+
+          <Team />
 
         </Box>
       </main>
