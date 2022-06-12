@@ -92,7 +92,6 @@ export default function NewWithdrawal() {
         args: [
           data.description,
           utils.parseEther(data.value),
-          data.recipient
         ],
         overrides: { from: account.address },
       })
@@ -114,9 +113,9 @@ export default function NewWithdrawal() {
     },
     'createRequest',
     {
-      onSuccess(createRequestOutput){
+      onSuccess(createRequestOutput) {
         // 返回提款歷程頁
-      router.push(`/proposal/${id}/requests`);
+        router.push(`/proposal/${id}/requests`);
       },
     }
   )
@@ -182,7 +181,7 @@ export default function NewWithdrawal() {
 
                 <FormControl id="recipient">
                   <FormLabel htmlFor="recipient">
-                    指定收款錢包地址
+                    指定收款錢包地址：預設提案人的錢包
                     <Tooltip
                       label="Recipient Ethereum Wallet Address，提款申請經 50 % 以上贊助人同意後，所有款項將會轉到此地址"
                       bg={useColorModeValue("white", "gray.700")}
@@ -198,16 +197,16 @@ export default function NewWithdrawal() {
                     </Tooltip>
 
                   </FormLabel>
-                  <Input
+                  {/* <Input
                     name="recipient"
                     {...register("recipient", {
                       required: true,
                     })}
                     isDisabled={isSubmitting}
-                  />
+                  /> */}
                 </FormControl>
 
-                {errors.description || errors.value || errors.recipient ? (
+                {errors.description || errors.value ? (
                   <Alert status="error">
                     <AlertIcon />
                     <AlertDescription mr={2}>
