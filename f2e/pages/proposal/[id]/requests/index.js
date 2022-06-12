@@ -164,7 +164,7 @@ export default function Requests({
   const [name, setName] = useState([]);
   const [desc, setDesc] = useState([]);
   const [FundNotAvailable, setFundNotAvailable] = useState(false);
-  const [requestCount, setRequestCount] = useState(false);
+  const [requestCount, setRequestCount] = useState(0);
   const { id } = router.query
   const chainId = 4 // Rinekby
 
