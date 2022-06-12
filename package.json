@@ -1,5 +1,6 @@
 {
   "name": "hardhat-project",
+  "package-name": "git+https://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:x-oauth-basic@github.com/Hazelwu2/CoolProposal.git",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.6",
     "@nomiclabs/hardhat-waffle": "^2.0.3",
