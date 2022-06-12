@@ -66,7 +66,7 @@ export default function Home() {
   }
 
   useEffect(() => {
-    if (checkNetwork(activeChain)) getSummary()
+    if (activeChain && checkNetwork(activeChain)) getSummary()
     else setProposalList([])
   }, [account, activeChain, proposals]);
 
