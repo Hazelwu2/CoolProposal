@@ -43,7 +43,7 @@ import {
 // Utils
 import debug from '../../../../utils/debug'
 // Wallet
-import { useContractRead } from 'wagmi'
+import { useContractRead, useAccount} from 'wagmi'
 // Contract
 import { instance as Proposal, ProposalABI } from "../../../../contract/Proposal"
 
@@ -167,6 +167,8 @@ export default function Requests({
   const [requestCount, setRequestCount] = useState(0);
   const { id } = router.query
   const chainId = 4 // Rinekby
+  const { data: account } = useAccount();
+  const [notProposer, setNotProposer] = useState(true);
 
   const {
     data: summaryOutput,
@@ -231,6 +233,12 @@ export default function Requests({
     }
     getRequests()
   }, [id, summaryIsLoading])
+
+  useEffect(() => {
+    if(account && summaryOutput){
+      setNotProposer(account.address !== summaryOutput[4])
+    }
+  }, [account])
 
 
   return (
@@ -301,9 +309,15 @@ export default function Requests({
                       bgGradient: "linear(to-r, teal.400,blue.400)",
                       boxShadow: "xl",
                     }}
-                  // TODO: 非提案者錢包地址，disabled按鈕
+                    isDisabled={notProposer}
                   >
-                    提出提款請求
+                    {
+                      notProposer ? (
+                        "不可提出提款請求"
+                      ) : (
+                        "提出提款請求"
+                      )
+                    }
                   </Button>
                 </NextLink>
               </Box>
@@ -381,9 +395,16 @@ export default function Requests({
                   _hover={{
                     bg: "teal.300",
                   }}
+                  isDisabled={notProposer}
                 >
                   <NextLink href={`/proposal/${id}/requests/new`}>
-                    建立提款請求
+                    {
+                      notProposer ? (
+                        "不可提出提款請求"
+                      ) : (
+                        "提出提款請求"
+                      )
+                    }
                   </NextLink>
                 </Button>
 

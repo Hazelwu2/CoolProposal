@@ -271,7 +271,7 @@ export default function SingleProposal() {
                             {/* proposer */}
                             <InfoCard
                               title="提案人"
-                              content={showAmount(summaryOutput[4])}
+                              content={summaryOutput[4]}
                               tip="提案人的錢包地址"
                             />
                             {/* requestsCount */}
