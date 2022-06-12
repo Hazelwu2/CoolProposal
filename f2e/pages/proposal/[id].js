@@ -36,7 +36,7 @@ import { InfoIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import NextLink from "next/link";
 import Confetti from "react-confetti";
 // Wallet
-import { useAccount, useConnect, useContractRead, useDisconnect } from 'wagmi'
+import { useAccount, useConnect, useContractRead, useDisconnect, useContractWrite } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 // Utils
 import { getEthPrice, getETHPriceInUSD, getWEIPriceInUSD } from '../../utils/convert';
@@ -111,7 +111,8 @@ export default function SingleProposal() {
       contractInterface: ProposalABI,
     },
     'getProposalSummary',
-    { chainId: 4 }
+    { chainId: 4 },
+    {watch : true},
   )
 
   /* 
@@ -138,9 +139,16 @@ export default function SingleProposal() {
 
   // 送出表單
   async function submitForm(data) {
+    console.log(data.amount)
     try {
       debug.$error('[表單填寫的資料]', data)
-      // TODO: 呼叫合約方法-Donate
+      
+      donate({
+        overrides: {
+          from: account.address,
+          value: utils.parseEther(data.amount),
+        },
+      })
 
       setAmountInUSD(null);
       setIsSubmitted(true);
@@ -156,6 +164,26 @@ export default function SingleProposal() {
   }
 
   const showAmount = (amount) => `${utils.formatEther(amount)} ETH`
+  const {
+    data: donateOutput, 
+    isError: isDonateError, 
+    isLoading: isDonateLoading, 
+    write:donate 
+  } = useContractWrite(
+    {
+      addressOrName: id,
+      contractInterface: ProposalABI,
+    },
+    'donate',
+  )
+
+  useEffect( () => {
+    if(summaryOutput)
+    {console.log("summaryOutput[3] = " ,utils.formatUnits(summaryOutput[3],"wei"))}
+  },[donateOutput]);
+
+  const target = targetAmount + ' ETH'
+
 
   return (
     <div>
