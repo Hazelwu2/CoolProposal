@@ -11,7 +11,8 @@ import {
   Text,
   useColorModeValue,
   Progress,
-  Skeleton
+  Skeleton,
+  Container
 } from "@chakra-ui/react";
 
 function ProposalCard(
@@ -114,38 +115,40 @@ function ProposalCard(
 export default function Proposal({ proposalList, ethPrice, proposals }) {
   return (
     <div>
-      {proposalList?.length > 0 ? (
-        <SimpleGrid
-          columns={{ base: 1, md: 3 }}
-          spacing={10}
-          py={8}
-          mt={6}
-          mb={6}
-        >
-          {proposalList.map((proposal, index) => {
-            return (
-              <div key={index}>
-                <ProposalCard
-                  balance={proposal[0]}
-                  targetAmount={proposal[1]}
-                  proposer={proposal[4]}
-                  name={proposal[5]}
-                  desc={proposal[6]}
-                  imageUrl={proposal[7]}
-                  ethPrice={ethPrice}
-                  id={proposals[index]}
-                />
-              </div>
-            )
-          })}
-        </SimpleGrid>
-      ) : (
-        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10} py={8}>
-          <Skeleton height="20rem" />
-          <Skeleton height="20rem" />
-          <Skeleton height="20rem" />
-        </SimpleGrid>
-      )}
+      <Container maxW={"6xl"} align={"left"} mt={'16'}>
+        {proposalList?.length > 0 ? (
+          <SimpleGrid
+            columns={{ base: 1, md: 3 }}
+            spacing={10}
+            py={8}
+            mt={6}
+            mb={6}
+          >
+            {proposalList.map((proposal, index) => {
+              return (
+                <div key={index}>
+                  <ProposalCard
+                    balance={proposal[0]}
+                    targetAmount={proposal[1]}
+                    proposer={proposal[4]}
+                    name={proposal[5]}
+                    desc={proposal[6]}
+                    imageUrl={proposal[7]}
+                    ethPrice={ethPrice}
+                    id={proposals[index]}
+                  />
+                </div>
+              )
+            })}
+          </SimpleGrid>
+        ) : (
+          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10} py={8}>
+            <Skeleton height="20rem" />
+            <Skeleton height="20rem" />
+            <Skeleton height="20rem" />
+          </SimpleGrid>
+        )}
+      </Container>
     </div>
   )
 }
