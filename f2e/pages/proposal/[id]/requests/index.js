@@ -59,7 +59,7 @@ const RequestRow = ({
   const [errorMessageApprove, setErrorMessageApprove] = useState();
   const [loadingApprove, setLoadingApprove] = useState(false);
 
-  // TODO: 串合約：贊助者同意對方提款
+  // TODO: 串合約：贊助者同意對方提款 approveRequest
   const onApprove = async () => {
     setLoadingApprove(true);
     try {
@@ -143,7 +143,9 @@ const RequestRow = ({
                 color: "white",
               }}
               onClick={onApprove}
-              isDisabled={disabled || request.complete || (request.approvalCount / approversCount) > 0.5}
+              //  TODO: 驗證他是不是贊助者 */
+              isDisabled={disabled || request.complete
+                || (request.approvalCount / approversCount) > 0.5}
               isLoading={loadingApprove}
             >
               同意提款
