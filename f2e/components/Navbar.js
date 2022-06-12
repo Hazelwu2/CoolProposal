@@ -28,11 +28,9 @@ export default function Navbar() {
   })
   const { data: account } = useAccount()
   const { disconnect } = useDisconnect()
-  const { data: ensName } = useEnsName({ address: account?.address })
   const { connect } = useConnect({
     connector: new InjectedConnector(),
   })
-
   const [isSSR, setIsSSR] = useState(true);
   const [state, newToast] = useToastHook();
 
