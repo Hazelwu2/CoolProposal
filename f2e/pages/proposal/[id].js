@@ -155,7 +155,7 @@ export default function SingleProposal() {
     }
   }
 
-  const target = targetAmount + ' ETH'
+  const showAmount = (amount) => `${utils.formatEther(amount)} ETH`
 
   return (
     <div>
@@ -237,13 +237,13 @@ export default function SingleProposal() {
                             {/* targetAmount */}
                             <InfoCard
                               title="目標集資金額"
-                              content={utils.formatEther(summaryOutput[1])}
+                              content={showAmount(summaryOutput[1])}
                               tip="提案最少要募集到的金額 (ETH)"
                             />
                             {/* proposer */}
                             <InfoCard
                               title="提案人"
-                              content={summaryOutput[4]}
+                              content={showAmount(summaryOutput[4])}
                               tip="提案人的錢包地址"
                             />
                             {/* requestsCount */}
