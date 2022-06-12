@@ -43,7 +43,7 @@ import debug from '../../../../utils/debug'
 // Wallet
 import { useContractRead } from 'wagmi'
 // Contract
-import { ProposalABI } from "../../../../contract/Proposal"
+import { instance as Proposal, ProposalABI } from "../../../../contract/Proposal"
 
 
 
@@ -60,7 +60,7 @@ export default function Requests({
   const {
     data: summaryOutput,
     isError: summaryError,
-    isLoading,
+    isLoading: summaryIsLoading,
   } = useContractRead(
     {
       addressOrName: id,
@@ -70,14 +70,46 @@ export default function Requests({
     { chainId: 4 }
   )
 
-  // TODO: 串合約：取得提款明細
+
+  const {
+    data: requestOutput,
+    isError: requestError,
+    isLoading: requestIsLoading,
+  } = useContractRead(
+    {
+      addressOrName: id,
+      contractInterface: ProposalABI,
+    },
+    'getRequestsCount',
+    { chainId: 4 }
+  )
+
+  // 取得提款明細
+  const getRequests = async () => {
+    try {
+      // parseInt(requestOutput._hex)
+      const requestCount = parseInt(requestOutput._hex)
+      debug.$error(requestCount)
+      const requests = await Promise.all(
+        Array(parseInt(requestCount))
+          .fill()
+          .map((el, index) => Proposal(id).methods.requests(index).call())
+      )
+
+      setRequestsList(requests)
+      debug.$error(requests)
+    } catch (error) {
+      console.error('[🚸🚸]', error);
+    }
+  }
 
   useEffect(() => {
-    if (!isLoading && summaryOutput && summaryOutput.length > 0) {
+    if (!summaryIsLoading && summaryOutput && summaryOutput.length > 0) {
       debug.$error('cool')
       setName(summaryOutput[5])
     }
-  }, [id, isLoading])
+    getRequests()
+  }, [id, summaryIsLoading])
 
 
   return (
@@ -144,7 +176,7 @@ export default function Requests({
                   <Th>編號</Th>
                   <Th w="30%">提款原因</Th>
                   <Th isNumeric>提款金額</Th>
-                  <Th maxW="12%" isTruncated>
+                  <Th maxW="12%">
                     指定收款錢包地址
                   </Th>
                   <Th>同意人數</Th>
