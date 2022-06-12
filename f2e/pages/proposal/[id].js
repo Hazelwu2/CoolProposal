@@ -148,7 +148,7 @@ export default function SingleProposal() {
       newToast({ message: '感謝贊助 🙏', status: "success" });
 
       // 重置表單
-      reset('', { keepValues: false })
+      reset({ amount: null }, { keepValues: false })
     } catch (error) {
       console.error('[🚸🚸]', error);
       setError(error.message);
@@ -419,6 +419,10 @@ export default function SingleProposal() {
                               color={"white"}
                               isLoading={formState.isSubmitting}
                               type="submit"
+                              _hover={{
+                                bgGradient: "linear(to-r, teal.400,blue.400)",
+                                boxShadow: "xl",
+                              }}
                             >
                               贊助
                             </Button>
