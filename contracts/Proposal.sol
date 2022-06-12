@@ -16,7 +16,7 @@ contract ProposalFactory {
         string memory _imageUrl
     ) external {
         proposal = new Proposal(
-            msg.sender,
+            payable(msg.sender),
             _targetAmount,
             _title,
             _desc,
@@ -33,7 +33,7 @@ contract ProposalFactory {
 
 contract Proposal {
     // 提案者
-    address public proposer;
+    address payable public proposer;
     // 目標金額
     uint256 public targetAmount;
     // 提案名稱
@@ -42,9 +42,9 @@ contract Proposal {
     string public ProposalDescription;
     // 提案圖片
     string public imageUrl;
-    // 贊助人數
-    address[] public sponsor;
     // 贊助者
+    address[] public sponsor;
+    // 是否為贊助者
     mapping(address => bool) public approvers;
     // 贊助人數
     uint256 public approversCount;
@@ -57,14 +57,15 @@ contract Proposal {
         string description; // 提款原因
         uint256 amount; // 提款金額
         bool complete; // 是否完成
+        // uint256 approversCount; // 此次提款的贊助人數
         uint256 approvalCount; // 同意提款人數
         mapping(address => bool) approvals; // 有權利按贊助名單
-        address recipient; // 撥款地址
+        // address recipient; // 撥款地址
     }
 
     // Create New Contract
     constructor(
-        address _proposer,
+        address payable _proposer,
         uint256 _minAmount,
         string memory _title,
         string memory _desc,
@@ -89,8 +90,8 @@ contract Proposal {
     // 建立提款請求
     function createRequest(
         string memory _description,
-        uint256 _amount,
-        address _recipient
+        uint256 _amount
+        // address _recipient
     ) public {
         // 合約沒有錢，不可建立提款
         require(address(this).balance > 0, "The contract has no money");
@@ -104,16 +105,32 @@ contract Proposal {
         Request storage newRequest = requests.push();
         newRequest.description = _description;
         newRequest.amount = _amount;
-        newRequest.recipient = _recipient;
+        // newRequest.recipient = _recipient;
         newRequest.complete = false;
         newRequest.approvalCount = 0;
     }
 
     // 贊助者同意對方提款
-    function approveRequest() public {}
+    function approveRequest(uint index) public {
+       // 確認對方為贊助者
+      require(approvers[msg.sender]);   
+      // 確認對方沒同意過          
+      require(!requests[index].approvals[msg.sender]);
+      // 將贊助者更改為同意
+      requests[index].approvals[msg.sender] = true;
+      // 同意數+1
+      requests[index].approvalCount++;
+      if (approversCount / 2 < requests[index].approvalCount)
+      {
+          finalizeRequest(index);
+      }
+    }
 
     // 完成提款，偵測如果同意數 > 50% (贊助人數)，就call finalizeRequest
-    function finalizeRequest() public {}
+    function finalizeRequest(uint index) public payable{
+        proposer.transfer(requests[index].amount);
+        requests[index].complete = true;
+    }
 
     // 取得提案
     function getProposalSummary()
