@@ -112,10 +112,12 @@ contract Proposal {
 
     // 贊助者同意對方提款
     function approveRequest(uint index) public {
+        // 確認對方不是提案者
+      require(msg.sender != proposer, "proposal can't approve");   
        // 確認對方為贊助者
-      require(approvers[msg.sender]);   
+      require(approvers[msg.sender], "Only approvers can approve");   
       // 確認對方沒同意過          
-      require(!requests[index].approvals[msg.sender]);
+      require(!requests[index].approvals[msg.sender], "Only sign once");
       // 將贊助者更改為同意
       requests[index].approvals[msg.sender] = true;
       // 同意數+1
