@@ -85,6 +85,11 @@ contract Proposal {
         sponsor.push(msg.sender);
         approvers[msg.sender] = true;
         approversCount++;
+        // 贊助金額 >= 目標金額時, 達成募資專案
+        if (address(this).balance >= targetAmount)
+        {
+            targetToAchieve = true;
+        }
     }
 
     // 建立提款請求
@@ -93,14 +98,16 @@ contract Proposal {
         uint256 _amount
         // address _recipient
     ) public {
-        // 合約沒有錢，不可建立提款
-        require(address(this).balance > 0, "The contract has no money");
+        // 要達成募款金額才能提款
+        require(targetToAchieve, "target not Achieve");
         // 申請提款者必須是提案本人
         require(msg.sender == proposer, "Only Proposer can create request.");
+        // 合約沒有錢，不可建立提款
+        require(address(this).balance > 0, "The contract has no money");
         // 提領金額必須 > 0
         require(_amount > 0, "unenough value");
-        // 提領金額 不可以 > 合約的錢
-        require(address(this).balance > _amount, "insufficient balance");
+        // 合約的錢 >= 提領金額
+        require(address(this).balance >= _amount, "insufficient balance");
 
         Request storage newRequest = requests.push();
         newRequest.description = _description;
@@ -112,9 +119,11 @@ contract Proposal {
 
     // 贊助者同意對方提款
     function approveRequest(uint index) public {
-        // 確認對方不是提案者
+      // 已完成提款, 不需要再簽署
+      require(!requests[index].complete, "proposal is complete");
+      // 確認對方不是提案者
       require(msg.sender != proposer, "proposal can't approve");   
-       // 確認對方為贊助者
+      // 確認對方為贊助者
       require(approvers[msg.sender], "Only approvers can approve");   
       // 確認對方沒同意過          
       require(!requests[index].approvals[msg.sender], "Only sign once");
@@ -122,7 +131,8 @@ contract Proposal {
       requests[index].approvals[msg.sender] = true;
       // 同意數+1
       requests[index].approvalCount++;
-      if (approversCount / 2 < requests[index].approvalCount)
+      // 同意數 >= 贊助人數的1/2 就轉錢給提案者
+      if (requests[index].approvalCount >= approversCount / 2)
       {
           finalizeRequest(index);
       }
