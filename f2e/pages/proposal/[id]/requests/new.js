@@ -43,6 +43,8 @@ import {
 // Utils
 import debug from '../../../../utils/debug'
 import { getEthPrice, getETHPriceInUSD } from "../../../../utils/convert";
+import { ProposalABI } from "../../../../contract/Proposal"
+import { utils } from "ethers";
 
 export default function NewWithdrawal() {
   const router = useRouter()
@@ -84,16 +86,40 @@ export default function NewWithdrawal() {
   }, [activeChain, switchNetwork])
 
 
-  // TODO: 串接合約：createRequest 建立提款請求
   async function onSubmit(data) {
     try {
+      createRequest({
+        args: [
+          data.description,
+          utils.parseEther(data.value),
+          data.recipient
+        ],
+        overrides: { from: account.address },
+      })
       debug.$error(data)
-      // 返回提款歷程頁
-      router.push(`/proposal/${id}/requests`)
     } catch (error) {
       console.error(error)
     }
   }
+
+  const {
+    data: createRequestOutput,
+    isError: isCreateRequestError,
+    isLoading: isCreateRequestLoading,
+    write: createRequest
+  } = useContractWrite(
+    {
+      addressOrName: id,
+      contractInterface: ProposalABI,
+    },
+    'createRequest',
+    {
+      onSuccess(createRequestOutput){
+        // 返回提款歷程頁
+      router.push(`/proposal/${id}/requests`);
+      },
+    }
+  )
 
   return (
     <div>
