@@ -3,6 +3,49 @@
   "contractName": "Proposal",
   "sourceName": "contracts/Proposal.sol",
   "abi": [{
+      "inputs": [],
+      "name": "approveRequest",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [{
+          "internalType": "string",
+          "name": "_description",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "_recipient",
+          "type": "address"
+        }
+      ],
+      "name": "createRequest",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "donate",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "finalizeRequest",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
       "inputs": [{
           "internalType": "address",
           "name": "_proposer",
@@ -33,35 +76,6 @@
       "type": "constructor"
     },
     {
-      "inputs": [],
-      "name": "ProposalDescription",
-      "outputs": [{
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "ProposalTitle",
-      "outputs": [{
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "approveRequest",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
       "inputs": [{
         "internalType": "address",
         "name": "",
@@ -85,27 +99,6 @@
         "type": "uint256"
       }],
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "createRequest",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "donate",
-      "outputs": [],
-      "stateMutability": "payable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "finalizeRequest",
-      "outputs": [],
-      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -162,7 +155,40 @@
     },
     {
       "inputs": [],
+      "name": "getRequestsCount",
+      "outputs": [{
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
       "name": "imageUrl",
+      "outputs": [{
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ProposalDescription",
+      "outputs": [{
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ProposalTitle",
       "outputs": [{
         "internalType": "string",
         "name": "",
@@ -190,6 +216,11 @@
       }],
       "name": "requests",
       "outputs": [{
+          "internalType": "string",
+          "name": "description",
+          "type": "string"
+        },
+        {
           "internalType": "uint256",
           "name": "amount",
           "type": "uint256"
