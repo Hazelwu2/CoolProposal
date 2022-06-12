@@ -2,7 +2,7 @@
   "name": "f2e",
   "version": "0.1.0",
   "private": true,
-  "package-name": "git+https://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:x-oauth-basic@github.com/Hazelwu2/CoolProposal.git",
+  "package-name": "git+https://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:x-oauth-basic@github.com/Hazelwu2/CoolProposal.git",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
