@@ -64,13 +64,55 @@ $ npx hardhat run srcripts/deploy.js --network rinkeby # 部署到Rinkby測試�
 5. 在 Dapp `f2e/src` 進行串接調試合約
 ```
 
-## ☕ Reference
-本專案使用到以下工具
-- [Hardhat](https://hardhat.org/getting-started/)
-- [React Hook Wagmi](https://wagmi.sh/)
-- [React v18](https://zh-hant.reactjs.org/)
-- [Nextjs](https://nextjs.org/)
-- [Web3.js](https://web3js.readthedocs.io/)
+## ☕ 使用技術
+**Client:** React 18, Next, chakra-ui, ethers, wagmi, web3, sweetalert2
+
+**Server:** Solidity, Hardhat
+
+## 👨‍💻 Environment Variables
+需要將以下環境變量添加到 `f2e/.env` 中，可複製 `f2e/.env.example`
+
+`REACT_APP_INFURA_ID`：請至 `Infura` 註冊取得
+
+
+
+## ✨ Contributors 
+<table>
+  <tr>
+    <td align="center">
+    <a href="https://github.com/jimb0xcf">
+      <img src="https://avatars.githubusercontent.com/u/24752360?v=4" width="100px;" alt=""/>
+      <br /><sub><b>Hazel</b></sub>
+      <br />
+      <font size="1">Front-End Developer</font>
+    </a>
+    </td>
+    <td align="center">
+    <a href="https://github.com/jimb0xcf">
+      <img src="https://avatars.githubusercontent.com/u/96815288?v=4" width="100px;" alt=""/>
+      <br /><sub><b>Jimbo</b></sub>
+      <br />
+      <font size="1">Front-End Developer</font>
+    </a>
+    </td>
+    <td align="center">
+    <a href="https://github.com/pig514dni">
+      <img src="https://avatars.githubusercontent.com/u/13556505?v=4" width="100px;" alt=""/>
+      <br /><sub><b>Allen</b></sub>
+      <br />
+      <font size="1">Solidity Developer</font>
+    </a>
+    </td>
+    <td align="center">
+    <a href="https://github.com/pig514dni">
+      <img src="https://avatars.githubusercontent.com/u/13556505?v=4" width="100px;" alt=""/>
+      <br /><sub><b>Jim</b></sub>
+      <br />
+      <font size="1">Whitepaper Writer</font>
+    </a>
+    </td>
+  </tr>
+</table>
 
 ## ☝ 編輯歷程
 
@@ -78,8 +120,6 @@ $ npx hardhat run srcripts/deploy.js --network rinkeby # 部署到Rinkby測試�
 |:---|:---|:---|:---|
 |v1|2022/06/11|Hazel|Readme初版|
 |v2|2022/06/11|Hazel|更改說明|
-
-
-https://www.aljazeera.com/wp-content/uploads/2021/04/GettyImages-1232454404.jpg?resize=770%2C513
+|v3|2022/06/13|Hazel|新增Contributors, Env|
 
 ###### tags: `期末報告` `3期第6組`
