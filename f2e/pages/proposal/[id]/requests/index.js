@@ -256,75 +256,154 @@ export default function Requests({
           </Flex>
         </Container>
 
-        <Container px={{ base: "4", md: "12" }} maxW={"7xl"} align={"left"}>
-          <Flex flexDirection={{ base: "column", lg: "row" }} py={4} justify={'space-between'}>
-            {/* 提款明細 */}
-            <Box py="2" pr="2">
-              <Heading
-                textAlign={useBreakpointValue({ base: "left" })}
-                fontFamily={"heading"}
-                color={useColorModeValue("gray.800", "white")}
-                as="h3"
-                maxW={"3xl"}
-              >
-                {name} 提款明細
-              </Heading>
-            </Box>
-            {/* 提出提款請求按鈕 */}
-            <Box py="2">
-              <NextLink href={`/proposal/${id}/requests/new`}>
-                <Button
-                  fontFamily={"heading"}
-                  w={"full"}
-                  bgGradient="linear(to-r, teal.400,blue.400)"
-                  color={"white"}
-                  _hover={{
-                    bgGradient: "linear(to-r, teal.400,blue.400)",
-                    boxShadow: "xl",
-                  }}
-                // TODO: 非提案者錢包地址，disabled按鈕
-                >
-                  提出提款請求
-                </Button>
-              </NextLink>
-            </Box>
-          </Flex>
+        {requestIsLoading ? (
+          <Container
+            px={{ base: "4", md: "12" }}
+            maxW={"7xl"}
+            align={"left"}
+            display={'block'}
+          >
+            <SimpleGrid rows={{ base: 3 }} spacing={2}>
+              <Skeleton height="3rem" />
+              <Skeleton height="5rem" />
+              <Skeleton height="5rem" />
+              <Skeleton height="5rem" />
+              <Skeleton height="5rem" />
+            </SimpleGrid>
+          </Container>
 
-          {/* 提款表格 */}
-          <Box>
-            <Table>
-              <Thead>
-                <Tr>
-                  <Th>編號</Th>
-                  <Th w="30%">提款原因</Th>
-                  <Th isNumeric>提款金額</Th>
-                  <Th maxW="12%">
-                    指定收款錢包地址
-                  </Th>
-                  <Th>同意人數 / 贊助人數</Th>
-                  <Th>Approve</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {requestsList.map((request, index) => {
-                  return (
-                    <RequestRow
-                      key={index}
-                      id={index}
-                      request={request}
-                      approversCount={parseInt(summaryOutput[3])}
-                      disabled={FundNotAvailable}
-                      ethPrice={ethPrice}
-                    />
-                  );
-                })}
-              </Tbody>
-              <TableCaption textAlign="left" ml="-2">
-                至今為止，共申請了 {requestCount} 次提款
-              </TableCaption>
-            </Table>
-          </Box>
-        </Container>
+        ) : null}
+
+        {requestsList.length > 0 ? (
+          <Container px={{ base: "4", md: "12" }} maxW={"7xl"} align={"left"}>
+            <Flex flexDirection={{ base: "column", lg: "row" }} py={4} justify={'space-between'}>
+              {/* 提款明細 */}
+              <Box py="2" pr="2">
+                <Heading
+                  textAlign={useBreakpointValue({ base: "left" })}
+                  fontFamily={"heading"}
+                  color={useColorModeValue("gray.800", "white")}
+                  as="h3"
+                  maxW={"3xl"}
+                >
+                  {name} 提款明細
+                </Heading>
+              </Box>
+              {/* 提出提款請求按鈕 */}
+              <Box py="2">
+                <NextLink href={`/proposal/${id}/requests/new`}>
+                  <Button
+                    fontFamily={"heading"}
+                    w={"full"}
+                    bgGradient="linear(to-r, teal.400,blue.400)"
+                    color={"white"}
+                    _hover={{
+                      bgGradient: "linear(to-r, teal.400,blue.400)",
+                      boxShadow: "xl",
+                    }}
+                  // TODO: 非提案者錢包地址，disabled按鈕
+                  >
+                    提出提款請求
+                  </Button>
+                </NextLink>
+              </Box>
+            </Flex>
+
+            {/* 提款表格 */}
+            <Box>
+              <Table>
+                <Thead>
+                  <Tr>
+                    <Th>編號</Th>
+                    <Th w="30%">提款原因</Th>
+                    <Th isNumeric>提款金額</Th>
+                    <Th maxW="12%">
+                      指定收款錢包地址
+                    </Th>
+                    <Th>同意人數 / 贊助人數</Th>
+                    <Th>Approve</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {requestsList.map((request, index) => {
+                    return (
+                      <RequestRow
+                        key={index}
+                        id={index}
+                        request={request}
+                        approversCount={parseInt(summaryOutput[3])}
+                        disabled={FundNotAvailable}
+                        ethPrice={ethPrice}
+                      />
+                    );
+                  })}
+                </Tbody>
+                <TableCaption textAlign="left" ml="-2">
+                  至今為止，共申請了 {requestCount} 次提款
+                </TableCaption>
+              </Table>
+            </Box>
+          </Container>
+        ) : (
+          <div>
+            <Container
+              maxW={"lg"}
+              align={"center"}
+              display={
+                requestsList.length === 0 && !requestIsLoading ? "block" : "none"
+              }
+            >
+              <SimpleGrid row spacing={2} align="center">
+                <Stack align="center">
+                  無任何提款請求
+                </Stack>
+                <Heading
+                  textAlign={"center"}
+                  color={useColorModeValue("gray.800", "white")}
+                  as="h4"
+                  size="md"
+                >
+                  {name} 尚未有任何提款請求
+                </Heading>
+                <Text
+                  textAlign={useBreakpointValue({ base: "center" })}
+                  color={useColorModeValue("gray.600", "gray.300")}
+                  fontSize="sm"
+                >
+                  😄 建立提款請求，提案所籌取的資金將會發放
+                </Text>
+
+                <Button
+                  fontSize={"md"}
+                  fontWeight={600}
+                  color={"white"}
+                  bg={"teal.400"}
+                  _hover={{
+                    bg: "teal.300",
+                  }}
+                >
+                  <NextLink href={`/proposal/${id}/requests/new`}>
+                    建立提款請求
+                  </NextLink>
+                </Button>
+
+                <Button
+                  fontSize={"md"}
+                  fontWeight={600}
+                  color={"white"}
+                  bg={"gray.400"}
+                  _hover={{
+                    bg: "gray.300",
+                  }}
+                >
+                  <NextLink href={`/proposal/${id}/`}>
+                    回上一頁
+                  </NextLink>
+                </Button>
+              </SimpleGrid>
+            </Container>
+          </div>
+        )}
       </main>
     </div>
   )
