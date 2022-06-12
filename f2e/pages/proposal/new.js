@@ -40,6 +40,7 @@ import {
 } from 'wagmi'
 import { utils } from "ethers"
 import debug from '../../utils/debug'
+import Preloader from '../../components/Preloader'
 
 // Wallet
 import { instance as ProposalFactory } from "../../contract/ProposalFactory";
@@ -123,6 +124,14 @@ export default function NewProposal() {
     },
   })
 
+  if (txLoading || isCreateProposalLoading) {
+    return (<>
+      <div>
+        <Preloader />
+      </div>
+    </>)
+  }
+
   return (
     <div>
       <Head>
@@ -130,8 +139,7 @@ export default function NewProposal() {
         <meta name="description" content="建立個酷提案" />
         <link rel="icon" href="/logo.svg" />
       </Head>
-      {(txLoading || isCreateProposalLoading) &&
-        <div>Loading ...</div>}
+
       <main>
         <Stack spacing={8} mx={"auto"} maxW={"2xl"} py={12} px={6}>
           <Text fontSize={"lg"} color={"teal.400"}>
