@@ -4,6 +4,8 @@ import NextLink from "next/link";
 import NextImage from "next/image";
 import { useRouter } from "next/router";
 import { getEthPrice, getWEIPriceInUSD } from "../../../../utils/convert"
+import { useAsync } from "react-use";
+import { utils } from 'ethers'
 // UI
 import {
   Heading,
@@ -45,17 +47,126 @@ import { useContractRead } from 'wagmi'
 // Contract
 import { instance as Proposal, ProposalABI } from "../../../../contract/Proposal"
 
+const RequestRow = ({
+  id,
+  request,
+  approversCount,
+  disabled,
+  ethPrice,
+}) => {
+  const router = useRouter();
+  const readyToFinalize = request.approvalCount > approversCount / 2;
+  const [errorMessageApprove, setErrorMessageApprove] = useState();
+  const [loadingApprove, setLoadingApprove] = useState(false);
+
+  // TODO: 串合約：贊助者同意對方提款
+  const onApprove = async () => {
+    setLoadingApprove(true);
+    try {
+
+      // 重整頁面
+      router.reload();
+    } catch (err) {
+      setErrorMessageApprove(err.message);
+    } finally {
+      setLoadingApprove(false);
+    }
+  };
+
+  return (
+    <Tr
+      bg={
+        // readyToFinalize && !request.complete
+        !request.complete
+          ? useColorModeValue("blue.100", "blue.700")
+          : useColorModeValue("gray.100", "gray.700")
+      }
+      opacity={request.complete ? "0.4" : "1"}
+    >
+      <Td>{id} </Td>
+      <Td>{request.description}</Td>
+      <Td isNumeric>
+        {utils.formatEther(request.amount)} ETH
+        <br />
+        (美金約 $ {getWEIPriceInUSD(ethPrice, request.amount)})
+      </Td>
+      <Td>
+        <Link
+          color="teal.500"
+          href={`https://rinkeby.etherscan.io/address/${request.recipient}`}
+          isExternal
+        >
+          {" "}
+          {request.recipient.substr(0, 10) + "..."}
+        </Link>
+      </Td>
+
+      {/* 同意人數 / 捐贈人數 */}
+      <Td>
+        {request.approvalCount}/{approversCount}
+      </Td>
+
+      {/* 同意按鈕 */}
+      <Td>
+        <HStack spacing={2}>
+          <Tooltip
+            label={errorMessageApprove}
+            bg={useColorModeValue("white", "gray.700")}
+            placement={"top"}
+            color={useColorModeValue("gray.800", "white")}
+            fontSize={"1em"}
+          >
+            <WarningIcon
+              color={useColorModeValue("red.600", "red.300")}
+              display={errorMessageApprove ? "inline-block" : "none"}
+            />
+          </Tooltip>
+          {request.complete ? (
+            <Tooltip
+              label="這項提款請求已完成，已將款項提領給提案者"
+              bg={useColorModeValue("white", "gray.700")}
+              placement={"top"}
+              color={useColorModeValue("gray.800", "white")}
+              fontSize={"1em"}
+            >
+              <CheckCircleIcon
+                color={useColorModeValue("green.600", "green.300")}
+              />
+            </Tooltip>
+          ) : (
+            <Button
+              bg="blue.300"
+              color={"white"}
+              variant="outline"
+              _hover={{
+                bg: "blue.600",
+                color: "white",
+              }}
+              onClick={onApprove}
+              isDisabled={disabled || request.complete || (request.approvalCount / approversCount) > 0.5}
+              isLoading={loadingApprove}
+            >
+              同意提款
+            </Button>
+          )}
+        </HStack>
+      </Td>
+    </Tr>
+  );
+};
 
 
 export default function Requests({
-  // name
 }) {
   const router = useRouter()
+  const [ethPrice, setEthPrice] = useState(0);
   const [requestsList, setRequestsList] = useState([]);
   const [name, setName] = useState([]);
   const [desc, setDesc] = useState([]);
-  const requestCount = 0
+  const [FundNotAvailable, setFundNotAvailable] = useState(false);
+  const [requestCount, setRequestCount] = useState(false);
   const { id } = router.query
+  const chainId = 4 // Rinekby
 
   const {
     data: summaryOutput,
@@ -67,7 +178,7 @@ export default function Requests({
       contractInterface: ProposalABI,
     },
     'getProposalSummary',
-    { chainId: 4 }
+    { chainId }
   )
 
 
@@ -81,15 +192,15 @@ export default function Requests({
       contractInterface: ProposalABI,
     },
     'getRequestsCount',
-    { chainId: 4 }
+    { chainId }
   )
 
   // 取得提款明細
   const getRequests = async () => {
     try {
-      // parseInt(requestOutput._hex)
-      const requestCount = parseInt(requestOutput._hex)
+      const requestCount = parseInt(requestOutput?._hex)
       debug.$error(requestCount)
+      setRequestCount(requestCount)
       const requests = await Promise.all(
         Array(parseInt(requestCount))
           .fill()
@@ -98,14 +209,24 @@ export default function Requests({
 
       setRequestsList(requests)
       debug.$error(requests)
+      debug.$error(summaryOutput)
     } catch (error) {
       console.error('[🚸🚸]', error);
     }
+
   }
+
+  useAsync(async () => {
+    try {
+      const result = await getEthPrice();
+      setEthPrice(result);
+    } catch (error) {
+      console.error('[🚸🚸]', error);
+    }
+  }, []);
 
   useEffect(() => {
     if (!summaryIsLoading && summaryOutput && summaryOutput.length > 0) {
-      debug.$error('cool')
       setName(summaryOutput[5])
     }
     getRequests()
@@ -161,6 +282,7 @@ export default function Requests({
                     bgGradient: "linear(to-r, teal.400,blue.400)",
                     boxShadow: "xl",
                   }}
+                // TODO: 非提案者錢包地址，disabled按鈕
                 >
                   提出提款請求
                 </Button>
@@ -179,9 +301,8 @@ export default function Requests({
                   <Th maxW="12%">
                     指定收款錢包地址
                   </Th>
-                  <Th>同意人數</Th>
+                  <Th>同意人數 / 贊助人數</Th>
                   <Th>Approve</Th>
-                  <Th>執行提款</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -191,10 +312,9 @@ export default function Requests({
                       key={index}
                       id={index}
                       request={request}
-                      approversCount={approversCount}
-                      campaignId={campaignId}
+                      approversCount={parseInt(summaryOutput[3])}
                       disabled={FundNotAvailable}
-                      ETHPrice={ETHPrice}
+                      ethPrice={ethPrice}
                     />
                   );
                 })}
