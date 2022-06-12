@@ -43,29 +43,8 @@ import { getEthPrice, getETHPriceInUSD, getWEIPriceInUSD } from '../../utils/con
 import debug from '../../utils/debug'
 // Contract
 import { instance as Proposal, ProposalABI } from "../../contract/Proposal"
+import { useToastHook } from '../../components/Toast'
 
-
-// export async function getServerSideProps({ params }) {
-//   const id = params.id
-//   const proposal = Proposal(id)
-//   const summary = await proposal.methods.getProposalSummary().call()
-//   const ethPrice = await getEthPrice()
-
-//   return {
-//     props: {
-//       id,
-//       balance: summary[0],
-//       targetAmount: summary[1],
-//       requestsCount: summary[2],
-//       approversCount: summary[3],
-//       proposer: summary[4],
-//       name: summary[5],
-//       desc: summary[6],
-//       imageUrl: summary[7],
-//       ethPrice
-//     }
-//   }
-// }
 
 function InfoCard({
   title, tip, content
@@ -119,6 +98,8 @@ export default function SingleProposal() {
   const [error, setError] = useState()
   const { data: account } = useAccount()
   const [isSSR, setIsSSR] = useState(true);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [state, newToast] = useToastHook();
 
   const {
     data: summaryOutput,
@@ -142,8 +123,8 @@ export default function SingleProposal() {
   */
   useEffect(() => {
     setIsSSR(false)
-    // }
   }, [id])
+
 
   useAsync(async () => {
     try {
@@ -164,7 +145,7 @@ export default function SingleProposal() {
       setAmountInUSD(null);
       setIsSubmitted(true);
       setError(false);
-
+      newToast({ message: '感謝贊助 🙏', status: "success" });
 
       // 重置表單
       reset('', { keepValues: false })
