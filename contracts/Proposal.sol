@@ -7,23 +7,25 @@ contract ProposalFactory {
     // Track Created Proposal Address in Array
     Proposal[] public proposalsAddress;
     // 紀錄事件發生
-    event CreateProposal(address, uint256, string, string);
+    event CreateProposal(address, uint256, string, string, string, uint256);
 
     function createProposal(
         uint256 _targetAmount,
         string memory _title,
         string memory _desc,
-        string memory _imageUrl
+        string memory _imageUrl,
+        uint256 _minimunContribution
     ) external {
         proposal = new Proposal(
             payable(msg.sender),
             _targetAmount,
             _title,
             _desc,
-            _imageUrl
+            _imageUrl,
+            _minimunContribution
         );
         proposalsAddress.push(proposal);
-        emit CreateProposal(msg.sender, _targetAmount, _title, _desc);
+        emit CreateProposal(msg.sender, _targetAmount, _title, _desc,_imageUrl, _minimunContribution);
     }
 
     function getProposalList() public view returns (Proposal[] memory) {
@@ -52,6 +54,8 @@ contract Proposal {
     bool public targetToAchieve;
     // 提款要求
     Request[] public requests;
+    // 贊助最低金額
+    uint256 public minimunContribution;
 
     struct Request {
         string description; // 提款原因
@@ -69,18 +73,21 @@ contract Proposal {
         uint256 _minAmount,
         string memory _title,
         string memory _desc,
-        string memory _imageUrl
+        string memory _imageUrl,
+        uint256 _minimunContribution
     ) {
         proposer = _proposer;
         targetAmount = _minAmount;
         ProposalTitle = _title;
         ProposalDescription = _desc;
         imageUrl = _imageUrl;
+        minimunContribution = _minimunContribution;
     }
 
     // 贊助
     function donate() public payable {
         require(msg.sender != proposer, "proposer can't donate");
+        require(msg.value >= minimunContribution, "donate < minimunContribution");
         require(msg.value > 0, "unenough value");
         sponsor.push(msg.sender);
         approvers[msg.sender] = true;
@@ -157,7 +164,8 @@ contract Proposal {
             string memory,
             string memory,
             string memory,
-            bool
+            bool,
+            uint256
         )
     {
         return (
@@ -169,7 +177,8 @@ contract Proposal {
             ProposalTitle,
             ProposalDescription,
             imageUrl,
-            targetToAchieve
+            targetToAchieve,
+            minimunContribution
         );
     }
 
