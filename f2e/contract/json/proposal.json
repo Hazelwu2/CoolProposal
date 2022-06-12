@@ -2,7 +2,7 @@
   "_format": "hh-sol-artifact-1",
   "contractName": "Proposal",
   "sourceName": "contracts/Proposal.sol",
-  "abi": [
+  "abi":[
     {
       "inputs": [
         {
@@ -12,7 +12,7 @@
         },
         {
           "internalType": "uint256",
-          "name": "_minAmount",
+          "name": "_targetAmount",
           "type": "uint256"
         },
         {
