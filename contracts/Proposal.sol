@@ -54,6 +54,7 @@ contract Proposal {
     Request[] public requests;
 
     struct Request {
+        string description; // 提款原因
         uint256 amount; // 提款金額
         bool complete; // 是否完成
         uint256 approvalCount; // 同意提款人數
@@ -85,8 +86,28 @@ contract Proposal {
         approversCount++;
     }
 
-    // 建立提款
-    function createRequest() public {}
+    // 建立提款請求
+    function createRequest(
+        string memory _description,
+        uint256 _amount,
+        address _recipient
+    ) public {
+        // 合約沒有錢，不可建立提款
+        require(address(this).balance > 0, "The contract has no money");
+        // 申請提款者必須是提案本人
+        require(msg.sender == proposer, "Only Proposer can create request.");
+        // 提領金額必須 > 0
+        require(_amount > 0, "unenough value");
+        // 提領金額 不可以 > 合約的錢
+        require(address(this).balance > _amount, "insufficient balance");
+
+        Request storage newRequest = requests.push();
+        newRequest.description = _description;
+        newRequest.amount = _amount;
+        newRequest.recipient = _recipient;
+        newRequest.complete = false;
+        newRequest.approvalCount = 0;
+    }
 
     // 贊助者同意對方提款
     function approveRequest() public {}
@@ -121,5 +142,10 @@ contract Proposal {
             imageUrl,
             targetToAchieve
         );
+    }
+
+    // 取得提款要求總數
+    function getRequestsCount() public view returns (uint256) {
+        return requests.length;
     }
 }
