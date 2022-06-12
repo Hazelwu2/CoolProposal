@@ -44,6 +44,8 @@ import debug from '../../utils/debug'
 // Contract
 import { instance as Proposal, ProposalABI } from "../../contract/Proposal"
 import { useToastHook } from '../../components/Toast'
+// Component
+import Preloader from '../../components/Preloader'
 
 
 function InfoCard({
@@ -100,6 +102,7 @@ export default function SingleProposal() {
   const [isSSR, setIsSSR] = useState(true);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [state, newToast] = useToastHook();
+  const target = targetAmount + ' ETH'
 
   const {
     data: summaryOutput,
@@ -153,7 +156,6 @@ export default function SingleProposal() {
       setAmountInUSD(null);
       setIsSubmitted(true);
       setError(false);
-      newToast({ message: '感謝贊助 🙏', status: "success" });
 
       // 重置表單
       reset({ amount: null }, { keepValues: false })
@@ -181,7 +183,20 @@ export default function SingleProposal() {
     if (summaryOutput) { console.log("summaryOutput[3] = ", utils.formatUnits(summaryOutput[3], "wei")) }
   }, [donateOutput]);
 
-  const target = targetAmount + ' ETH'
+
+
+  if (isDonateLoading) {
+    newToast({
+      message: '感謝贊助 🙏',
+      status: "success"
+    });
+
+    return (<>
+      <div>
+        <Preloader />
+      </div>
+    </>)
+  }
 
 
   return (

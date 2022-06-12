@@ -128,7 +128,7 @@ export default function NewProposal() {
   if (txLoading || isCreateProposalLoading) {
     return (<>
       <div>
-        <Preloader />
+        <Preloader txHash={createProposalOutput?.hash} />
       </div>
     </>)
   }

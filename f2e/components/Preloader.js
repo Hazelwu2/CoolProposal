@@ -8,7 +8,7 @@ import {
 
 import NextLink from "next/link";
 
-export default function Preloader({ txHash }) {
+export default function Preloader(txHash) {
 
   return (
     <Box
