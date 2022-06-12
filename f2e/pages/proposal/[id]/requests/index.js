@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { getEthPrice, getWEIPriceInUSD } from "../../../../utils/convert"
 import { useAsync } from "react-use";
 import { utils } from 'ethers'
+import Preloader from '../../../../components/Preloader'
 // UI
 import {
   Heading,
@@ -43,35 +44,69 @@ import {
 // Utils
 import debug from '../../../../utils/debug'
 // Wallet
-import { useContractRead, useAccount} from 'wagmi'
+import { useContractRead, useAccount, useContractWrite, useWaitForTransaction} from 'wagmi'
 // Contract
 import { instance as Proposal, ProposalABI } from "../../../../contract/Proposal"
 
 const RequestRow = ({
+  index,
   id,
   request,
   approversCount,
   disabled,
   ethPrice,
+  isApprovers
 }) => {
   const router = useRouter();
   const readyToFinalize = request.approvalCount > approversCount / 2;
   const [errorMessageApprove, setErrorMessageApprove] = useState();
   const [loadingApprove, setLoadingApprove] = useState(false);
 
-  // TODO: 串合約：贊助者同意對方提款 approveRequest
   const onApprove = async () => {
     setLoadingApprove(true);
     try {
-
-      // 重整頁面
-      router.reload();
+      approveRequest({
+        args:[index],
+      })
+      
     } catch (err) {
       setErrorMessageApprove(err.message);
     } finally {
       setLoadingApprove(false);
     }
   };
+
+  const {
+    data: approveRequestOutput,
+    isError: isApproveRequestError,
+    isLoading: isApproveRequestLoading,
+    write: approveRequest
+  } = useContractWrite(
+    {
+      addressOrName: id,
+      contractInterface: ProposalABI,
+    },
+    'approveRequest',
+  )
+
+  const { isError: txError, isLoading: txLoading } = useWaitForTransaction({
+    hash: approveRequestOutput?.hash,
+    onSuccess(data) {
+      debug.$error(data)
+      // 重整頁面
+      router.reload();
+    },
+  })
+
+  if (txLoading || isApproveRequestLoading) {
+    return (<>
+      <div>
+        <Preloader />
+      </div>
+    </>)
+  }
+
+  
 
   return (
     <Tr
@@ -83,23 +118,14 @@ const RequestRow = ({
       }
       opacity={request.complete ? "0.4" : "1"}
     >
-      <Td>{id} </Td>
+      <Td>{index} </Td>
       <Td>{request.description}</Td>
       <Td isNumeric>
         {utils.formatEther(request.amount)} ETH
         <br />
         (美金約 $ {getWEIPriceInUSD(ethPrice, request.amount)})
       </Td>
-      <Td>
-        <Link
-          color="teal.500"
-          href={`https://rinkeby.etherscan.io/address/${request.recipient}`}
-          isExternal
-        >
-          {" "}
-          {request.recipient.substr(0, 10) + "..."}
-        </Link>
-      </Td>
+      
 
       {/* 同意人數 / 捐贈人數 */}
       <Td>
@@ -143,9 +169,8 @@ const RequestRow = ({
                 color: "white",
               }}
               onClick={onApprove}
-              //  TODO: 驗證他是不是贊助者 */
               isDisabled={disabled || request.complete
-                || (request.approvalCount / approversCount) > 0.5}
+                || (request.approvalCount / approversCount) > 0.5  || (!isApprovers)}
               isLoading={loadingApprove}
             >
               同意提款
@@ -197,6 +222,18 @@ export default function Requests({
     },
     'getRequestsCount',
     { chainId }
+  )
+
+  const { data: isApprovers} = useContractRead(
+    {
+      addressOrName: id,
+      contractInterface: ProposalABI,
+    },
+    'approvers',
+    {
+      args: [account?.address],
+      watch: true,
+    },
   )
 
   // 取得提款明細
@@ -333,9 +370,6 @@ export default function Requests({
                     <Th>編號</Th>
                     <Th w="30%">提款原因</Th>
                     <Th isNumeric>提款金額</Th>
-                    <Th maxW="12%">
-                      指定收款錢包地址
-                    </Th>
                     <Th>同意人數 / 贊助人數</Th>
                     <Th>Approve</Th>
                   </Tr>
@@ -345,11 +379,13 @@ export default function Requests({
                     return (
                       <RequestRow
                         key={index}
-                        id={index}
+                        index={index}
+                        id={id}
                         request={request}
                         approversCount={parseInt(summaryOutput[3])}
                         disabled={FundNotAvailable}
                         ethPrice={ethPrice}
+                        isApprovers={isApprovers}
                       />
                     );
                   })}
