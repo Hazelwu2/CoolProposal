@@ -70,14 +70,21 @@ contract Proposal {
     // Create New Contract
     constructor(
         address payable _proposer,
-        uint256 _minAmount,
+        uint256 _targetAmount,
         string memory _title,
         string memory _desc,
         string memory _imageUrl,
         uint256 _minimunContribution
     ) {
+        // 最小募資金額需 > 0
+        require(_targetAmount > 0, "minimunContribution should > 0");
+        // 最小贊助金額需 > 0
+        require(_minimunContribution > 0, "minimunContribution should > 0");
+        // 最小募資金額 需 >= 最小贊助金額
+        require(_targetAmount >= _minimunContribution, "minimunContribution should > 0");
+
         proposer = _proposer;
-        targetAmount = _minAmount;
+        targetAmount = _targetAmount;
         ProposalTitle = _title;
         ProposalDescription = _desc;
         imageUrl = _imageUrl;
