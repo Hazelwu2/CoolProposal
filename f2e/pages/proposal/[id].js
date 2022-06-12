@@ -249,13 +249,13 @@ export default function SingleProposal() {
                             {/* requestsCount */}
                             <InfoCard
                               title="同意人數"
-                              content={utils.formatEther(summaryOutput[2])}
+                              content={parseInt(summaryOutput[2])}
                               tip="Number of Requests，提案人申請從合約提款，需要經過批准者的同意，贊助人數的50%"
                             />
                             {/* approversCount */}
                             <InfoCard
                               title="贊助人數"
-                              content={utils.formatEther(summaryOutput[3])}
+                              content={parseInt(summaryOutput[3])}
                               tip="Number of Approvers"
                             />
                           </SimpleGrid>
