@@ -85,14 +85,15 @@ export default function NewProposal() {
   }, [activeChain, switchNetwork])
 
   // 送出表單
-  async function onSubmit({ name, description, imageUrl, target }) {
+  async function onSubmit({ name, description, imageUrl, target, minAmount }) {
     try {
       createProposal({
         args: [
           utils.parseEther(target),
           name,
           description,
-          imageUrl
+          imageUrl,
+          utils.parseEther(minAmount)
         ],
         overrides: { from: account.address },
       })
@@ -188,6 +189,27 @@ export default function NewProposal() {
                       type="number"
                       step="any"
                       {...register("target", { required: true })}
+                      isDisabled={isSubmitting}
+                      onChange={(e) => {
+                        setTargetInUSD(Math.abs(e.target.value));
+                      }}
+                    />
+                    <InputRightAddon children="ETH" />
+                  </InputGroup>
+                  {targetInUSD ? (
+                    <FormHelperText>
+                      美金約 $ {getETHPriceInUSD(ETHPrice, targetInUSD)}
+                    </FormHelperText>
+                  ) : null}
+                </FormControl>
+
+                <FormControl id="minAmount">
+                  <FormLabel>最小募資金額</FormLabel>
+                  <InputGroup>
+                    <Input
+                      type="number"
+                      step="any"
+                      {...register("minAmount", { required: true })}
                       isDisabled={isSubmitting}
                       onChange={(e) => {
                         setTargetInUSD(Math.abs(e.target.value));
