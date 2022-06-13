@@ -5,6 +5,8 @@ import { ArrowBackIcon } from "@chakra-ui/icons";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
+import { useAsync } from "react-use";
+import { useToastHook } from '../../../../components/Toast'
 // UI
 import {
   Box,
@@ -26,7 +28,7 @@ import {
   FormHelperText,
   Textarea,
 } from "@chakra-ui/react";
-import { useAsync } from "react-use";
+
 import { InfoIcon } from "@chakra-ui/icons";
 // Wallet
 import { InjectedConnector } from 'wagmi/connectors/injected'
@@ -43,8 +45,11 @@ import {
 // Utils
 import debug from '../../../../utils/debug'
 import { getEthPrice, getETHPriceInUSD } from "../../../../utils/convert";
-import { ProposalABI } from "../../../../contract/Proposal"
 import { utils } from "ethers";
+import { handleError } from '../../../../utils/handle-error';
+// Contract
+import { ProposalABI } from "../../../../contract/Proposal"
+// Component
 import Preloader from '../../../../components/Preloader'
 
 export default function NewWithdrawal() {
@@ -56,6 +61,7 @@ export default function NewWithdrawal() {
   const { connect } = useConnect({
     connector: new InjectedConnector(),
   })
+  const [state, newToast] = useToastHook();
 
   const { id } = router.query
   // Form
@@ -76,7 +82,7 @@ export default function NewWithdrawal() {
       debug.$error(result)
       setETHPrice(result);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, [])
 
@@ -113,21 +119,33 @@ export default function NewWithdrawal() {
       contractInterface: ProposalABI,
     },
     'createRequest',
+    {
+      onError(error) {
+        handleError(error)
+      },
+    },
   )
 
   const { isError: txError, isLoading: txLoading } = useWaitForTransaction({
     hash: createRequestOutput?.hash,
     onSuccess(data) {
       debug.$error(data)
+      newToast({
+        message: '申請提款請求成功',
+        status: "success"
+      });
       // 返回提款歷程頁
       router.push(`/proposal/${id}/requests`);
     },
+    onError(error) {
+      handleError(error || txError)
+    },
   })
 
-  if (txLoading || isCreateRequestLoading) {
+  if (createRequestOutput?.hash || txLoading) {
     return (<>
       <div>
-        <Preloader />
+        <Preloader txHash={createRequestOutput?.hash} />
       </div>
     </>)
   }
