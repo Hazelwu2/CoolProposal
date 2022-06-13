@@ -23,6 +23,12 @@ import {
   AlertDescription,
   FormHelperText,
   Textarea,
+  FormErrorMessage,
+  // NumberInput,
+  // NumberInputField,
+  // NumberInputStepper,
+  // NumberIncrementStepper,
+  // NumberDecrementStepper,
 } from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { getEthPrice, getETHPriceInUSD } from "../../utils/convert";
@@ -42,12 +48,13 @@ import { utils } from "ethers"
 import debug from '../../utils/debug'
 import Preloader from '../../components/Preloader'
 import { useToastHook } from '../../components/Toast'
-
+import { yupResolver } from '@hookform/resolvers/yup';
 // Wallet
 import { instance as ProposalFactory } from "../../contract/ProposalFactory";
 import web3 from "../../contract/web3";
 import { ProposalFactoryAddress, ProposalFactoryABI } from "../../contract/ProposalFactory"
 import { handleError } from '../../utils/handle-error';
+import { NewProposalSchema } from '../../utils/form-schema'
 
 export default function NewProposal() {
   const { activeChain, switchNetwork } = useNetwork({
@@ -56,9 +63,11 @@ export default function NewProposal() {
   const {
     handleSubmit,
     register,
+    watch,
     formState: { isSubmitting, errors },
   } = useForm({
     mode: "onChange",
+    resolver: yupResolver(NewProposalSchema)
   });
 
   const router = useRouter();
@@ -71,6 +80,11 @@ export default function NewProposal() {
   const [targetInUSD, setTargetInUSD] = useState();
   const [ETHPrice, setETHPrice] = useState(0);
   const [state, newToast] = useToastHook();
+
+  useEffect(() => {
+    const subscription = watch((value) => console.log(value));
+    return () => subscription.unsubscribe();
+  }, [watch])
 
   useAsync(async () => {
     try {
@@ -172,35 +186,62 @@ export default function NewProposal() {
             boxShadow={"lg"}
             p={8}
           >
+
             <form onSubmit={handleSubmit(onSubmit)}>
               <Stack spacing={4}>
 
-                <FormControl id="name">
+                <FormControl id="name" isRequired isInvalid={errors.name}>
                   <FormLabel>這個酷提案叫做什麼</FormLabel>
                   <Input
-                    {...register("name", { required: true })}
+                    {...register("name")}
                     isDisabled={isSubmitting}
                   />
+                  <FormErrorMessage>
+                    {errors.name?.message}
+                  </FormErrorMessage>
                 </FormControl>
-                <FormControl id="description">
+
+                <FormControl id="description" isRequired isInvalid={errors.description}>
                   <FormLabel>寫下酷提案的描述</FormLabel>
                   <Textarea
-                    {...register("description", { required: true })}
+                    {...register("description")}
                     isDisabled={isSubmitting}
                   />
+                  <FormErrorMessage>
+                    {errors.description?.message}
+                  </FormErrorMessage>
                 </FormControl>
-                <FormControl id="imageUrl">
-                  <FormLabel>圖案封面照</FormLabel>
+                <FormControl id="imageUrl" isRequired isInvalid={errors.imageUrl}>
+                  <FormLabel>提案封面照</FormLabel>
                   <Input
-                    {...register("imageUrl", { required: true })}
+                    {...register("imageUrl")}
                     isDisabled={isSubmitting}
                     type="url"
                   />
+                  <FormErrorMessage>
+                    {errors.imageUrl?.message}
+                  </FormErrorMessage>
                 </FormControl>
 
-                <FormControl id="target">
+                <FormControl id="target" isRequired isInvalid={errors.target}>
                   <FormLabel>目標金額</FormLabel>
                   <InputGroup>
+                    {/* <NumberInput
+                      w={'100%'}
+                      keepWithinRange={false}
+                      clampValueOnBlur={false}
+                      min={0.0001}
+                      isDisabled={isSubmitting}
+                      onChange={(valueAsNumber) => {
+                        console.log(valueAsNumber)
+                        setTargetInUSD(Math.abs(valueAsNumber));
+                      }}
+                      defaultValue={0.01} precision={3} step={0.01}>
+                      <NumberInputField
+                        {...register("target")}
+                        type="number"
+                      />
+                    </NumberInput> */}
                     <Input
                       type="number"
                       step="any"
@@ -211,17 +252,38 @@ export default function NewProposal() {
                       }}
                     />
                     <InputRightAddon children="ETH" />
+
                   </InputGroup>
                   {targetInUSD ? (
                     <FormHelperText>
                       美金約 $ {getETHPriceInUSD(ETHPrice, targetInUSD)}
                     </FormHelperText>
                   ) : null}
+
+                  <FormErrorMessage>
+                    {errors.target?.message}
+                  </FormErrorMessage>
                 </FormControl>
 
-                <FormControl id="minAmount">
+                <FormControl id="minAmount" isRequired isInvalid={errors.minAmount}>
                   <FormLabel>最小募資金額</FormLabel>
                   <InputGroup>
+                    {/* <NumberInput
+                      w={'100%'}
+                      keepWithinRange={false}
+                      clampValueOnBlur={false}
+                      min={0.0001}
+                      isDisabled={isSubmitting}
+                      onChange={(valueAsNumber) => {
+                        console.log(valueAsNumber)
+                        setMinContriInUSD(Math.abs(valueAsNumber));
+                      }}
+                      defaultValue={0.01} precision={3} step={0.01}>
+                      <NumberInputField
+                        {...register("minAmount")}
+                        type="number"
+                      />
+                    </NumberInput> */}
                     <Input
                       type="number"
                       step="any"
@@ -239,6 +301,11 @@ export default function NewProposal() {
                       美金約 $ {getETHPriceInUSD(ETHPrice, minContriInUSD)}
                     </FormHelperText>
                   ) : null}
+
+                  <FormErrorMessage>
+                    {errors.minAmount?.message}
+                  </FormErrorMessage>
+
                 </FormControl>
 
                 {error ? (
