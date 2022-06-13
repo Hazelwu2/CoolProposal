@@ -3,11 +3,9 @@ import {
   Heading,
   Button,
   useColorModeValue,
-  useBreakpointValue,
   Container,
   Flex,
   Box,
-  Stack,
   HStack,
   Avatar,
   Text,
@@ -39,7 +37,7 @@ function TeamCard({ name, image, desc }) {
       <Flex flexDirection={'row'}>
         <Avatar
           size='lg'
-          name='Christian Nwamba'
+          name={name}
           shadow="md"
           src={image}
           mr={4}
