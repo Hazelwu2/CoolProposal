@@ -114,8 +114,10 @@ export default function SingleProposal() {
       contractInterface: ProposalABI,
     },
     'getProposalSummary',
-    { chainId: 4 },
-    { watch: true },
+    {
+      chainId: 4,
+      watch: true
+    },
   )
 
   /* 
@@ -192,7 +194,6 @@ export default function SingleProposal() {
         status: "success"
       });
       debug.$error('onSuccess', data)
-      router.push("/");
     },
     onError(error) {
       handleError(error || txError)
