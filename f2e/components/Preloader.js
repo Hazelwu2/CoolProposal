@@ -29,7 +29,7 @@ export default function Preloader({ txHash }) {
         justifyContent={'center'}
         bg={'white'}
       >
-        <Spinner />
+        <Spinner size="lg" color={useColorModeValue("gray.700", "teal.700")} />
         <Text mt={2} fontSize={'lg'} color={'teal.400'}>
           等待交易中...
 
