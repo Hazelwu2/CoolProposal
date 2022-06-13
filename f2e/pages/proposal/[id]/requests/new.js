@@ -45,6 +45,7 @@ import debug from '../../../../utils/debug'
 import { getEthPrice, getETHPriceInUSD } from "../../../../utils/convert";
 import { ProposalABI } from "../../../../contract/Proposal"
 import { utils } from "ethers";
+import Preloader from '../../../../components/Preloader'
 
 export default function NewWithdrawal() {
   const router = useRouter()
@@ -112,13 +113,24 @@ export default function NewWithdrawal() {
       contractInterface: ProposalABI,
     },
     'createRequest',
-    {
-      onSuccess(createRequestOutput) {
-        // 返回提款歷程頁
-        router.push(`/proposal/${id}/requests`);
-      },
-    }
   )
+
+  const { isError: txError, isLoading: txLoading } = useWaitForTransaction({
+    hash: createRequestOutput?.hash,
+    onSuccess(data) {
+      debug.$error(data)
+      // 返回提款歷程頁
+      router.push(`/proposal/${id}/requests`);
+    },
+  })
+
+  if (txLoading || isCreateRequestLoading) {
+    return (<>
+      <div>
+        <Preloader />
+      </div>
+    </>)
+  }
 
   return (
     <div>
