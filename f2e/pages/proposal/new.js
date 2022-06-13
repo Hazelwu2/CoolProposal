@@ -102,7 +102,7 @@ export default function NewProposal() {
       })
     } catch (err) {
       setError(err.message);
-      console.log(err);
+      console.error(err);
     }
   }
 
@@ -228,14 +228,15 @@ export default function NewProposal() {
                       {...register("minAmount", { required: true })}
                       isDisabled={isSubmitting}
                       onChange={(e) => {
-                        setTargetInUSD(Math.abs(e.target.value));
+                        setMinContriInUSD(Math.abs(e.target.value));
                       }}
                     />
                     <InputRightAddon children="ETH" />
                   </InputGroup>
-                  {targetInUSD ? (
+
+                  {minContriInUSD ? (
                     <FormHelperText>
-                      美金約 $ {getETHPriceInUSD(ETHPrice, targetInUSD)}
+                      美金約 $ {getETHPriceInUSD(ETHPrice, minContriInUSD)}
                     </FormHelperText>
                   ) : null}
                 </FormControl>
@@ -246,6 +247,7 @@ export default function NewProposal() {
                     <AlertDescription mr={2}> {error}</AlertDescription>
                   </Alert>
                 ) : null}
+
                 {errors.name ||
                   errors.description ||
                   errors.imageUrl ||
