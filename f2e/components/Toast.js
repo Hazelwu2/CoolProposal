@@ -21,15 +21,16 @@ export function useToastHook() {
 
   useEffect(() => {
     if (state) {
-      const { message, status } = state;
-
-      toast({
+      const { message, status, isClosable } = state;
+      const params = {
         description: message,
         status: status,
         duration: 5000,
-        position: "top-right",
-        isClosable: true,
-      });
+        position: "top",
+        isClosable: isClosable || true,
+      }
+
+      toast(params);
     }
   }, [state, toast]);
 

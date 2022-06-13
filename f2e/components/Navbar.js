@@ -42,9 +42,21 @@ export default function Navbar() {
   useEffect(() => {
     if (activeChain && switchNetwork && activeChain.id !== chain.rinkeby.id) {
       switchNetwork();
-      newToast({ message: '⚠錯誤網路，請切換至 Rinkby', status: "error" });
+      newToast({
+        message: '⚠錯誤網路，請切換至 Rinkby',
+        status: "error",
+        isClosable: false
+      });
     }
   }, [activeChain, switchNetwork])
+
+  useEffect(() => {
+    if (!account?.address) newToast({
+      message: '請先連接錢包',
+      status: 'warning',
+      isClosable: false
+    })
+  }, [])
 
   return (
     <Box>
