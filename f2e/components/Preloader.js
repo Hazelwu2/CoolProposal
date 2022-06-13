@@ -8,7 +8,9 @@ import {
 
 import NextLink from "next/link";
 
-export default function Preloader(txHash) {
+export default function Preloader({ txHash }) {
+  console.log('txHash', txHash)
+  const link = `https://rinkeby.etherscan.io/address/${txHash}`
 
   return (
     <Box
@@ -31,12 +33,14 @@ export default function Preloader(txHash) {
         <Text mt={2} fontSize={'lg'} color={'teal.400'}>
           等待交易中...
 
-          {txHash &&
-            <NextLink
-              target="_blank"
-              href={`https://rinkeby.etherscan.io/address/${txHash}`} />
-          }
         </Text>
+        <Box>
+          {txHash &&
+            <a
+              target="_blank"
+              href={link} />
+          }
+        </Box>
       </Flex>
     </Box>
   );

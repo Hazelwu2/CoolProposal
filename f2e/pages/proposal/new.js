@@ -41,11 +41,13 @@ import {
 import { utils } from "ethers"
 import debug from '../../utils/debug'
 import Preloader from '../../components/Preloader'
+import { useToastHook } from '../../components/Toast'
 
 // Wallet
 import { instance as ProposalFactory } from "../../contract/ProposalFactory";
 import web3 from "../../contract/web3";
 import { ProposalFactoryAddress, ProposalFactoryABI } from "../../contract/ProposalFactory"
+import { handleError } from '../../utils/handle-error';
 
 export default function NewProposal() {
   const { activeChain, switchNetwork } = useNetwork({
@@ -68,6 +70,7 @@ export default function NewProposal() {
   const [minContriInUSD, setMinContriInUSD] = useState();
   const [targetInUSD, setTargetInUSD] = useState();
   const [ETHPrice, setETHPrice] = useState(0);
+  const [state, newToast] = useToastHook();
 
   useAsync(async () => {
     try {
@@ -114,18 +117,31 @@ export default function NewProposal() {
       contractInterface: ProposalFactoryABI,
     },
     'createProposal',
+    {
+      onError(error) {
+        handleError(error)
+      },
+    },
   )
 
   const { isError: txError, isLoading: txLoading } = useWaitForTransaction({
     hash: createProposalOutput?.hash,
     onSuccess(data) {
       // return home page after tx success
-      debug.$error(data)
+      newToast({
+        message: '提案成功',
+        status: "success"
+      });
+      debug.$error('onSuccess', data)
       router.push("/");
+    },
+    onError(error) {
+      handleError(error || txError)
     },
   })
 
-  if (txLoading || isCreateProposalLoading) {
+  if (isCreateProposalLoading || txLoading) {
+    debug.$warn('createProposalOutput', createProposalOutput)
     return (<>
       <div>
         <Preloader txHash={createProposalOutput?.hash} />
