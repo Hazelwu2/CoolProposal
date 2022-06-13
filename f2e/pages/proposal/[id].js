@@ -270,6 +270,7 @@ export default function SingleProposal() {
                 columns={{ base: 1, md: 2 }}
                 spacing={{ base: 10, lg: 10 }}
                 py={{ base: 6 }}
+                mb={24}
               >
                 <Tabs>
 
