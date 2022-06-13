@@ -188,7 +188,6 @@ export default function SingleProposal() {
   const { isError: txError, isLoading: txLoading } = useWaitForTransaction({
     hash: donateOutput?.hash,
     onSuccess(data) {
-      // return home page after tx success
       newToast({
         message: '感謝贊助 🙏',
         status: "success"
@@ -200,10 +199,10 @@ export default function SingleProposal() {
     },
   })
 
-  if (isDonateLoading || txLoading) {
+  if (donateOutput?.hash && txLoading) {
     return (<>
       <div>
-        <Preloader />
+        <Preloader txHash={donateOutput?.hash} />
       </div>
     </>)
   }

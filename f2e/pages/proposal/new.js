@@ -154,8 +154,7 @@ export default function NewProposal() {
     },
   })
 
-  if (isCreateProposalLoading || txLoading) {
-    debug.$warn('createProposalOutput', createProposalOutput)
+  if (createProposalOutput?.hash || txLoading) {
     return (<>
       <div>
         <Preloader txHash={createProposalOutput?.hash} />
