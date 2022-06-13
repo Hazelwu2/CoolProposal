@@ -104,8 +104,8 @@ $ npx hardhat run srcripts/deploy.js --network rinkeby # 部署到Rinkby測試�
     </a>
     </td>
     <td align="center">
-    <a href="https://github.com/pig514dni">
-      <img src="https://avatars.githubusercontent.com/u/13556505?v=4" width="100px;" alt=""/>
+    <a href="https://github.com/junhoulin">
+      <img src="https://avatars.githubusercontent.com/u/89020783?v=4" width="100px;" alt=""/>
       <br /><sub><b>Jim</b></sub>
       <br />
       <font size="1">Whitepaper Writer</font>
