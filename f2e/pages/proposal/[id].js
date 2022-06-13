@@ -27,7 +27,7 @@ import {
   AlertIcon,
   AlertDescription,
   Progress,
-  CloseButton,
+  Skeleton,
   FormHelperText,
   Link,
   Tabs, TabList, TabPanels, Tab, TabPanel
@@ -36,11 +36,11 @@ import { InfoIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import NextLink from "next/link";
 import Confetti from "react-confetti";
 // Wallet
-import { useAccount, useConnect, useContractRead, useDisconnect, useContractWrite } from 'wagmi'
-import { InjectedConnector } from 'wagmi/connectors/injected'
+import { useAccount, useContractRead, useContractWrite, useWaitForTransaction } from 'wagmi'
 // Utils
 import { getEthPrice, getETHPriceInUSD, getWEIPriceInUSD } from '../../utils/convert';
 import debug from '../../utils/debug'
+import { handleError } from '../../utils/handle-error';
 // Contract
 import { instance as Proposal, ProposalABI } from "../../contract/Proposal"
 import { useToastHook } from '../../components/Toast'
@@ -141,15 +141,14 @@ export default function SingleProposal() {
 
 
   // 送出表單
-  async function submitForm(data) {
-    console.log(data.amount)
+  async function submitForm({ amount }) {
     try {
-      debug.$error('[表單填寫的資料]', data)
+      debug.$error('[表單填寫的資料]', amount)
 
       donate({
         overrides: {
           from: account.address,
-          value: utils.parseEther(data.amount),
+          value: utils.parseEther(amount),
         },
       })
 
@@ -177,20 +176,30 @@ export default function SingleProposal() {
       contractInterface: ProposalABI,
     },
     'donate',
+    {
+      onError(error) {
+        handleError(error)
+      },
+    },
   )
 
-  useEffect(() => {
-    if (summaryOutput) { console.log("summaryOutput[3] = ", utils.formatUnits(summaryOutput[3], "wei")) }
-  }, [donateOutput]);
+  const { isError: txError, isLoading: txLoading } = useWaitForTransaction({
+    hash: donateOutput?.hash,
+    onSuccess(data) {
+      // return home page after tx success
+      newToast({
+        message: '感謝贊助 🙏',
+        status: "success"
+      });
+      debug.$error('onSuccess', data)
+      router.push("/");
+    },
+    onError(error) {
+      handleError(error || txError)
+    },
+  })
 
-
-
-  if (isDonateLoading) {
-    newToast({
-      message: '感謝贊助 🙏',
-      status: "success"
-    });
-
+  if (isDonateLoading || txLoading) {
     return (<>
       <div>
         <Preloader />
@@ -395,7 +404,7 @@ export default function SingleProposal() {
                           fontSize={"sm"}
                           fontWeight="light"
                           color={useColorModeValue("gray.500", "gray.200")}>
-                          目標 {utils.formatEther(summaryOutput[1])}
+                          目標 {utils.formatEther(summaryOutput[1])} ETH
                         </Text>
                         <Progress
                           colorScheme="teal"
@@ -430,9 +439,8 @@ export default function SingleProposal() {
 
                           <FormLabel>
                             贊助金額
-                            <Text fontSize={'md'} color={'gray.500'}>
+                            <Text fontSize={'sm'} color={'gray.400'}>
                               (最低贊助金額 {showAmount(summaryOutput[9])})
-                              {utils.formatEther(summaryOutput[9])}
                             </Text>
                           </FormLabel>
                           <InputGroup>
@@ -497,7 +505,25 @@ export default function SingleProposal() {
               </Container>
             </Flex>
           </main>)
-        : null
+        : (
+          <Flex
+            px={{ base: 4 }}
+          >
+            <Container
+              maxW={"6xl"}
+              columns={{ base: 2 }}
+              spacing={{ base: 10, lg: 10 }}
+              py={{ base: 4 }}>
+              <Box>
+                <Skeleton height="4em" width="25rem" />
+                <Skeleton mt={5} height="4em" width="full" />
+                <Skeleton mt={5} height="4em" width="full" />
+                <Skeleton mt={5} height="4em" width="full" />
+                <Skeleton mt={5} height="6em" width="full" />
+              </Box>
+            </Container>
+          </Flex>
+        )
       }
     </div>
   )
