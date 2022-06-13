@@ -3,14 +3,13 @@ import {
   Box,
   Text,
   Flex,
+  Link,
   useColorModeValue
 } from "@chakra-ui/react";
-
-import NextLink from "next/link";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 
 export default function Preloader({ txHash }) {
-  console.log('txHash', txHash)
-  const link = `https://rinkeby.etherscan.io/address/${txHash}`
+  const link = `https://rinkeby.etherscan.io/tx/${txHash}`
 
   return (
     <Box
@@ -36,9 +35,13 @@ export default function Preloader({ txHash }) {
         </Text>
         <Box>
           {txHash &&
-            <a
-              target="_blank"
-              href={link} />
+            <Link
+              color="teal.500"
+              href={link}
+              isExternal
+            >
+              在 Rinkeby Etherscan 檢視 <ExternalLinkIcon mx="2px" />
+            </Link>
           }
         </Box>
       </Flex>
