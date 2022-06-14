@@ -90,11 +90,11 @@ contract Proposal {
         uint256 _endTime
     ) {
         // 最小募資金額需 > 0
-        require(_targetAmount > 0, "minimunContribution should > 0");
+        require(_targetAmount > 0, "targetAmount should > 0");
         // 最小贊助金額需 > 0
         require(_minimunContribution > 0, "minimunContribution should > 0");
         // 最小募資金額 需 >= 最小贊助金額
-        require(_targetAmount >= _minimunContribution, "minimunContribution should > 0");
+        require(_targetAmount >= _minimunContribution, "targetAmount should >= minimunContribution");
         // 專案結束時間 > 目前時間
         require(_endTime > block.timestamp, "endTime should > now");
         proposer = _proposer;
