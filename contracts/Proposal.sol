@@ -58,6 +58,9 @@ contract Proposal {
     uint256 public endTime;
     // 儲存贊助者總贊助金額
     mapping(address => uint256) public sponsorTotalContribution;
+    // 專案贊助列表
+    DonateInfo[] donateList;
+
     struct Request {
         string description; // 提款原因
         uint256 amount; // 提款金額
@@ -66,6 +69,14 @@ contract Proposal {
         uint256 approvalCount; // 同意提款人數
         mapping(address => bool) approvals; // 有權利按贊助名單
         // address recipient; // 撥款地址
+    }
+
+    // 贊助明細
+    struct DonateInfo
+    {
+        address sponsor;
+        uint256 amount;
+        uint donateTime;
     }
 
     // Create New Contract
@@ -103,11 +114,23 @@ contract Proposal {
         approversCount++;
         // 記錄使用者總共贊助多少金額
         sponsorTotalContribution[msg.sender] += msg.value;
+        // 紀錄專案贊助紀錄
+        DonateInfo storage newDonate = donateList.push();
+        newDonate.sponsor = msg.sender;
+        newDonate.amount = msg.value;
+        newDonate.donateTime = block.timestamp;
+
         // 贊助金額 >= 目標金額時, 達成募資專案
         if (address(this).balance >= targetAmount)
         {
             targetToAchieve = true;
         }
+    }
+
+    // 取得贊助列表
+    function getDonateList() public view returns (DonateInfo[] memory)
+    {
+        return donateList;
     }
 
     // 建立提款請求
