@@ -2,10 +2,8 @@
   "_format": "hh-sol-artifact-1",
   "contractName": "ProposalFactory",
   "sourceName": "contracts/Proposal.sol",
-  "abi": [
-    {
-      "inputs": [
-        {
+  "abi": [{
+      "inputs": [{
           "internalType": "uint256",
           "name": "_targetAmount",
           "type": "uint256"
@@ -29,6 +27,11 @@
           "internalType": "uint256",
           "name": "_minimunContribution",
           "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_endTime",
+          "type": "uint256"
         }
       ],
       "name": "createProposal",
@@ -38,8 +41,7 @@
     },
     {
       "anonymous": false,
-      "inputs": [
-        {
+      "inputs": [{
           "indexed": false,
           "internalType": "address",
           "name": "",
@@ -74,6 +76,12 @@
           "internalType": "uint256",
           "name": "",
           "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
         }
       ],
       "name": "CreateProposal",
@@ -82,32 +90,26 @@
     {
       "inputs": [],
       "name": "getProposalList",
-      "outputs": [
-        {
-          "internalType": "contract Proposal[]",
-          "name": "",
-          "type": "address[]"
-        }
-      ],
+      "outputs": [{
+        "internalType": "contract Proposal[]",
+        "name": "",
+        "type": "address[]"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
+      "inputs": [{
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }],
       "name": "proposalsAddress",
-      "outputs": [
-        {
-          "internalType": "contract Proposal",
-          "name": "",
-          "type": "address"
-        }
-      ],
+      "outputs": [{
+        "internalType": "contract Proposal",
+        "name": "",
+        "type": "address"
+      }],
       "stateMutability": "view",
       "type": "function"
     }
