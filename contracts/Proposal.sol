@@ -184,7 +184,7 @@ contract Proposal {
     {
       // 贊助者才能退款
       require(sponsorTotalContribution[msg.sender] > 0, "only sponsor allow refund");
-      require(!targetToAchieve, "target to Achieve can't refund");
+      require(!targetToAchieve && block.timestamp > endTime, "target to Achieve can't refund");
       payable(msg.sender).transfer(sponsorTotalContribution[msg.sender]);
     }
 
