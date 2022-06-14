@@ -3,7 +3,12 @@ import Head from "next/head";
 import { useAsync } from "react-use";
 import { useRouter } from "next/router";
 import NextLink from "next/link";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
+// DateTime
+import { registerLocale, setDefaultLocale, addMonths } from "react-datepicker";
+import zhTW from 'date-fns/locale/zh-TW';
+import dayjs from 'dayjs'
+registerLocale('zh-TW', zhTW)
 // UI
 import {
   Flex,
@@ -24,13 +29,14 @@ import {
   FormHelperText,
   Textarea,
   FormErrorMessage,
+  Tooltip
   // NumberInput,
   // NumberInputField,
   // NumberInputStepper,
   // NumberIncrementStepper,
   // NumberDecrementStepper,
 } from "@chakra-ui/react";
-import { ArrowBackIcon } from "@chakra-ui/icons";
+import { ArrowBackIcon, InfoIcon } from "@chakra-ui/icons";
 import { getEthPrice, getETHPriceInUSD } from "../../utils/convert";
 // Wallet
 import { InjectedConnector } from 'wagmi/connectors/injected'
@@ -49,6 +55,8 @@ import debug from '../../utils/debug'
 import Preloader from '../../components/Preloader'
 import { useToastHook } from '../../components/Toast'
 import { yupResolver } from '@hookform/resolvers/yup';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 // Wallet
 import { instance as ProposalFactory } from "../../contract/ProposalFactory";
 import web3 from "../../contract/web3";
@@ -64,6 +72,7 @@ export default function NewProposal() {
     handleSubmit,
     register,
     watch,
+    control,
     formState: { isSubmitting, errors },
   } = useForm({
     mode: "onChange",
@@ -82,7 +91,7 @@ export default function NewProposal() {
   const [state, newToast] = useToastHook();
 
   useEffect(() => {
-    const subscription = watch((value) => console.log(value));
+    const subscription = watch((value) => degug.$error(value));
     return () => subscription.unsubscribe();
   }, [watch])
 
@@ -102,15 +111,17 @@ export default function NewProposal() {
   }, [activeChain, switchNetwork])
 
   // 送出表單
-  async function onSubmit({ name, description, imageUrl, target, minAmount }) {
+  async function onSubmit({ name, description, imageUrl, target, minAmount, deadline }) {
     try {
+      debug.$log('deadline', deadline, dayjs(deadline).valueOf())
       createProposal({
         args: [
           utils.parseEther(target),
           name,
           description,
           imageUrl,
-          utils.parseEther(minAmount)
+          utils.parseEther(minAmount),
+          dayjs(deadline).valueOf()
         ],
         overrides: { from: account.address },
       })
@@ -171,7 +182,7 @@ export default function NewProposal() {
       </Head>
 
       <main>
-        <Stack spacing={8} mx={"auto"} maxW={"2xl"} py={12} px={6}>
+        <Stack spacing={8} mx={"auto"} maxW={"2xl"} py={12} px={6} mb={24}>
           <Text fontSize={"lg"} color={"teal.400"}>
             <ArrowBackIcon mr={2} />
             <NextLink href="/"> Back to Home</NextLink>
@@ -210,6 +221,7 @@ export default function NewProposal() {
                     {errors.description?.message}
                   </FormErrorMessage>
                 </FormControl>
+
                 <FormControl id="imageUrl" isRequired isInvalid={errors.imageUrl}>
                   <FormLabel>提案封面照</FormLabel>
                   <Input
@@ -307,6 +319,46 @@ export default function NewProposal() {
 
                 </FormControl>
 
+                <FormControl id="deadline" isRequired isInvalid={errors.deadline}>
+                  <FormLabel>
+                    募資截止日期
+                    <Tooltip
+                      label="限制最大值為半年，到截止日期前沒有募資成功，贊助者有權利將本身捐贈的款項領回。"
+                      fontSize={"1em"}
+                      px="4"
+                      py="4"
+                      rounded="lg"
+                    >
+                      <InfoIcon
+                        color={useColorModeValue("teal.800", "white")}
+                      />
+                    </Tooltip>
+                  </FormLabel>
+
+                  <Controller
+                    control={control}
+                    name="deadline"
+                    render={({ field }) => (
+                      <DatePicker
+                        placeholderText="請設定募資截止日期"
+                        onChange={(date) => field.onChange(date)}
+                        selected={field.value}
+                        isDisabled={isSubmitting}
+                        locale="zh-TW"
+                        dateFormat="yyyy/MM/dd"
+                        size="lg"
+                        minDate={new Date()}
+                        maxDate={dayjs().add(6, 'month').toDate()}
+                        showDisabledMonthNavigation
+                        className="datetime-picker"
+                      />
+                    )}
+                  />
+                  <FormErrorMessage>
+                    {errors.deadline?.message}
+                  </FormErrorMessage>
+                </FormControl>
+
                 {error ? (
                   <Alert status="error">
                     <AlertIcon />
@@ -317,11 +369,13 @@ export default function NewProposal() {
                 {errors.name ||
                   errors.description ||
                   errors.imageUrl ||
-                  errors.target ? (
+                  errors.target ||
+                  errors.minAmount ||
+                  errors.deadline ? (
                   <Alert status="error">
                     <AlertIcon />
                     <AlertDescription mr={2}>
-                      耶？這些都是必填，你還有些沒填寫哦
+                      耶？這些都是必填，再檢查一下表單吧
                     </AlertDescription>
                   </Alert>
                 ) : null}

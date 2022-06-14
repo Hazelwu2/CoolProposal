@@ -29,13 +29,15 @@ export const NewProposalSchema = yup.object().shape({
 
   // 目標金額
   target: yup.string()
+    .nullable(errorMsg.required)
     .required(errorMsg.required),
   // .moreThan(yup.ref('minAmount'), errorMsg.checkAmount),
 
 
   // 最小募資金額
   minAmount: yup.string()
-    .required(errorMsg.required)
+    .nullable(errorMsg.required)
+    .required(errorMsg.required),
   // .lessThan(yup.ref('target'), errorMsg.checkAmount)
   // .when('target', (target, schema) => {
   //   return schema.test({
@@ -50,6 +52,11 @@ export const NewProposalSchema = yup.object().shape({
   //     message: '目標金額必須 > 最小募資金額'
   //   })
   // })
+
+  // 募資截止日期
+  deadline: yup.date()
+    .nullable(errorMsg.required)
+    .required(errorMsg.required)
 });
 
 // const proposal = {
