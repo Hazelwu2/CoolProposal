@@ -14,6 +14,7 @@ import {
   Skeleton,
   Container
 } from "@chakra-ui/react";
+import debug from '../utils/debug'
 
 function ProposalCard(
   { name, desc, proposer, id, balance, imageUrl, ethPrice, targetAmount }) {
@@ -112,11 +113,22 @@ function ProposalCard(
   )
 }
 
-export default function Proposal({ proposalList, ethPrice, proposals }) {
+export default function Proposal({ proposalList, ethPrice, proposals, hasProposal }) {
+  debug.$log(hasProposal)
   return (
     <div>
       <Container maxW={"6xl"} align={"left"} mt={'16'}>
-        {proposalList?.length > 0 ? (
+
+        {hasProposal === undefined ? (
+          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10} py={8}>
+            <Skeleton height="20rem" />
+            <Skeleton height="20rem" />
+            <Skeleton height="20rem" />
+          </SimpleGrid>
+        )
+          : null}
+
+        {hasProposal && proposalList?.length > 0 ? (
           <SimpleGrid
             columns={{ base: 1, md: 3 }}
             spacing={10}
@@ -142,11 +154,37 @@ export default function Proposal({ proposalList, ethPrice, proposals }) {
             })}
           </SimpleGrid>
         ) : (
-          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10} py={8}>
-            <Skeleton height="20rem" />
-            <Skeleton height="20rem" />
-            <Skeleton height="20rem" />
-          </SimpleGrid>
+          !hasProposal && (
+            <SimpleGrid columns={{ base: 1 }} spacing={5} py={5}>
+              <Box
+                bg={useColorModeValue("white", "gray.800")}
+                rounded="md"
+                shadow="md"
+                borderWidth="1px"
+                py={2}
+                px={4}
+                h={'100px'}
+                alignItems="center"
+                justifyContent="center"
+                transition={"all 0.45s cubic-bezier(0.64, 0.01, 0.07, 1.65)"}
+                _hover={{
+                  transform: "translate(5px)",
+                  filter: "grayscale(100%)"
+                }}
+              >
+                <Flex
+                  w={'full'}
+                  h={'100%'}
+                  justifyContent={'center'}
+                  alignItems={'center'}>
+                  <Text>
+                    還沒有人有提案呢
+                  </Text>
+
+                </Flex>
+              </Box>
+            </SimpleGrid>
+          )
         )}
       </Container>
     </div>

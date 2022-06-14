@@ -29,6 +29,7 @@ import debug from '../utils/debug'
 export default function Home() {
   const [proposals, setProposals] = useState([])
   const [proposalList, setProposalList] = useState([])
+  const [hasProposal, setHasProposal] = useState(false)
   const [ethPrice, updateEthPrice] = useState(null);
   const { activeChain } = useNetwork({
     chainId: chain.rinkeby.id
@@ -38,6 +39,8 @@ export default function Home() {
     async function fetchData() {
       const proposals = await ProposalFactory.methods.getProposalList().call()
       setProposals(proposals)
+      debug.$log('123123', proposals.length > 0 ? true : false)
+      setHasProposal(proposals.length > 0 ? true : false)
       debug.$log('[proposals]', proposals)
     }
 
@@ -117,6 +120,7 @@ export default function Home() {
             proposalList={proposalList}
             ethPrice={ethPrice}
             proposals={proposals}
+            hasProposal={hasProposal}
           />
 
           <Team />
