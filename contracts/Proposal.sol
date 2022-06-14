@@ -18,7 +18,7 @@ contract ProposalFactory {
         uint256 _endTime
     ) external {
         proposal = new Proposal(
-            payable(msg.sender),
+            msg.sender,
             _targetAmount,
             _title,
             _desc,
@@ -37,7 +37,7 @@ contract ProposalFactory {
 
 contract Proposal {
     // 提案者
-    address payable public proposer;
+    address public proposer;
     // 目標金額
     uint256 public targetAmount;
     // 提案名稱
@@ -46,10 +46,6 @@ contract Proposal {
     string public ProposalDescription;
     // 提案圖片
     string public imageUrl;
-    // 贊助者
-    address[] public sponsor;
-    // 是否為贊助者
-    mapping(address => bool) public approvers;
     // 贊助人數
     uint256 public approversCount;
     // 是否達成目標
@@ -60,6 +56,8 @@ contract Proposal {
     uint256 public minimunContribution;
     // 專案結束時間
     uint256 public endTime;
+    // 儲存贊助者總贊助金額
+    mapping(address => uint256) public sponsorTotalContribution;
     struct Request {
         string description; // 提款原因
         uint256 amount; // 提款金額
@@ -72,7 +70,7 @@ contract Proposal {
 
     // Create New Contract
     constructor(
-        address payable _proposer,
+        address _proposer,
         uint256 _targetAmount,
         string memory _title,
         string memory _desc,
@@ -102,9 +100,9 @@ contract Proposal {
         require(msg.sender != proposer, "proposer can't donate");
         require(msg.value >= minimunContribution, "donate < minimunContribution");
         require(msg.value > 0, "unenough value");
-        sponsor.push(msg.sender);
-        approvers[msg.sender] = true;
         approversCount++;
+        // 記錄使用者總共贊助多少金額
+        sponsorTotalContribution[msg.sender] += msg.value;
         // 贊助金額 >= 目標金額時, 達成募資專案
         if (address(this).balance >= targetAmount)
         {
@@ -144,7 +142,7 @@ contract Proposal {
       // 確認對方不是提案者
       require(msg.sender != proposer, "proposal can't approve");   
       // 確認對方為贊助者
-      require(approvers[msg.sender], "Only approvers can approve");   
+      require(sponsorTotalContribution[msg.sender] > 0, "Only approvers can approve");   
       // 確認對方沒同意過          
       require(!requests[index].approvals[msg.sender], "Only sign once");
       // 將贊助者更改為同意
@@ -158,9 +156,18 @@ contract Proposal {
       }
     }
 
+    // 贊助者按退款
+    function refund() public 
+    {
+      // 贊助者才能退款
+      require(sponsorTotalContribution[msg.sender] > 0, "only sponsor allow refund");
+      require(!targetToAchieve, "target to Achieve can't refund");
+      payable(msg.sender).transfer(sponsorTotalContribution[msg.sender]);
+    }
+
     // 完成提款，偵測如果同意數 > 50% (贊助人數)，就call finalizeRequest
-    function finalizeRequest(uint index) public payable{
-        proposer.transfer(requests[index].amount);
+    function finalizeRequest(uint index) public {
+        payable(proposer).transfer(requests[index].amount);
         requests[index].complete = true;
     }
 
