@@ -76,7 +76,7 @@ contract Proposal {
     {
         address sponsor;
         uint256 amount;
-        uint donateTime;
+        uint256 donateTime;
     }
 
     // Create New Contract
