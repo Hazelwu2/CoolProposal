@@ -89,11 +89,16 @@ export default function NewProposal() {
   const [targetInUSD, setTargetInUSD] = useState();
   const [ETHPrice, setETHPrice] = useState(0);
   const [state, newToast] = useToastHook();
+  const [isSSR, setIsSSR] = useState(true);
 
   useEffect(() => {
     const subscription = watch((value) => degug.$error(value));
     return () => subscription.unsubscribe();
   }, [watch])
+
+  useEffect(() => {
+    setIsSSR(false)
+  }, [])
 
   useAsync(async () => {
     try {
@@ -181,63 +186,64 @@ export default function NewProposal() {
         <link rel="icon" href="/logo.svg" />
       </Head>
 
-      <main>
-        <Stack spacing={8} mx={"auto"} maxW={"2xl"} py={12} px={6} mb={24}>
-          <Text fontSize={"lg"} color={"teal.400"}>
-            <ArrowBackIcon mr={2} />
-            <NextLink href="/"> Back to Home</NextLink>
-          </Text>
-          <Stack>
-            <Heading fontSize={"4xl"}>建立酷提案 📢</Heading>
-          </Stack>
-          <Box
-            rounded={"lg"}
-            bg={useColorModeValue("white", "gray.700")}
-            boxShadow={"lg"}
-            p={8}
-          >
+      {!isSSR && (
+        <main>
+          <Stack spacing={8} mx={"auto"} maxW={"2xl"} py={12} px={6} mb={24}>
+            <Text fontSize={"lg"} color={"teal.400"}>
+              <ArrowBackIcon mr={2} />
+              <NextLink href="/"> Back to Home</NextLink>
+            </Text>
+            <Stack>
+              <Heading fontSize={"4xl"}>建立酷提案 📢</Heading>
+            </Stack>
+            <Box
+              rounded={"lg"}
+              bg={useColorModeValue("white", "gray.700")}
+              boxShadow={"lg"}
+              p={8}
+            >
 
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Stack spacing={4}>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <Stack spacing={4}>
 
-                <FormControl id="name" isRequired isInvalid={errors.name}>
-                  <FormLabel>這個酷提案叫做什麼</FormLabel>
-                  <Input
-                    {...register("name")}
-                    isDisabled={isSubmitting}
-                  />
-                  <FormErrorMessage>
-                    {errors.name?.message}
-                  </FormErrorMessage>
-                </FormControl>
+                  <FormControl id="name" isRequired isInvalid={errors.name}>
+                    <FormLabel>這個酷提案叫做什麼</FormLabel>
+                    <Input
+                      {...register("name")}
+                      isDisabled={isSubmitting}
+                    />
+                    <FormErrorMessage>
+                      {errors.name?.message}
+                    </FormErrorMessage>
+                  </FormControl>
 
-                <FormControl id="description" isRequired isInvalid={errors.description}>
-                  <FormLabel>寫下酷提案的描述</FormLabel>
-                  <Textarea
-                    {...register("description")}
-                    isDisabled={isSubmitting}
-                  />
-                  <FormErrorMessage>
-                    {errors.description?.message}
-                  </FormErrorMessage>
-                </FormControl>
+                  <FormControl id="description" isRequired isInvalid={errors.description}>
+                    <FormLabel>寫下酷提案的描述</FormLabel>
+                    <Textarea
+                      {...register("description")}
+                      isDisabled={isSubmitting}
+                    />
+                    <FormErrorMessage>
+                      {errors.description?.message}
+                    </FormErrorMessage>
+                  </FormControl>
 
-                <FormControl id="imageUrl" isRequired isInvalid={errors.imageUrl}>
-                  <FormLabel>提案封面照</FormLabel>
-                  <Input
-                    {...register("imageUrl")}
-                    isDisabled={isSubmitting}
-                    type="url"
-                  />
-                  <FormErrorMessage>
-                    {errors.imageUrl?.message}
-                  </FormErrorMessage>
-                </FormControl>
+                  <FormControl id="imageUrl" isRequired isInvalid={errors.imageUrl}>
+                    <FormLabel>提案封面照</FormLabel>
+                    <Input
+                      {...register("imageUrl")}
+                      isDisabled={isSubmitting}
+                      type="url"
+                    />
+                    <FormErrorMessage>
+                      {errors.imageUrl?.message}
+                    </FormErrorMessage>
+                  </FormControl>
 
-                <FormControl id="target" isRequired isInvalid={errors.target}>
-                  <FormLabel>目標金額</FormLabel>
-                  <InputGroup>
-                    {/* <NumberInput
+                  <FormControl id="target" isRequired isInvalid={errors.target}>
+                    <FormLabel>目標金額</FormLabel>
+                    <InputGroup>
+                      {/* <NumberInput
                       w={'100%'}
                       keepWithinRange={false}
                       clampValueOnBlur={false}
@@ -253,33 +259,33 @@ export default function NewProposal() {
                         type="number"
                       />
                     </NumberInput> */}
-                    <Input
-                      type="number"
-                      step="any"
-                      {...register("target", { required: true })}
-                      isDisabled={isSubmitting}
-                      onChange={(e) => {
-                        setTargetInUSD(Math.abs(e.target.value));
-                      }}
-                    />
-                    <InputRightAddon children="ETH" />
+                      <Input
+                        type="number"
+                        step="any"
+                        {...register("target", { required: true })}
+                        isDisabled={isSubmitting}
+                        onChange={(e) => {
+                          setTargetInUSD(Math.abs(e.target.value));
+                        }}
+                      />
+                      <InputRightAddon children="ETH" />
 
-                  </InputGroup>
-                  {targetInUSD ? (
-                    <FormHelperText>
-                      美金約 $ {getETHPriceInUSD(ETHPrice, targetInUSD)}
-                    </FormHelperText>
-                  ) : null}
+                    </InputGroup>
+                    {targetInUSD ? (
+                      <FormHelperText>
+                        美金約 $ {getETHPriceInUSD(ETHPrice, targetInUSD)}
+                      </FormHelperText>
+                    ) : null}
 
-                  <FormErrorMessage>
-                    {errors.target?.message}
-                  </FormErrorMessage>
-                </FormControl>
+                    <FormErrorMessage>
+                      {errors.target?.message}
+                    </FormErrorMessage>
+                  </FormControl>
 
-                <FormControl id="minAmount" isRequired isInvalid={errors.minAmount}>
-                  <FormLabel>最小募資金額</FormLabel>
-                  <InputGroup>
-                    {/* <NumberInput
+                  <FormControl id="minAmount" isRequired isInvalid={errors.minAmount}>
+                    <FormLabel>最小募資金額</FormLabel>
+                    <InputGroup>
+                      {/* <NumberInput
                       w={'100%'}
                       keepWithinRange={false}
                       clampValueOnBlur={false}
@@ -295,129 +301,130 @@ export default function NewProposal() {
                         type="number"
                       />
                     </NumberInput> */}
-                    <Input
-                      type="number"
-                      step="any"
-                      {...register("minAmount", { required: true })}
-                      isDisabled={isSubmitting}
-                      onChange={(e) => {
-                        setMinContriInUSD(Math.abs(e.target.value));
-                      }}
-                    />
-                    <InputRightAddon children="ETH" />
-                  </InputGroup>
+                      <Input
+                        type="number"
+                        step="any"
+                        {...register("minAmount", { required: true })}
+                        isDisabled={isSubmitting}
+                        onChange={(e) => {
+                          setMinContriInUSD(Math.abs(e.target.value));
+                        }}
+                      />
+                      <InputRightAddon children="ETH" />
+                    </InputGroup>
 
-                  {minContriInUSD ? (
-                    <FormHelperText>
-                      美金約 $ {getETHPriceInUSD(ETHPrice, minContriInUSD)}
-                    </FormHelperText>
+                    {minContriInUSD ? (
+                      <FormHelperText>
+                        美金約 $ {getETHPriceInUSD(ETHPrice, minContriInUSD)}
+                      </FormHelperText>
+                    ) : null}
+
+                    <FormErrorMessage>
+                      {errors.minAmount?.message}
+                    </FormErrorMessage>
+
+                  </FormControl>
+
+                  <FormControl id="deadline" isRequired isInvalid={errors.deadline}>
+                    <FormLabel>
+                      募資截止日期
+                      <Tooltip
+                        label="限制最大值為半年，到截止日期前沒有募資成功，贊助者有權利將本身捐贈的款項領回。"
+                        fontSize={"1em"}
+                        px="4"
+                        py="4"
+                        rounded="lg"
+                      >
+                        <InfoIcon
+                          color={useColorModeValue("teal.800", "white")}
+                        />
+                      </Tooltip>
+                    </FormLabel>
+
+                    <Controller
+                      control={control}
+                      name="deadline"
+                      render={({ field }) => (
+                        <DatePicker
+                          placeholderText="請設定募資截止日期"
+                          onChange={(date) => field.onChange(date)}
+                          selected={field.value}
+                          isDisabled={isSubmitting}
+                          locale="zh-TW"
+                          dateFormat="yyyy/MM/dd"
+                          size="lg"
+                          minDate={new Date()}
+                          maxDate={dayjs().add(6, 'month').toDate()}
+                          showDisabledMonthNavigation
+                          className="datetime-picker"
+                        />
+                      )}
+                    />
+                    <FormErrorMessage>
+                      {errors.deadline?.message}
+                    </FormErrorMessage>
+                  </FormControl>
+
+                  {error ? (
+                    <Alert status="error">
+                      <AlertIcon />
+                      <AlertDescription mr={2}> {error}</AlertDescription>
+                    </Alert>
                   ) : null}
 
-                  <FormErrorMessage>
-                    {errors.minAmount?.message}
-                  </FormErrorMessage>
-
-                </FormControl>
-
-                <FormControl id="deadline" isRequired isInvalid={errors.deadline}>
-                  <FormLabel>
-                    募資截止日期
-                    <Tooltip
-                      label="限制最大值為半年，到截止日期前沒有募資成功，贊助者有權利將本身捐贈的款項領回。"
-                      fontSize={"1em"}
-                      px="4"
-                      py="4"
-                      rounded="lg"
-                    >
-                      <InfoIcon
-                        color={useColorModeValue("teal.800", "white")}
-                      />
-                    </Tooltip>
-                  </FormLabel>
-
-                  <Controller
-                    control={control}
-                    name="deadline"
-                    render={({ field }) => (
-                      <DatePicker
-                        placeholderText="請設定募資截止日期"
-                        onChange={(date) => field.onChange(date)}
-                        selected={field.value}
-                        isDisabled={isSubmitting}
-                        locale="zh-TW"
-                        dateFormat="yyyy/MM/dd"
-                        size="lg"
-                        minDate={new Date()}
-                        maxDate={dayjs().add(6, 'month').toDate()}
-                        showDisabledMonthNavigation
-                        className="datetime-picker"
-                      />
-                    )}
-                  />
-                  <FormErrorMessage>
-                    {errors.deadline?.message}
-                  </FormErrorMessage>
-                </FormControl>
-
-                {error ? (
-                  <Alert status="error">
-                    <AlertIcon />
-                    <AlertDescription mr={2}> {error}</AlertDescription>
-                  </Alert>
-                ) : null}
-
-                {errors.name ||
-                  errors.description ||
-                  errors.imageUrl ||
-                  errors.target ||
-                  errors.minAmount ||
-                  errors.deadline ? (
-                  <Alert status="error">
-                    <AlertIcon />
-                    <AlertDescription mr={2}>
-                      耶？這些都是必填，再檢查一下表單吧
-                    </AlertDescription>
-                  </Alert>
-                ) : null}
-                <Stack spacing={10}>
-                  {account?.address ? (
-                    <Button
-                      bg={"teal.400"}
-                      color={"white"}
-                      _hover={{
-                        bg: "teal.500",
-                      }}
-                      isLoading={isSubmitting}
-                      type="submit"
-                    >
-                      建立
-                    </Button>
-                  ) : (
-                    <Stack spacing={3}>
+                  {errors.name ||
+                    errors.description ||
+                    errors.imageUrl ||
+                    errors.target ||
+                    errors.minAmount ||
+                    errors.deadline ? (
+                    <Alert status="error">
+                      <AlertIcon />
+                      <AlertDescription mr={2}>
+                        耶？這些都是必填，再檢查一下表單吧
+                      </AlertDescription>
+                    </Alert>
+                  ) : null}
+                  <Stack spacing={10}>
+                    {account?.address ? (
                       <Button
-                        color={"white"}
                         bg={"teal.400"}
+                        color={"white"}
                         _hover={{
-                          bg: "teal.300",
+                          bg: "teal.500",
                         }}
-                        onClick={() => connect()}
+                        isLoading={isSubmitting}
+                        type="submit"
                       >
-                        連接錢包
+                        建立
                       </Button>
-                      <Alert status="warning">
-                        <AlertIcon />
-                        <AlertDescription mr={2}>
-                          請先連接錢包，才可建立一個酷提案
-                        </AlertDescription>
-                      </Alert>
-                    </Stack>
-                  )}
+                    ) : (
+                      <Stack spacing={3}>
+                        <Button
+                          color={"white"}
+                          bg={"teal.400"}
+                          _hover={{
+                            bg: "teal.300",
+                          }}
+                          onClick={() => connect()}
+                        >
+                          連接錢包
+                        </Button>
+                        <Alert status="warning">
+                          <AlertIcon />
+                          <AlertDescription mr={2}>
+                            請先連接錢包，才可建立一個酷提案
+                          </AlertDescription>
+                        </Alert>
+                      </Stack>
+                    )}
+                  </Stack>
                 </Stack>
-              </Stack>
-            </form>
-          </Box>
-        </Stack>
-      </main>
+              </form>
+            </Box>
+          </Stack>
+        </main>
+      )}
     </div>
   );
 }
