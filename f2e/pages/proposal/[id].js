@@ -52,6 +52,9 @@ import { useAccount, useContractRead, useContractWrite, useWaitForTransaction } 
 import { getEthPrice, getETHPriceInUSD, getWEIPriceInUSD } from '../../utils/convert';
 import debug from '../../utils/debug'
 import { handleError } from '../../utils/handle-error';
+import dayjs from 'dayjs'
+import locale_zhTW from 'dayjs/locale/zh-tw'  // ES 2015 
+dayjs.locale('zh-tw')
 // Contract
 import { instance as Proposal, ProposalABI } from "../../contract/Proposal"
 import { useToastHook } from '../../components/Toast'
@@ -100,23 +103,36 @@ function InfoCard({
 }
 
 const DonatorRow = (
-  { index, donator, amount, donateTime }
+  { index, donator, amount, donateTime, ethPrice }
 ) => {
   const router = useRouter();
+  debug.$log(parseInt(donateTime._hex))
 
   return (
     <Tr
     >
       <Td>{index}</Td>
-      <Td>{donator}</Td>
+      <Td>
+        {donator.substr(0, 8) + "..."}
+        <Tooltip
+          label={donator}
+          fontSize={"1em"}
+          px="4"
+          py="4"
+          rounded="lg"
+        >
+          <InfoIcon
+            color={useColorModeValue("teal.800", "white")}
+          />
+        </Tooltip>
+      </Td>
       <Td isNumeric>
-        {/* {utils.formatEther(request.amount)} ETH */}
-        {amount} ETH
+        {utils.formatEther(amount)} ETH
         <br />
-        {/* (美金約 $ {getWEIPriceInUSD(ethPrice, request.amount)}) */}
+        (美金約 $ {getWEIPriceInUSD(ethPrice, amount)})
       </Td>
       <Td>
-        {donateTime}
+        {dayjs.unix(parseInt(donateTime._hex)).format('YYYY/MM/DD HH:mm')}
       </Td>
     </Tr>
   )
@@ -149,6 +165,22 @@ export default function SingleProposal() {
       contractInterface: ProposalABI,
     },
     'getProposalSummary',
+    {
+      chainId: 4,
+      watch: true
+    },
+  )
+
+  const {
+    data: donateListOutput,
+    isError: donateListError,
+    isLoading: donateListIsLoading,
+  } = useContractRead(
+    {
+      addressOrName: id,
+      contractInterface: ProposalABI,
+    },
+    'getDonateList',
     {
       chainId: 4,
       watch: true
@@ -395,20 +427,14 @@ export default function SingleProposal() {
                               </Tr>
                             </Thead>
                             <Tbody>
-                              {/* // TODO: 把 DonatorRow 398-4033 移除 */}
-                              <DonatorRow
-                                index={1}
-                                donator={'Hazel'}
-                                amount={3}
-                                donateTime={'2022/03/22'}
-                              />
-                              {donatorList.length > 0 && donatorList.map((donator, index) => {
+                              {donateListOutput.length > 0 && donateListOutput.map((item, index) => {
                                 return (
                                   <DonatorRow
                                     index={index}
-                                    donator={'Hazel'}
-                                    amount={3}
-                                    donateTime={'2022/03/22'}
+                                    donator={item.sponsor}
+                                    amount={item.amount}
+                                    donateTime={item.donateTime}
+                                    ethPrice={ethPrice}
                                   />
                                 )
                               })}
