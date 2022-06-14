@@ -166,19 +166,17 @@ export default function Proposal({ proposalList, ethPrice, proposals, hasProposa
                 h={'100px'}
                 alignItems="center"
                 justifyContent="center"
-                transition={"all 0.45s cubic-bezier(0.64, 0.01, 0.07, 1.65)"}
-                _hover={{
-                  transform: "translate(5px)",
-                  filter: "grayscale(100%)"
-                }}
               >
                 <Flex
                   w={'full'}
                   h={'100%'}
                   justifyContent={'center'}
                   alignItems={'center'}>
-                  <Text>
-                    還沒有人有提案呢
+                  <Text
+                    color={useColorModeValue("gray.500", "gray.200")}
+                    fontSize={'sm'}
+                  >
+                    還沒有提案呢
                   </Text>
 
                 </Flex>
