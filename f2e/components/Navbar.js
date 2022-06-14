@@ -10,8 +10,10 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  Link,
+  IconButton
 } from '@chakra-ui/react'
-import { ChevronDownIcon } from "@chakra-ui/icons"
+import { ChevronDownIcon, InfoOutlineIcon } from "@chakra-ui/icons"
 import NextLink from 'next/link'
 // Component
 import ModeSwitch from './ModeSwitch'
@@ -33,6 +35,7 @@ export default function Navbar() {
   })
   const [isSSR, setIsSSR] = useState(true);
   const [state, newToast] = useToastHook();
+  const gitbook = 'https://ku-ti-an-de-bai-pi-shu.gitbook.io/come-up-with-a-cool-proposal/ji-ben-nei-rong/zhuan-an-nei-rong/zhuan-an-jia-zhi'
 
 
   useEffect(() => {
@@ -132,6 +135,8 @@ export default function Navbar() {
               <NextLink href="/#howitworks">說明</NextLink>
             </Button>
 
+
+
             {!isSSR && account?.address ?
               (<Menu>
                 <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
@@ -163,6 +168,14 @@ export default function Navbar() {
                 </Button>
               </div>)
             }
+
+            <IconButton
+              icon={<InfoOutlineIcon />}
+              onClick={() => {
+                window.open(gitbook, '_blank', 'noopener,noreferrer');
+              }}
+            />
+
             <ModeSwitch />
           </Stack>
 
