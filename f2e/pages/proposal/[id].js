@@ -276,7 +276,7 @@ export default function SingleProposal() {
 
                   <TabList>
                     <Tab>基本資訊</Tab>
-                    <Tab>資金使用情況</Tab>
+                    <Tab>提款歷程</Tab>
                   </TabList>
 
                   <TabPanels>
@@ -297,12 +297,6 @@ export default function SingleProposal() {
                               title="提案人"
                               content={summaryOutput[4]}
                               tip="提案人的錢包地址"
-                            />
-                            {/* requestsCount */}
-                            <InfoCard
-                              title="同意人數"
-                              content={parseInt(summaryOutput[2])}
-                              tip="Number of Requests，提案人申請從合約提款，需要經過批准者的同意，贊助人數的50%"
                             />
                             {/* approversCount */}
                             <InfoCard
