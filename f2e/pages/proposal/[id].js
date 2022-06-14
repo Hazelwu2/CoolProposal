@@ -600,6 +600,52 @@ export default function SingleProposal() {
                       </form>
                     </Box>
                   </Stack>
+
+                  {/* 退款 */}
+                  {/* TODO: 串智能合約退款 refund */}
+                  {/* TODO: 判斷按鈕出現時機：
+                      targetToAchieve && 現在時間 > 提案endTime，才會出現退款按鈕 */}
+                  <Stack
+                    bg={useColorModeValue("white", "gray.700")}
+                    boxShadow={"lg"}
+                    rounded={"xl"}
+                    p={{ base: 4, sm: 6, md: 8 }}
+                    spacing={{ base: 6 }}
+                  >
+                    <Heading
+                      lineHeight={1.1}
+                      fontSize={{ base: "md", sm: "md" }}
+                      color={useColorModeValue("teal.600", "teal.200")}
+                      mt={2}
+                    >
+                      提案失敗
+                    </Heading>
+                    <Box mt={10}>
+                      <Text
+                        fontSize={"sm"}
+                        fontWeight="400"
+                        color={useColorModeValue("gray.500", "gray.200")}>
+                        我們很黯然的宣布失敗，由於募資已到期日期，尚未達到目標金額。
+                        你可以提領捐贈在這個提案所有的錢
+                      </Text>
+
+                      <Button
+                        mt={4}
+                        w={"full"}
+                        bgGradient="linear(to-r, red.300,pink.400)"
+                        color={"white"}
+                        isLoading={formState.isSubmitting}
+                        type="submit"
+                        _hover={{
+                          bgGradient: "linear(to-r, red.400,pink.400)",
+                          boxShadow: "xl",
+                        }}
+                      >
+                        退款
+                      </Button>
+
+                    </Box>
+                  </Stack>
                 </Stack>
 
               </Container>
