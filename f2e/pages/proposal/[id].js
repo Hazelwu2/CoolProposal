@@ -300,7 +300,7 @@ export default function SingleProposal() {
                             />
                             {/* approversCount */}
                             <InfoCard
-                              title="贊助人數"
+                              title="累積贊助次數"
                               content={parseInt(summaryOutput[3])}
                               tip="Number of Approvers"
                             />
