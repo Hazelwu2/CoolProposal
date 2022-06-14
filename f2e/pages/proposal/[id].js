@@ -30,7 +30,18 @@ import {
   Skeleton,
   FormHelperText,
   Link,
-  Tabs, TabList, TabPanels, Tab, TabPanel
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  TableContainer,
+  Table,
+  Tr,
+  Th,
+  Td,
+  Thead,
+  Tbody
 } from "@chakra-ui/react";
 import { InfoIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import NextLink from "next/link";
@@ -88,6 +99,29 @@ function InfoCard({
   )
 }
 
+const DonatorRow = (
+  { index, donator, amount, donateTime }
+) => {
+  const router = useRouter();
+
+  return (
+    <Tr
+    >
+      <Td>{index}</Td>
+      <Td>{donator}</Td>
+      <Td isNumeric>
+        {/* {utils.formatEther(request.amount)} ETH */}
+        {amount} ETH
+        <br />
+        {/* (美金約 $ {getWEIPriceInUSD(ethPrice, request.amount)}) */}
+      </Td>
+      <Td>
+        {donateTime}
+      </Td>
+    </Tr>
+  )
+}
+
 export default function SingleProposal() {
   const router = useRouter()
   const { id } = router.query
@@ -100,6 +134,7 @@ export default function SingleProposal() {
   const [error, setError] = useState()
   const { data: account } = useAccount()
   const [isSSR, setIsSSR] = useState(true);
+  const [donatorList, setDonatorList] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [state, newToast] = useToastHook();
   const target = targetAmount + ' ETH'
@@ -277,6 +312,7 @@ export default function SingleProposal() {
                   <TabList>
                     <Tab>基本資訊</Tab>
                     <Tab>提款歷程</Tab>
+                    <Tab>贊助清單</Tab>
                   </TabList>
 
                   <TabPanels>
@@ -336,6 +372,49 @@ export default function SingleProposal() {
                             查看提款歷程
                           </Button>
                         </NextLink>
+                      </Stack>
+                    </TabPanel>
+
+                    {/* 贊助清單 */}
+                    <TabPanel>
+                      <Stack spacing={{ base: 6 }}>
+                        <Text
+                          color={useColorModeValue("gray.600", "gray.200")}
+                          fontSize={{ base: "md" }}
+                        >
+                          您可以查看這些資金的使用情況，如果您已經捐款，您還可以批准這些提款請求
+                        </Text>
+                        <TableContainer>
+                          <Table variant='simple' size='sm'>
+                            <Thead>
+                              <Tr>
+                                <Th>編號</Th>
+                                <Th w="30%">贊助者</Th>
+                                <Th isNumeric>贊助金額</Th>
+                                <Th>贊助時間</Th>
+                              </Tr>
+                            </Thead>
+                            <Tbody>
+                              {/* // TODO: 把 DonatorRow 398-4033 移除 */}
+                              <DonatorRow
+                                index={1}
+                                donator={'Hazel'}
+                                amount={3}
+                                donateTime={'2022/03/22'}
+                              />
+                              {donatorList.length > 0 && donatorList.map((donator, index) => {
+                                return (
+                                  <DonatorRow
+                                    index={index}
+                                    donator={'Hazel'}
+                                    amount={3}
+                                    donateTime={'2022/03/22'}
+                                  />
+                                )
+                              })}
+                            </Tbody>
+                          </Table>
+                        </TableContainer>
                       </Stack>
                     </TabPanel>
                   </TabPanels>
