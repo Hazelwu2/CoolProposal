@@ -92,7 +92,7 @@ export default function NewProposal() {
   const [isSSR, setIsSSR] = useState(true);
 
   useEffect(() => {
-    const subscription = watch((value) => degug.$error(value));
+    const subscription = watch((value) => debug.$error(value));
     return () => subscription.unsubscribe();
   }, [watch])
 
