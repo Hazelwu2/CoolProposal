@@ -7,14 +7,15 @@ contract ProposalFactory {
     // Track Created Proposal Address in Array
     Proposal[] public proposalsAddress;
     // 紀錄事件發生
-    event CreateProposal(address, uint256, string, string, string, uint256);
+    event CreateProposal(address, uint256, string, string, string, uint256, uint256);
 
     function createProposal(
         uint256 _targetAmount,
         string memory _title,
         string memory _desc,
         string memory _imageUrl,
-        uint256 _minimunContribution
+        uint256 _minimunContribution,
+        uint256 _endTime
     ) external {
         proposal = new Proposal(
             payable(msg.sender),
@@ -22,10 +23,11 @@ contract ProposalFactory {
             _title,
             _desc,
             _imageUrl,
-            _minimunContribution
+            _minimunContribution,
+            _endTime
         );
         proposalsAddress.push(proposal);
-        emit CreateProposal(msg.sender, _targetAmount, _title, _desc,_imageUrl, _minimunContribution);
+        emit CreateProposal(msg.sender, _targetAmount, _title, _desc,_imageUrl, _minimunContribution,_endTime);
     }
 
     function getProposalList() public view returns (Proposal[] memory) {
@@ -56,7 +58,8 @@ contract Proposal {
     Request[] public requests;
     // 贊助最低金額
     uint256 public minimunContribution;
-
+    // 專案結束時間
+    uint256 public endTime;
     struct Request {
         string description; // 提款原因
         uint256 amount; // 提款金額
@@ -74,7 +77,8 @@ contract Proposal {
         string memory _title,
         string memory _desc,
         string memory _imageUrl,
-        uint256 _minimunContribution
+        uint256 _minimunContribution,
+        uint256 _endTime
     ) {
         // 最小募資金額需 > 0
         require(_targetAmount > 0, "minimunContribution should > 0");
@@ -82,13 +86,15 @@ contract Proposal {
         require(_minimunContribution > 0, "minimunContribution should > 0");
         // 最小募資金額 需 >= 最小贊助金額
         require(_targetAmount >= _minimunContribution, "minimunContribution should > 0");
-
+        // 專案結束時間 > 目前時間
+        require(_endTime > block.timestamp, "endTime should > now");
         proposer = _proposer;
         targetAmount = _targetAmount;
         ProposalTitle = _title;
         ProposalDescription = _desc;
         imageUrl = _imageUrl;
         minimunContribution = _minimunContribution;
+        endTime = _endTime;
     }
 
     // 贊助
@@ -172,6 +178,7 @@ contract Proposal {
             string memory,
             string memory,
             bool,
+            uint256,
             uint256
         )
     {
@@ -185,7 +192,8 @@ contract Proposal {
             ProposalDescription,
             imageUrl,
             targetToAchieve,
-            minimunContribution
+            minimunContribution,
+            endTime
         );
     }
 
