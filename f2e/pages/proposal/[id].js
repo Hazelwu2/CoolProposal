@@ -300,10 +300,10 @@ export default function SingleProposal() {
   })
 
   useEffect(() => {
-    if(summaryOutput){
+    if (summaryOutput) {
       setIsAfterEndTime((dayjs().isAfter(parseInt(summaryOutput[10]))));
     }
-  },[])
+  }, [])
 
   if (donateOutput?.hash && txLoading) {
     return (<>
@@ -413,17 +413,26 @@ export default function SingleProposal() {
                               content={summaryOutput[4]}
                               tip="提案人的錢包地址"
                             />
+
                             {/* approversCount */}
                             <InfoCard
                               title="累積贊助次數"
                               content={parseInt(summaryOutput[3])}
                               tip="Number of Approvers"
                             />
-                            {/* approversCount */}
+
+                            {/* minimunContribution */}
                             <InfoCard
                               title="最小贊助金額"
                               content={showAmount(summaryOutput[9])}
                               tip="最小贊助金額"
+                            />
+
+                            {/* endTime */}
+                            <InfoCard
+                              title="募資截止日期"
+                              content={dayjs(parseInt(summaryOutput[10])).format('YYYY/MM/DD HH:mm')}
+                              tip="募資截止日期"
                             />
                           </SimpleGrid>
                         </Box>
@@ -649,7 +658,7 @@ export default function SingleProposal() {
                   </Stack>
 
                   {/* 退款 */}
-                  { ! summaryOutput[8] && isAfterEndTime ? (
+                  {!summaryOutput[8] && isAfterEndTime ? (
                     <Stack
                       bg={useColorModeValue("white", "gray.700")}
                       boxShadow={"lg"}
