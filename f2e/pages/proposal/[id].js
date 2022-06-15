@@ -106,7 +106,6 @@ const DonatorRow = (
   { index, donator, amount, donateTime, ethPrice }
 ) => {
   const router = useRouter();
-  debug.$log(parseInt(donateTime._hex))
 
   return (
     <Tr
@@ -637,8 +636,9 @@ export default function SingleProposal() {
                                 bgGradient: "linear(to-r, teal.400,blue.400)",
                                 boxShadow: "xl",
                               }}
+                              isDisabled={!isAfterEndTime}
                             >
-                              贊助
+                              {!isAfterEndTime ? '募資已結束:)' : '贊助'}
                             </Button>
                           ) : (
                             <Alert status="warning" mt={4}>
