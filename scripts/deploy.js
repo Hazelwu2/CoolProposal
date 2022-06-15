@@ -1,7 +1,9 @@
 const hre = require("hardhat");
+const dayjs = require('dayjs')
 
 async function main() {
   const imgUrl = 'https://www.aljazeera.com/wp-content/uploads/2021/04/GettyImages-1232454404.jpg?resize=770%2C513'
+  const endTime = dayjs().add(1, 'days').unix()
 
   // 建立 Proposal Factory
   const ProposalFactory = await ethers.getContractFactory("ProposalFactory");
@@ -11,7 +13,7 @@ async function main() {
 
   // 呼叫 proposalFactory 建立提案合約
   await proposalFactory.createProposal(
-    10, '測試提案標題', '提案描述', imgUrl
+    10000000, '測試提案標題', '提案描述', imgUrl, 1000, endTime
   )
 
   const getProposalList = await proposalFactory.getProposalList()
