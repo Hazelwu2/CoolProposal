@@ -74,7 +74,7 @@ contract Proposal {
     uint256 public endTime;
     // 儲存贊助者總贊助金額
     mapping(address => uint256) public sponsorTotalContribution;
-    // 專案贊助列表
+    // 贊助列表
     DonateInfo[] donateList;
 
     struct Request {
@@ -130,6 +130,8 @@ contract Proposal {
             "donate < minimunContribution"
         );
         require(msg.value > 0, "unenough value");
+        // 檢查募資截止時間
+        require(endTime > block.timestamp, "it already over, can't donate");
         approversCount++;
         // 記錄使用者總共贊助多少金額
         sponsorTotalContribution[msg.sender] += msg.value;
@@ -166,7 +168,6 @@ contract Proposal {
         Request storage newRequest = requests.push();
         newRequest.description = _description;
         newRequest.amount = _amount;
-        // newRequest.recipient = _recipient;
         newRequest.complete = false;
         newRequest.approvalCount = 0;
     }
