@@ -98,10 +98,10 @@ const RequestRow = ({
     },
   })
 
-  if (txLoading || isApproveRequestLoading) {
+  if (approveRequestOutput?.hash || txLoading) {
     return (<>
       <div>
-        <Preloader />
+        <Preloader txHash={approveRequestOutput?.hash}/>
       </div>
     </>)
   }
