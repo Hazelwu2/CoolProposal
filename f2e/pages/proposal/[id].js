@@ -213,7 +213,6 @@ export default function SingleProposal() {
   // 送出表單
   async function submitForm({ amount }) {
     try {
-      debug.$error('[表單填寫的資料]', amount)
 
       donate({
         overrides: {
@@ -260,7 +259,6 @@ export default function SingleProposal() {
         message: '感謝贊助 🙏',
         status: "success"
       });
-      debug.$error('onSuccess', data)
     },
     onError(error) {
       handleError(error || txError)
@@ -292,7 +290,6 @@ export default function SingleProposal() {
         message: '退款成功',
         status: "success"
       });
-      debug.$error('onSuccess', data)
     },
     onError(error) {
       handleError(error || txRefundError)

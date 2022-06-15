@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Head from "next/head";
 import NextLink from "next/link";
 import NextImage from "next/image";
@@ -7,6 +7,7 @@ import { getEthPrice, getWEIPriceInUSD } from "../../../../utils/convert"
 import { useAsync } from "react-use";
 import { utils } from 'ethers'
 import Preloader from '../../../../components/Preloader'
+import { handleError } from '../../../../utils/handle-error';
 // UI
 import {
   Heading,
@@ -28,12 +29,8 @@ import {
   Td,
   TableCaption,
   Skeleton,
-  Alert,
-  AlertIcon,
-  AlertDescription,
   HStack,
   Stack,
-  Link,
 } from "@chakra-ui/react";
 import {
   ArrowBackIcon,
@@ -43,8 +40,9 @@ import {
 } from "@chakra-ui/icons";
 // Utils
 import debug from '../../../../utils/debug'
+import { useToastHook } from '../../../../components/Toast'
 // Wallet
-import { useContractRead, useAccount, useContractWrite, useWaitForTransaction} from 'wagmi'
+import { useContractRead, useAccount, useContractWrite, useWaitForTransaction } from 'wagmi'
 // Contract
 import { instance as Proposal, ProposalABI } from "../../../../contract/Proposal"
 
@@ -57,18 +55,18 @@ const RequestRow = ({
   ethPrice,
   isApprovers
 }) => {
-  const router = useRouter();
-  const readyToFinalize = request.approvalCount > approversCount / 2;
   const [errorMessageApprove, setErrorMessageApprove] = useState();
   const [loadingApprove, setLoadingApprove] = useState(false);
+  const [state, newToast] = useToastHook();
+  const router = useRouter();
 
   const onApprove = async () => {
     setLoadingApprove(true);
     try {
       approveRequest({
-        args:[index],
+        args: [index],
       })
-      
+
     } catch (err) {
       setErrorMessageApprove(err.message);
     } finally {
@@ -92,26 +90,31 @@ const RequestRow = ({
   const { isError: txError, isLoading: txLoading } = useWaitForTransaction({
     hash: approveRequestOutput?.hash,
     onSuccess(data) {
-      debug.$error(data)
+      // debug.$error(data)
       // 重整頁面
+      newToast({
+        message: '同意成功',
+        status: "success"
+      });
       router.reload();
+    },
+    onError(error) {
+      handleError(error || txError)
     },
   })
 
   if (approveRequestOutput?.hash || txLoading) {
     return (<>
       <div>
-        <Preloader txHash={approveRequestOutput?.hash}/>
+        <Preloader txHash={approveRequestOutput?.hash} />
       </div>
     </>)
   }
 
-  
 
   return (
     <Tr
       bg={
-        // readyToFinalize && !request.complete
         !request.complete
           ? useColorModeValue("blue.100", "blue.700")
           : useColorModeValue("gray.100", "gray.700")
@@ -124,8 +127,9 @@ const RequestRow = ({
         {utils.formatEther(request.amount)} ETH
         <br />
         (美金約 $ {getWEIPriceInUSD(ethPrice, request.amount)})
+        <br />
       </Td>
-      
+
 
       {/* 同意人數 / 捐贈人數 */}
       <Td>
@@ -169,8 +173,12 @@ const RequestRow = ({
                 color: "white",
               }}
               onClick={onApprove}
-              isDisabled={disabled || request.complete
-                || (request.approvalCount / approversCount) > 0.5  || (!isApprovers)}
+              /* 
+                同意提款 可點擊條件：
+                1. 已完成募資 ( complete = true )
+                2. 是贊助者身份
+              */
+              isDisabled={disabled || (request.complete && isApprovers === 0)}
               isLoading={loadingApprove}
             >
               同意提款
@@ -189,13 +197,13 @@ export default function Requests({
   const [ethPrice, setEthPrice] = useState(0);
   const [requestsList, setRequestsList] = useState([]);
   const [name, setName] = useState([]);
-  const [desc, setDesc] = useState([]);
   const [FundNotAvailable, setFundNotAvailable] = useState(false);
   const [requestCount, setRequestCount] = useState(0);
   const { id } = router.query
   const chainId = 4 // Rinekby
   const { data: account } = useAccount();
   const [notProposer, setNotProposer] = useState(true);
+  const [isSSR, setIsSSR] = useState(true);
 
   const {
     data: summaryOutput,
@@ -207,7 +215,10 @@ export default function Requests({
       contractInterface: ProposalABI,
     },
     'getProposalSummary',
-    { chainId }
+    {
+      chainId,
+      watch: true
+    }
   )
 
 
@@ -221,41 +232,25 @@ export default function Requests({
       contractInterface: ProposalABI,
     },
     'getRequestsCount',
-    { chainId }
+    {
+      chainId,
+      watch: true
+    }
   )
 
-  const { data: isApprovers} = useContractRead(
+  const { data: isApprovers } = useContractRead(
     {
       addressOrName: id,
       contractInterface: ProposalABI,
     },
-    'approvers',
+    'sponsorTotalContribution',
     {
       args: [account?.address],
       watch: true,
     },
   )
 
-  // 取得提款明細
-  const getRequests = async () => {
-    try {
-      const requestCount = parseInt(requestOutput?._hex)
-      debug.$error(requestCount)
-      setRequestCount(requestCount)
-      const requests = await Promise.all(
-        Array(parseInt(requestCount))
-          .fill()
-          .map((el, index) => Proposal(id).methods.requests(index).call())
-      )
 
-      setRequestsList(requests)
-      debug.$error(requests)
-      debug.$error(summaryOutput)
-    } catch (error) {
-      console.error('[🚸🚸]', error);
-    }
-
-  }
 
   useAsync(async () => {
     try {
@@ -267,17 +262,41 @@ export default function Requests({
   }, []);
 
   useEffect(() => {
-    if (!summaryIsLoading && summaryOutput && summaryOutput.length > 0) {
-      setName(summaryOutput[5])
+
+    // 取得提款明細
+    async function getRequests() {
+      try {
+        if (!requestOutput?._hex) return
+        const requestCount = parseInt(requestOutput?._hex)
+        setRequestCount(requestCount)
+        const requests = await Promise.all(
+          Array(parseInt(requestCount))
+            .fill()
+            .map((el, index) => Proposal(id).methods.requests(index).call())
+        )
+
+        setRequestsList(requests)
+        // debug.$error(requests)
+        // debug.$error('[取得提款明細 summaryOutput]', summaryOutput)
+      } catch (error) {
+        console.error('[🚸🚸 getRequests 取得提款明細]', error);
+      }
     }
+
     getRequests()
-  }, [id, summaryIsLoading])
+  }, [requestOutput])
 
   useEffect(() => {
-    if(account && summaryOutput){
+    setIsSSR(false)
+  }, [id])
+
+  useEffect(() => {
+    if (!summaryIsLoading && summaryOutput && summaryOutput.length > 0) {
+      // 使用者錢包地址 !== 提案者錢包地址
       setNotProposer(account.address !== summaryOutput[4])
+      setName(summaryOutput[5])
     }
-  }, [account])
+  }, [])
 
 
   return (
@@ -303,7 +322,7 @@ export default function Requests({
           </Flex>
         </Container>
 
-        {requestIsLoading ? (
+        {!isSSR && id && requestIsLoading ? (
           <Container
             px={{ base: "4", md: "12" }}
             maxW={"7xl"}
@@ -321,7 +340,7 @@ export default function Requests({
 
         ) : null}
 
-        {requestsList.length > 0 ? (
+        {!isSSR && id && requestsList.length > 0 && summaryOutput?.length > 0 ? (
           <Container px={{ base: "4", md: "12" }} maxW={"7xl"} align={"left"}>
             <Flex flexDirection={{ base: "column", lg: "row" }} py={4} justify={'space-between'}>
               {/* 提款明細 */}
@@ -375,7 +394,7 @@ export default function Requests({
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {requestsList.map((request, index) => {
+                  {requestsList.length > 0 && requestsList.map((request, index) => {
                     return (
                       <RequestRow
                         key={index}
@@ -385,7 +404,7 @@ export default function Requests({
                         approversCount={parseInt(summaryOutput[3])}
                         disabled={FundNotAvailable}
                         ethPrice={ethPrice}
-                        isApprovers={isApprovers}
+                        isApprovers={parseInt(isApprovers?._hex)}
                       />
                     );
                   })}
@@ -402,7 +421,7 @@ export default function Requests({
               maxW={"lg"}
               align={"center"}
               display={
-                requestsList.length === 0 && !requestIsLoading ? "block" : "none"
+                id && requestsList?.length === 0 && !requestIsLoading ? "block" : "none"
               }
             >
               <SimpleGrid row spacing={2} align="center">
