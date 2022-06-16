@@ -70,10 +70,22 @@ $ npx hardhat run srcripts/deploy.js --network rinkeby # 部署到Rinkby測試�
 **Server:** Solidity, Hardhat
 
 ## 👨‍💻 Environment Variables
-需要將以下環境變量添加到 `f2e/.env` 中，可複製 `f2e/.env.example`
+
+### Frontend
+將以下環境變數加到 `f2e/.env` 中，可複製 `f2e/.env.example`
 
 `REACT_APP_INFURA_ID`：請至 `Infura` 註冊取得
 
+### Solidity
+複製 `.env.example` 到 `.env` 
+`REACT_APP_INFURA_ID`：請至 `ALCHEMY` 註冊取得
+`RINKEBY_PRIVATE_KEY`：Rinkby狐狸錢包的私鑰，請從狐狸錢包導出私鑰
+
+.env
+```
+ALCHEMY_API_KEY=
+RINKEBY_PRIVATE_KEY=
+```
 
 
 ## ✨ Contributors 
