@@ -297,6 +297,8 @@ export default function SingleProposal() {
 
   useEffect(() => {
     if (summaryOutput) {
+      debug.$log('end time', parseInt(summaryOutput[10]))
+      debug.$log('是否超過截止時間', dayjs().isAfter(summaryOutput[10]))
       setIsAfterEndTime((dayjs().isAfter(parseInt(summaryOutput[10]))));
     }
   }, [])
@@ -636,9 +638,9 @@ export default function SingleProposal() {
                                 bgGradient: "linear(to-r, teal.400,blue.400)",
                                 boxShadow: "xl",
                               }}
-                              isDisabled={!isAfterEndTime}
+                              isDisabled={isAfterEndTime}
                             >
-                              {!isAfterEndTime ? '募資已結束:)' : '贊助'}
+                              {isAfterEndTime ? '募資已結束:)' : '贊助'}
                             </Button>
                           ) : (
                             <Alert status="warning" mt={4}>
