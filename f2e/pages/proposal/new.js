@@ -118,7 +118,7 @@ export default function NewProposal() {
   // 送出表單
   async function onSubmit({ name, description, imageUrl, target, minAmount, deadline }) {
     try {
-      debug.$log('deadline', deadline, dayjs(deadline).valueOf())
+      debug.$log('deadline', deadline, dayjs(deadline).unix())
       createProposal({
         args: [
           utils.parseEther(target),
@@ -126,7 +126,7 @@ export default function NewProposal() {
           description,
           imageUrl,
           utils.parseEther(minAmount),
-          dayjs(deadline).valueOf()
+          dayjs(deadline).unix()
         ],
         overrides: { from: account.address },
       })

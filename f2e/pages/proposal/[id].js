@@ -298,8 +298,11 @@ export default function SingleProposal() {
   useEffect(() => {
     if (summaryOutput) {
       debug.$log('end time', parseInt(summaryOutput[10]))
-      debug.$log('是否超過截止時間', dayjs().isAfter(summaryOutput[10]))
-      setIsAfterEndTime((dayjs().isAfter(parseInt(summaryOutput[10]))));
+      debug.$log('是否超過截止時間', dayjs().isAfter(parseInt(summaryOutput[10])*1000))
+      setIsAfterEndTime((dayjs().isAfter(parseInt(summaryOutput[10])*1000)));
+      debug.$log('此地址是否沒有贊助', parseInt(sponsorTotalContributionOutput?._hex) === 0)
+      debug.$log('targetToAchieve',summaryOutput[8])
+      debug.$log('dayjs()', dayjs().unix())
     }
   }, [])
 
@@ -318,6 +321,18 @@ export default function SingleProposal() {
       </div>
     </>)
   }
+
+  const { data: sponsorTotalContributionOutput } = useContractRead(
+    {
+      addressOrName: id,
+      contractInterface: ProposalABI,
+    },
+    'sponsorTotalContribution',
+    {
+      args: [account?.address],
+      watch: true,
+    },
+  )
 
 
   return (
@@ -429,7 +444,7 @@ export default function SingleProposal() {
                             {/* endTime */}
                             <InfoCard
                               title="募資截止日期"
-                              content={dayjs(parseInt(summaryOutput[10])).format('YYYY/MM/DD HH:mm')}
+                              content={dayjs(parseInt(summaryOutput[10])*1000).format('YYYY/MM/DD HH:mm')}
                               tip="募資截止日期"
                             />
                           </SimpleGrid>
@@ -656,7 +671,7 @@ export default function SingleProposal() {
                     </Box>
                   </Stack>
 
-                  {/* 退款 */}
+                  {/* 退款 : 未達標且超過截止時間*/}
                   {!summaryOutput[8] && isAfterEndTime ? (
                     <Stack
                       bg={useColorModeValue("white", "gray.700")}
@@ -694,6 +709,7 @@ export default function SingleProposal() {
                             boxShadow: "xl",
                           }}
                           onClick={refund}
+                          disabled={parseInt(sponsorTotalContributionOutput?._hex) === 0}
                         >
                           退款
                         </Button>
