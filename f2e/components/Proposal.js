@@ -48,6 +48,7 @@ function ProposalCard(
         _hover={{
           transform: "translateX(-12px)",
         }}
+        h={'100%'}
       >
         {/* 顯示結束募資狀態 */}
         {
