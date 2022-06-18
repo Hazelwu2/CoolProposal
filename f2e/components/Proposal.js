@@ -12,7 +12,11 @@ import {
   useColorModeValue,
   Progress,
   Skeleton,
-  Container
+  Container,
+  Tag,
+  TagLabel,
+  TagRightIcon,
+  CheckCircleIcon
 } from "@chakra-ui/react";
 import debug from '../utils/debug'
 
@@ -36,6 +40,7 @@ function ProposalCard(
           transform: "translateX(-12px)",
         }}
       >
+
         <Box height="18em">
           <Img
             src={imageUrl}
@@ -97,6 +102,14 @@ function ProposalCard(
               >
                 {parseFloat(utils.formatEther(targetAmount)).toFixed(2)} ETH
               </Text>
+
+              <Tag ml={2} size={'sm'} key={'sm'}
+                variant='outline'
+                colorScheme='teal'
+              >
+                <TagLabel>KYC 認證</TagLabel>
+                <TagRightIcon as={CheckCircleIcon} />
+              </Tag>
 
               <Progress
                 colorScheme="teal"

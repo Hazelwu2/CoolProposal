@@ -368,7 +368,7 @@ export default function Requests({
                 <Button
                   fontFamily={"heading"}
                   w={"full"}
-                  bgGradient="linear(to-r, teal.400,blue.400)"
+                  bgGradient="linear(to-r, teal.400, blue.400)"
                   color={"white"}
                   _hover={{
                     bgGradient: "linear(to-r, teal.400,blue.400)",
