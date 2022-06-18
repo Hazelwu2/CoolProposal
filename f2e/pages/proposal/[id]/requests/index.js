@@ -60,6 +60,7 @@ const RequestRow = ({
   const [state, newToast] = useToastHook();
   const router = useRouter();
 
+
   const onApprove = async () => {
     setLoadingApprove(true);
     try {
@@ -74,6 +75,7 @@ const RequestRow = ({
     }
   };
 
+  // 與智能合約互動，請求[同意提款]
   const {
     data: approveRequestOutput,
     isError: isApproveRequestError,
@@ -85,8 +87,14 @@ const RequestRow = ({
       contractInterface: ProposalABI,
     },
     'approveRequest',
+    {
+      onError(error) {
+        handleError(error)
+      },
+    }
   )
 
+  // 等待 [同意提款] 交易完成
   const { isError: txError, isLoading: txLoading } = useWaitForTransaction({
     hash: approveRequestOutput?.hash,
     onSuccess(data) {
@@ -210,6 +218,7 @@ export default function Requests({
     router.push(`/proposal/${id}/requests/new`)
   }
 
+  // 取得 [提案詳細資訊]
   const {
     data: summaryOutput,
     isError: summaryError,
@@ -237,7 +246,7 @@ export default function Requests({
     }
   )
 
-
+  // 取得 [提款明細]
   const {
     data: requestOutput,
     isError: requestError,
@@ -254,6 +263,7 @@ export default function Requests({
     }
   )
 
+  // 取得 [該錢包 dontate 金額]，以判斷是否為贊助者
   const { data: isApprovers } = useContractRead(
     {
       addressOrName: id,
