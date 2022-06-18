@@ -331,21 +331,6 @@ export default function SingleProposal() {
     },
   })
 
-  // useEffect(() => {
-  //   if (summaryOutput) {
-  //     debug.$log('end time', parseInt(summaryOutput[10]))
-  //     // debug.$log('是否超過截止時間', dayjs().isAfter(parseInt(summaryOutput[10]) * 1000))
-  //     const endTime = parseInt(summaryOutput[10]) * 1000
-  //     const string = dayjs(endTime).format('YYYY/MM/DD mm:ss')
-  //     setIsAfterEndTime(dayjs().isAfter(endTime))
-  //     debug.$log('string', string)
-  //     setFormatEndTime(string)
-  //     // debug.$log('此地址是否沒有贊助', parseInt(sponsorTotalContributionOutput?._hex) === 0)
-  //     // debug.$log('targetToAchieve', summaryOutput[8])
-  //     // debug.$log('dayjs()', dayjs().unix())
-  //   }
-  // }, [])
-
   if (donateOutput?.hash && txLoading) {
     return (<>
       <div>
