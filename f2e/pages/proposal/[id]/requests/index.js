@@ -92,7 +92,7 @@ const RequestRow = ({
   )
 
   // 等待 [同意提款] 交易完成
-  const { isError: txError, isLoading: txLoading, isFetching } = useWaitForTransaction({
+  const { isError: txError, isLoading: txLoading } = useWaitForTransaction({
     hash: approveRequestOutput?.hash,
     onSuccess(data) {
       debug.$error('[同意成功] success')
@@ -195,7 +195,7 @@ const RequestRow = ({
               }}
               onClick={onApprove}
               isDisabled={disabled}
-              isLoading={loadingApprove}
+              isLoading={txLoading}
             >
               同意提款
             </Button>
@@ -265,11 +265,11 @@ export default function Requests({
   )
 
   // 切換錢包時重新判斷notProposer
-  useEffect (() => {
-    if(summaryOutput){
+  useEffect(() => {
+    if (summaryOutput) {
       setNotProposer(account?.address !== summaryOutput[4])
     }
-  },[account])
+  }, [account])
 
   // 取得 [提款明細]
   const {
