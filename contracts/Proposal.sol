@@ -62,8 +62,10 @@ contract Proposal {
     string public ProposalDescription;
     // 提案圖片
     string public imageUrl;
-    // 贊助人數
+    // 贊助次數
     uint256 public approversCount;
+    // 贊助人數
+    uint256 public sponsorCount;
     // 是否達成目標
     bool public targetToAchieve;
     // 提款要求
@@ -135,8 +137,11 @@ contract Proposal {
 
         // 檢查使用者沒贊助過，贊助人數+1
         if (sponsorTotalContribution[msg.sender] == 0){
-            approversCount++;
+            sponsorCount++;
         }
+        // 贊助次數+1
+        approversCount++;
+
         // 記錄使用者總共贊助多少金額
         sponsorTotalContribution[msg.sender] += msg.value;
         // 紀錄專案贊助紀錄
@@ -194,7 +199,7 @@ contract Proposal {
         // 同意數+1
         requests[index].approvalCount++;
         // 同意數 >= 贊助人數的1/2 就轉錢給提案者
-        if (requests[index].approvalCount >= approversCount / 2) {
+        if (requests[index].approvalCount >= sponsorCount / 2) {
             finalizeRequest(index);
         }
     }
@@ -234,6 +239,7 @@ contract Proposal {
             string memory,
             bool,
             uint256,
+            uint256,
             uint256
         )
     {
@@ -248,7 +254,8 @@ contract Proposal {
             imageUrl,
             targetToAchieve,
             minimunContribution,
-            endTime
+            endTime,
+            sponsorCount
         );
     }
 
