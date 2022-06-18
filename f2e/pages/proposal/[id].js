@@ -155,6 +155,7 @@ export default function SingleProposal() {
   const target = targetAmount + ' ETH'
   const [isAfterEndTime, setIsAfterEndTime] = useState(false);
   const [formatEndTime, setFormatEndTime] = useState('');
+  const [canRefund, setCanRefund] = useState(false);
 
   const {
     data: summaryOutput,
@@ -168,7 +169,17 @@ export default function SingleProposal() {
     'getProposalSummary',
     {
       chainId: 4,
-      watch: true
+      watch: true,
+      onSuccess(data) {
+        const endTime = parseInt(summaryOutput[10]) * 1000
+        const endTimeFormatDate = dayjs(endTime).format('YYYY/MM/DD mm:ss')
+        setIsAfterEndTime(dayjs().isAfter(endTime))
+        debug.$log('endTimeFormatDate', endTimeFormatDate)
+        setFormatEndTime(endTimeFormatDate)
+      },
+      onError(error) {
+        debug.$error('[Summary]', error)
+      }
     },
   )
 
@@ -200,6 +211,15 @@ export default function SingleProposal() {
       chainId: 4,
       args: [account?.address],
       watch: true,
+      onSuccess(data) {
+        debug.$log('[sponsorTotalContribution] Success', data)
+
+        setCanRefund(parseInt(sponsorTotalContributionOutput?._hex) === 0)
+        debug.$log('[canRefund]', canRefund)
+      },
+      onError(error) {
+        debug.$log('[sponsorTotalContribution] Error', error)
+      },
     },
   )
 
@@ -311,21 +331,6 @@ export default function SingleProposal() {
     },
   })
 
-  useEffect(() => {
-    if (summaryOutput) {
-      debug.$log('end time', parseInt(summaryOutput[10]))
-      // debug.$log('是否超過截止時間', dayjs().isAfter(parseInt(summaryOutput[10]) * 1000))
-      const endTime = parseInt(summaryOutput[10]) * 1000
-      const string = dayjs(endTime).format('YYYY/MM/DD mm:ss')
-      setIsAfterEndTime(dayjs().isAfter(endTime))
-      debug.$log('string', string)
-      setFormatEndTime(string)
-      // debug.$log('此地址是否沒有贊助', parseInt(sponsorTotalContributionOutput?._hex) === 0)
-      // debug.$log('targetToAchieve', summaryOutput[8])
-      // debug.$log('dayjs()', dayjs().unix())
-    }
-  }, [])
-
   if (donateOutput?.hash && txLoading) {
     return (<>
       <div>
@@ -351,7 +356,7 @@ export default function SingleProposal() {
         <link rel="icon" href="/logo.svg" />
       </Head>
 
-      {!isSSR && id && summaryOutput?.length > 0 ?
+      {!isSSR && id && summaryOutput?.length > 0 && sponsorTotalContributionOutput ?
         (
           <main>
 
@@ -452,8 +457,6 @@ export default function SingleProposal() {
                             {/* endTime */}
                             <InfoCard
                               title="募資截止日期"
-                              // content={dayjs(parseInt(summaryOutput[10]) * 1000).format('YYYY/MM/DD HH:mm')}
-                              // content={dayjs(parseInt(summaryOutput[10])).format('YYYY/MM/DD HH:mm')}
                               content={formatEndTime}
                               tip="募資截止日期"
                             />
@@ -720,7 +723,7 @@ export default function SingleProposal() {
                             boxShadow: "xl",
                           }}
                           onClick={refund}
-                          disabled={parseInt(sponsorTotalContributionOutput?._hex) === 0}
+                          disabled={canRefund}
                         >
                           退款
                         </Button>
