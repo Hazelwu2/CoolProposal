@@ -124,8 +124,8 @@ const RequestRow = ({
     <Tr
       bg={
         !request.complete
-          ? useColorModeValue("blue.100", "blue.700")
-          : useColorModeValue("gray.100", "gray.700")
+          ? useColorModeValue("gray.100", "gray.900")
+          : useColorModeValue("gray.100", "gray.900")
       }
       opacity={request.complete ? "0.4" : "1"}
     >
