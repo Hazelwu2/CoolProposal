@@ -6,6 +6,7 @@
 
 <p align="center">
   <img src="./cover.png" width="700px">
+  <img src="./cover2.png" width="700px">
 </p>
 
 <p align="center">
