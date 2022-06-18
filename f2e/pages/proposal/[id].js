@@ -154,6 +154,7 @@ export default function SingleProposal() {
   const [state, newToast] = useToastHook();
   const target = targetAmount + ' ETH'
   const [isAfterEndTime, setIsAfterEndTime] = useState(false);
+  const [formatEndTime, setFormatEndTime] = useState('');
 
   const {
     data: summaryOutput,
@@ -184,6 +185,21 @@ export default function SingleProposal() {
     {
       chainId: 4,
       watch: true
+    },
+  )
+
+  const {
+    data: sponsorTotalContributionOutput
+  } = useContractRead(
+    {
+      addressOrName: id,
+      contractInterface: ProposalABI,
+    },
+    'sponsorTotalContribution',
+    {
+      chainId: 4,
+      args: [account?.address],
+      watch: true,
     },
   )
 
@@ -298,8 +314,15 @@ export default function SingleProposal() {
   useEffect(() => {
     if (summaryOutput) {
       debug.$log('end time', parseInt(summaryOutput[10]))
-      debug.$log('是否超過截止時間', dayjs().isAfter(summaryOutput[10]))
-      setIsAfterEndTime((dayjs().isAfter(parseInt(summaryOutput[10]))));
+      // debug.$log('是否超過截止時間', dayjs().isAfter(parseInt(summaryOutput[10]) * 1000))
+      const endTime = parseInt(summaryOutput[10]) * 1000
+      const string = dayjs(endTime).format('YYYY/MM/DD mm:ss')
+      setIsAfterEndTime(dayjs().isAfter(endTime))
+      debug.$log('string', string)
+      setFormatEndTime(string)
+      // debug.$log('此地址是否沒有贊助', parseInt(sponsorTotalContributionOutput?._hex) === 0)
+      // debug.$log('targetToAchieve', summaryOutput[8])
+      // debug.$log('dayjs()', dayjs().unix())
     }
   }, [])
 
@@ -429,7 +452,9 @@ export default function SingleProposal() {
                             {/* endTime */}
                             <InfoCard
                               title="募資截止日期"
-                              content={dayjs(parseInt(summaryOutput[10])).format('YYYY/MM/DD HH:mm')}
+                              // content={dayjs(parseInt(summaryOutput[10]) * 1000).format('YYYY/MM/DD HH:mm')}
+                              // content={dayjs(parseInt(summaryOutput[10])).format('YYYY/MM/DD HH:mm')}
+                              content={formatEndTime}
                               tip="募資截止日期"
                             />
                           </SimpleGrid>
@@ -484,6 +509,7 @@ export default function SingleProposal() {
                               {donateListOutput?.length > 0 && donateListOutput?.map((item, index) => {
                                 return (
                                   <DonatorRow
+                                    key={index}
                                     index={index}
                                     donator={item.sponsor}
                                     amount={item.amount}
@@ -656,7 +682,7 @@ export default function SingleProposal() {
                     </Box>
                   </Stack>
 
-                  {/* 退款 */}
+                  {/* 退款 : 未達標且超過截止時間*/}
                   {!summaryOutput[8] && isAfterEndTime ? (
                     <Stack
                       bg={useColorModeValue("white", "gray.700")}
@@ -694,6 +720,7 @@ export default function SingleProposal() {
                             boxShadow: "xl",
                           }}
                           onClick={refund}
+                          disabled={parseInt(sponsorTotalContributionOutput?._hex) === 0}
                         >
                           退款
                         </Button>
