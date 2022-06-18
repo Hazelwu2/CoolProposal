@@ -74,6 +74,7 @@ function InfoCard({
       borderColor={"gray.200"}
       p={{ base: 4, sm: 6, md: 8 }}
       spacing={{ base: 8 }}
+      className="info-card"
     >
       <StatLabel fontWeight={"medium"}>
         <Text as="span" mr={2}>

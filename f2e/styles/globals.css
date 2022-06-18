@@ -32,6 +32,6 @@ a {
   background: inherit;
 }
 
-svg {
+.info-card svg {
   margin-left: 0.3rem;
 }
