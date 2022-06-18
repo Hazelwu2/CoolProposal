@@ -35,3 +35,10 @@ a {
 .info-card svg {
   margin-left: 0.3rem;
 }
+
+.preloader {
+  position: relative;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}

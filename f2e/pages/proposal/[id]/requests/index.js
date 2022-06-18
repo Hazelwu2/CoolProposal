@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Head from "next/head";
 import NextLink from "next/link";
-import NextImage from "next/image";
 import { useRouter } from "next/router";
 import { getEthPrice, getWEIPriceInUSD } from "../../../../utils/convert"
 import { useAsync } from "react-use";
 import { utils } from 'ethers'
 import Preloader from '../../../../components/Preloader'
+import BreadcrumbBackLink from '../../../../components/BreadcrumbBackLink'
 import { handleError } from '../../../../utils/handle-error';
 // UI
 import {
@@ -19,7 +19,6 @@ import {
   Container,
   SimpleGrid,
   Box,
-  Spacer,
   Table,
   Thead,
   Tbody,
@@ -52,29 +51,28 @@ const RequestRow = ({
   request,
   sponsorsCount,
   disabled,
-  ethPrice
+  ethPrice,
+  updateIsLoading
 }) => {
   const [errorMessageApprove, setErrorMessageApprove] = useState();
-  const [loadingApprove, setLoadingApprove] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [state, newToast] = useToastHook();
   const router = useRouter();
 
 
   const onApprove = async () => {
-    setLoadingApprove(true);
     try {
       approveRequest({
         args: [index],
       })
 
     } catch (err) {
+      console.error('[🚸🚸]', error);
       setErrorMessageApprove(err.message);
-    } finally {
-      setLoadingApprove(false);
     }
   };
 
-  // 與智能合約互動，請求[同意提款]
+  // 與智能合約互動，請求 [同意提款]
   const {
     data: approveRequestOutput,
     isError: isApproveRequestError,
@@ -94,28 +92,38 @@ const RequestRow = ({
   )
 
   // 等待 [同意提款] 交易完成
-  const { isError: txError, isLoading: txLoading } = useWaitForTransaction({
+  const { isError: txError, isLoading: txLoading, isFetching } = useWaitForTransaction({
     hash: approveRequestOutput?.hash,
     onSuccess(data) {
-      // debug.$error(data)
-      // 重整頁面
+      debug.$error('[同意成功] success')
       newToast({
         message: '同意成功',
         status: "success"
       });
-      router.reload();
+      updateIsLoading(false)
     },
     onError(error) {
       handleError(error || txError)
     },
   })
 
-  if (approveRequestOutput?.hash || txLoading) {
-    return (<>
-      <div>
-        <Preloader txHash={approveRequestOutput?.hash} />
-      </div>
-    </>)
+  // For Test Preloader
+  const callParent = () => {
+    updateIsLoading(true, '0xdad15D3c466b4b349eDFA1D1be4dd3b43dd85547')
+
+    setTimeout(() => {
+      updateIsLoading(false)
+
+    }, 30000000)
+  }
+
+  // [同意提款] tx 交易完成後，通知父層元件 Request
+  if (txLoading && approveRequestOutput?.hash) {
+    // 需要設定 isLoading true return
+    // 否則會風狂渲染，造成瀏覽器 Crash
+    if (isLoading) return
+    setIsLoading(true)
+    updateIsLoading(true, approveRequestOutput?.hash)
   }
 
 
@@ -135,6 +143,12 @@ const RequestRow = ({
         <br />
         (美金約 $ {getWEIPriceInUSD(ethPrice, request.amount)})
         <br />
+        {/* For Test Preloader */}
+        <Button
+          onClick={callParent}
+        >
+          測試 Preloader
+        </Button>
       </Td>
 
 
@@ -172,12 +186,12 @@ const RequestRow = ({
             </Tooltip>
           ) : (
             <Button
-              bg="blue.300"
+              bgGradient="linear(to-r, red.300,pink.400)"
               color={"white"}
               variant="outline"
               _hover={{
-                bg: "blue.600",
-                color: "white",
+                bgGradient: "linear(to-r, red.200, pink.500)",
+                boxShadow: "xl",
               }}
               onClick={onApprove}
               isDisabled={disabled}
@@ -200,11 +214,20 @@ export default function Requests({
   const [requestsList, setRequestsList] = useState([]);
   const [name, setName] = useState([]);
   const [requestCount, setRequestCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [txHash, setTxHash] = useState(false);
   const { id } = router.query
   const chainId = 4 // Rinekby
   const { data: account } = useAccount();
   const [notProposer, setNotProposer] = useState(true);
   const [isSSR, setIsSSR] = useState(true);
+
+  const onIsLoadingFunction = (bool, txHash = '') => {
+    debug.$error('[onIsLoadingFunction]', bool, txHash)
+    setIsLoading(bool)
+    setTxHash(txHash)
+    debug.$error('[isLoading]', isLoading, txHash)
+  }
 
   const toWithdrawalPage = (id) => {
     if (!id) return
@@ -226,15 +249,17 @@ export default function Requests({
       chainId,
       watch: true,
       onSuccess(data) {
-        debug.$error('有權限可進入提款頁？', account.address === summaryOutput[4]
-          ? '有啊' : '沒有捏')
-        // 使用者錢包地址 !== 提案者錢包地址，確定是否為提案者錢包
-        setNotProposer(account?.address !== summaryOutput[4])
-        debug.$error('notProposer', notProposer)
-        debug.$error('提案者的錢包地址：', summaryOutput[4])
+        if (data) {
+          debug.$error('有權限可進入提款頁？', account.address === summaryOutput[4]
+            ? '有啊' : '沒有捏')
+          // 使用者錢包地址 !== 提案者錢包地址，確定是否為提案者錢包
+          setNotProposer(account.address !== summaryOutput[4])
+          debug.$error('notProposer', notProposer)
+          debug.$error('提案者的錢包地址：', summaryOutput[4])
 
-        // 設定提案名稱
-        setName(summaryOutput[5])
+          // 設定提案名稱
+          setName(summaryOutput[5])
+        }
       }
     }
   )
@@ -276,8 +301,6 @@ export default function Requests({
     },
   )
 
-
-
   useAsync(async () => {
     try {
       const result = await getEthPrice();
@@ -288,7 +311,6 @@ export default function Requests({
   }, []);
 
   useEffect(() => {
-
     // 取得提款明細
     async function getRequests() {
       try {
@@ -316,6 +338,11 @@ export default function Requests({
     setIsSSR(false)
   }, [id])
 
+  useEffect(() => {
+    if (summaryOutput) {
+      setNotProposer(account?.address !== summaryOutput[4])
+    }
+  }, [account?.address])
 
   return (
     <div>
@@ -326,20 +353,8 @@ export default function Requests({
       </Head>
 
       <main>
-        <Container px={{ base: "4", md: "12" }} maxW={"7xl"} align={"left"}>
-          <Flex flexDirection={{ base: "column", md: "row" }} py={4}>
-            <Box py="4">
-              <Text fontSize={"lg"} color={"teal.400"}>
-                <ArrowBackIcon mr={2} />
-                <NextLink href={`/proposal/${id}`}>
-                  回到上一頁
-                </NextLink>
-              </Text>
-              <Spacer />
-            </Box>
-          </Flex>
-        </Container>
 
+        {/* Skeleton */}
         {!isSSR && id && requestIsLoading ? (
           <Container
             px={{ base: "4", md: "12" }}
@@ -358,9 +373,22 @@ export default function Requests({
 
         ) : null}
 
+        {!isSSR && id && isLoading && (
+          <div id="hazel" position={'fixed'} zIndex={'9'}>
+            <Preloader txHash={txHash} />
+          </div>
+        )}
+
         {!isSSR && id && requestsList.length > 0 && summaryOutput?.length > 0 ? (
-          <Container px={{ base: "4", md: "12" }} maxW={"7xl"} align={"left"}>
+          <Container
+            px={{ base: "4", md: "12" }}
+            maxW={"7xl"}
+            align={"left"}
+            display={isLoading ? 'none' : 'block'}
+          >
+            <BreadcrumbBackLink link={`/proposal/${id}`} />
             <Flex flexDirection={{ base: "column", lg: "row" }} py={4} justify={'space-between'}>
+
               {/* 提款明細 */}
               <Box py="2" pr="2">
                 <Heading
@@ -386,6 +414,7 @@ export default function Requests({
                   }}
                   isDisabled={notProposer}
                   onClick={() => toWithdrawalPage(id)}
+                  position={'relative'}
                 >
                   {
                     notProposer ? (
@@ -426,6 +455,7 @@ export default function Requests({
                         */
                         disabled={(request.complete || parseInt(isApprovers?._hex) === 0)}
                         ethPrice={ethPrice}
+                        updateIsLoading={onIsLoadingFunction}
                       />
                     );
                   })}
@@ -435,9 +465,11 @@ export default function Requests({
                 </TableCaption>
               </Table>
             </Box>
+
           </Container>
         ) : (
           <div>
+            <BreadcrumbBackLink link={`/proposal/${id}`} />
             <Container
               maxW={"lg"}
               align={"center"}
