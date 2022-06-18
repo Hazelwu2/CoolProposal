@@ -205,6 +205,11 @@ export default function Requests({
   const [notProposer, setNotProposer] = useState(true);
   const [isSSR, setIsSSR] = useState(true);
 
+  const toWithdrawalPage = (id) => {
+    if (!id) return
+    router.push(`/proposal/${id}/requests/new`)
+  }
+
   const {
     data: summaryOutput,
     isError: summaryError,
@@ -357,27 +362,26 @@ export default function Requests({
               </Box>
               {/* 提出提款請求按鈕 */}
               <Box py="2">
-                <NextLink href={`/proposal/${id}/requests/new`}>
-                  <Button
-                    fontFamily={"heading"}
-                    w={"full"}
-                    bgGradient="linear(to-r, teal.400,blue.400)"
-                    color={"white"}
-                    _hover={{
-                      bgGradient: "linear(to-r, teal.400,blue.400)",
-                      boxShadow: "xl",
-                    }}
-                    isDisabled={notProposer}
-                  >
-                    {
-                      notProposer ? (
-                        "不可提出提款請求"
-                      ) : (
-                        "提出提款請求"
-                      )
-                    }
-                  </Button>
-                </NextLink>
+                <Button
+                  fontFamily={"heading"}
+                  w={"full"}
+                  bgGradient="linear(to-r, teal.400,blue.400)"
+                  color={"white"}
+                  _hover={{
+                    bgGradient: "linear(to-r, teal.400,blue.400)",
+                    boxShadow: "xl",
+                  }}
+                  isDisabled={notProposer}
+                  onClick={() => toWithdrawalPage(id)}
+                >
+                  {
+                    notProposer ? (
+                      "不可提出提款請求"
+                    ) : (
+                      "提出提款請求"
+                    )
+                  }
+                </Button>
               </Box>
             </Flex>
 
@@ -453,16 +457,15 @@ export default function Requests({
                     bg: "teal.300",
                   }}
                   isDisabled={notProposer}
+                  onClick={() => toWithdrawalPage(id)}
                 >
-                  <NextLink href={`/proposal/${id}/requests/new`}>
-                    {
-                      notProposer ? (
-                        "不可提出提款請求"
-                      ) : (
-                        "提出提款請求"
-                      )
-                    }
-                  </NextLink>
+                  {
+                    notProposer ? (
+                      "不可提出提款請求"
+                    ) : (
+                      "提出提款請求"
+                    )
+                  }
                 </Button>
 
                 <Button
