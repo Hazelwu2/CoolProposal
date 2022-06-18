@@ -52,8 +52,7 @@ const RequestRow = ({
   request,
   sponsorsCount,
   disabled,
-  ethPrice,
-  isApprovers
+  ethPrice
 }) => {
   const [errorMessageApprove, setErrorMessageApprove] = useState();
   const [loadingApprove, setLoadingApprove] = useState(false);
@@ -181,12 +180,7 @@ const RequestRow = ({
                 color: "white",
               }}
               onClick={onApprove}
-              /* 
-                同意提款 可點擊條件：
-                1. 已完成募資 ( complete = true )
-                2. 是贊助者身份
-              */
-              isDisabled={disabled || (request.complete && isApprovers === 0)}
+              isDisabled={disabled}
               isLoading={loadingApprove}
             >
               同意提款
@@ -205,7 +199,6 @@ export default function Requests({
   const [ethPrice, setEthPrice] = useState(0);
   const [requestsList, setRequestsList] = useState([]);
   const [name, setName] = useState([]);
-  const [FundNotAvailable, setFundNotAvailable] = useState(false);
   const [requestCount, setRequestCount] = useState(0);
   const { id } = router.query
   const chainId = 4 // Rinekby
@@ -236,7 +229,7 @@ export default function Requests({
         debug.$error('有權限可進入提款頁？', account.address === summaryOutput[4]
           ? '有啊' : '沒有捏')
         // 使用者錢包地址 !== 提案者錢包地址，確定是否為提案者錢包
-        setNotProposer(account.address !== summaryOutput[4])
+        setNotProposer(account?.address !== summaryOutput[4])
         debug.$error('notProposer', notProposer)
         debug.$error('提案者的錢包地址：', summaryOutput[4])
 
@@ -246,6 +239,7 @@ export default function Requests({
     }
   )
 
+  // 切換錢包時重新判斷notProposer
   useEffect (() => {
     if(summaryOutput){
       setNotProposer(account?.address !== summaryOutput[4])
@@ -425,9 +419,13 @@ export default function Requests({
                         id={id}
                         request={request}
                         sponsorsCount={parseInt(summaryOutput[11])}
-                        disabled={FundNotAvailable}
+                        /* 
+                        同意提款 disable條件：
+                        1. 已完成提款 ( complete = true )
+                        2. 非贊助者身份 (贊助金額為0)
+                        */
+                        disabled={(request.complete || parseInt(isApprovers?._hex) === 0)}
                         ethPrice={ethPrice}
-                        isApprovers={parseInt(isApprovers?._hex)}
                       />
                     );
                   })}
