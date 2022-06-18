@@ -65,7 +65,7 @@ function ProposalCard(
                 alignItems={'center'}
                 justifyContent={'center'}
               >
-                <Text fontSize={'lg'} color={'white'}>
+                <Text fontSize={'lg'} color={useColorModeValue("teal.700", "white")}>
                   已結束募資，感謝支持
                 </Text>
               </Flex>
