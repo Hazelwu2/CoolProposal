@@ -23,7 +23,7 @@ import {
 import debug from '../utils/debug'
 
 function ProposalCard(
-  { name, desc, proposer, id, balance, imageUrl, ethPrice, targetAmount, index, endTime }) {
+  { name, desc, proposer, id, balance, imageUrl, ethPrice, targetAmount, index, endTime, targetToAchieve }) {
 
   const [isAfterEndTime, setIsAfterEndTime] = useState(false);
 
@@ -49,104 +49,128 @@ function ProposalCard(
           transform: "translateX(-12px)",
         }}
       >
-
-        <Box height="18em">
-          <Img
-            src={imageUrl}
-            roundedTop="lg"
-            objectFit="cover"
-            w="full"
-            h="full"
-            display="block"
-          />
-        </Box>
-        <Box p="4">
-          <Flex
-            mt="1"
-            justifyContent="space-between"
-            alignContent="center"
-            py={2}
-          >
+        {/* 顯示結束募資狀態 */}
+        {
+          targetToAchieve && (
             <Box
-              fontSize="md"
-              fontWeight={'300'}
-              as="h5"
-            >
-              {name}
+              position={'absolute'}
+              top={'0'}
+              left={'0'}
+              w={'full'}
+              h={'full'}>
+              <Flex
+                w={'100%'}
+                h={'100%'}
+                alignItems={'center'}
+                justifyContent={'center'}
+              >
+                <Text fontSize={'lg'} color={'white'}>
+                  已結束募資，感謝支持
+                </Text>
+              </Flex>
             </Box>
-          </Flex>
+          )
+        }
 
-          <Flex alignContent='center' py={2}>
-            <Text fontSize="sm" color={'gray.400'} pr={2}>
-              提案 by
-            </Text>
-            <Text fontSize="sm" color={'blue.300'} pr={2}>
-              {proposer ? proposer.substr(0, 18) + '...' : null}
-            </Text>
-          </Flex>
+        <Box opacity={targetToAchieve ? '0.15' : {}}>
+          <Box height="18em">
+            <Img
+              src={imageUrl}
+              roundedTop="lg"
+              objectFit="cover"
+              w="full"
+              h="full"
+              display="block"
+            />
+          </Box>
+          <Box p="4">
+            <Flex
+              mt="1"
+              justifyContent="space-between"
+              alignContent="center"
+              py={2}
+            >
+              <Box
+                fontSize="md"
+                fontWeight={'300'}
+                as="h5"
+              >
+                {name}
+              </Box>
+            </Flex>
 
-          <Flex py={2}>
-            {isAfterEndTime ? ('募資已結束')
-              : (
-                <Box
-                  maxW={{ base: "15rem", sm: "sm" }}
-                  pt="2"
-                  w="full"
-                >
-                  {/* 目前金額 ETH / USD */}
-                  <Text
-                    as="span"
-                    pr={2}
-                    fontWeight={"bold"}
-                    display="inline"
+            <Flex alignContent='center' py={2}>
+              <Text fontSize="sm" color={'gray.400'} pr={2}>
+                提案 by
+              </Text>
+              <Text fontSize="sm" color={'blue.300'} pr={2}>
+                {proposer ? proposer.substr(0, 18) + '...' : null}
+              </Text>
+            </Flex>
+
+            <Flex py={2}>
+              {isAfterEndTime ? ('募資已結束')
+                : (
+                  <Box
+                    maxW={{ base: "15rem", sm: "sm" }}
+                    pt="2"
+                    w="full"
                   >
-                    {balance > 0
-                      ? utils.formatEther(balance) + ' ETH'
-                      : "0, 成為第一位贊助者"
-                    }
-                  </Text>
-                  {/* 目標金額 */}
-                  <Text
-                    as="span"
-                    fontWeight={"300"}
-                    color={useColorModeValue("gray.500", "gray.200")}
-                  >
-                    {parseFloat(utils.formatEther(targetAmount)).toFixed(2)} ETH
-                  </Text>
+                    {/* 目前金額 ETH / USD */}
+                    <Text
+                      as="span"
+                      pr={2}
+                      fontWeight={"bold"}
+                      display="inline"
+                    >
+                      {balance > 0
+                        ? utils.formatEther(balance) + ' ETH'
+                        : "0, 成為第一位贊助者"
+                      }
+                    </Text>
+                    {/* 目標金額 */}
+                    <Text
+                      as="span"
+                      fontWeight={"300"}
+                      color={useColorModeValue("gray.500", "gray.200")}
+                    >
+                      {parseFloat(utils.formatEther(targetAmount)).toFixed(2)} ETH
+                    </Text>
 
-                  {
-                    (index === 1 || index === 3) && (
+                    {
+                      (index === 1 || index === 3) && (
 
-                      <Tag ml={2} size={'sm'} key={'sm'}
-                        variant='outline'
-                        colorScheme='teal'
-                      >
-                        <TagLabel>KYC 認證</TagLabel>
-                        <Tooltip
-                          bg={useColorModeValue("white", "gray.700")}
-                          color={useColorModeValue("gray.800", "white")}
-                          label={'提案者完成平台 KYC 認證，有 KYC 認證提案會更有保障'}
-                          fontSize={"1em"}
-                          px="4"
+                        <Tag ml={2} size={'sm'} key={'sm'}
+                          variant='outline'
+                          colorScheme='teal'
                         >
-                          <TagRightIcon as={CheckCircleIcon} />
-                        </Tooltip>
-                      </Tag>
-                    )
-                  }
+                          <TagLabel>KYC 認證</TagLabel>
+                          <Tooltip
+                            bg={useColorModeValue("white", "gray.700")}
+                            color={useColorModeValue("gray.800", "white")}
+                            label={'提案者完成平台 KYC 認證，有 KYC 認證提案會更有保障'}
+                            fontSize={"1em"}
+                            px="4"
+                          >
+                            <TagRightIcon as={CheckCircleIcon} />
+                          </Tooltip>
+                        </Tag>
+                      )
+                    }
 
-                  <Progress
-                    colorScheme="teal"
-                    size="sm"
-                    value={utils.formatEther(balance)}
-                    max={utils.formatEther(targetAmount)}
-                    mt="2"
-                  />
-                </Box>
+                    <Progress
+                      colorScheme="teal"
+                      size="sm"
+                      value={utils.formatEther(balance)}
+                      max={utils.formatEther(targetAmount)}
+                      mt="2"
+                    />
+                  </Box>
 
-              )
-            }
-          </Flex>
+                )
+              }
+            </Flex>
+          </Box>
         </Box>
       </Box>
     </NextLink>
@@ -189,6 +213,7 @@ export default function Proposal({ proposalList, ethPrice, proposals, hasProposa
                     ethPrice={ethPrice}
                     id={proposals[index]}
                     endTime={proposal[10]}
+                    targetToAchieve={proposal[8]}
                   />
                 </div>
               )
