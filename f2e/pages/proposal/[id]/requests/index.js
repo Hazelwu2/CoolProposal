@@ -222,7 +222,18 @@ export default function Requests({
     'getProposalSummary',
     {
       chainId,
-      watch: true
+      watch: true,
+      onSuccess(data) {
+        debug.$error('有權限可進入提款頁？', account.address === summaryOutput[4]
+          ? '有啊' : '沒有捏')
+        // 使用者錢包地址 !== 提案者錢包地址，確定是否為提案者錢包
+        setNotProposer(account.address !== summaryOutput[4])
+        debug.$error('notProposer', notProposer)
+        debug.$error('提案者的錢包地址：', summaryOutput[4])
+
+        // 設定提案名稱
+        setName(summaryOutput[5])
+      }
     }
   )
 
@@ -295,21 +306,13 @@ export default function Requests({
     setIsSSR(false)
   }, [id])
 
-  useEffect(() => {
-    if (!summaryIsLoading && summaryOutput && summaryOutput.length > 0) {
-      // 使用者錢包地址 !== 提案者錢包地址
-      setNotProposer(account.address !== summaryOutput[4])
-      setName(summaryOutput[5])
-    }
-  }, [])
-
 
   return (
     <div>
       <Head>
         <title>資金使用情況</title>
         <meta name="description" content="提案資金使用明細" />
-        <link rel="icon" href="/logo.svg" />
+        <link rel="icon" href="logo.ico" />
       </Head>
 
       <main>
