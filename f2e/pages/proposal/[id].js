@@ -149,13 +149,21 @@ export default function SingleProposal() {
   const [error, setError] = useState()
   const { data: account } = useAccount()
   const [isSSR, setIsSSR] = useState(true);
-  const [donatorList, setDonatorList] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [state, newToast] = useToastHook();
-  const target = targetAmount + ' ETH'
   const [isAfterEndTime, setIsAfterEndTime] = useState(false);
   const [formatEndTime, setFormatEndTime] = useState('');
   const [canRefund, setCanRefund] = useState(false);
+
+
+  useAsync(async () => {
+    try {
+      const result = await getEthPrice();
+      setEthPrice(result);
+    } catch (error) {
+      console.error('[🚸🚸]', error);
+    }
+  }, []);
 
   const {
     data: summaryOutput,
@@ -170,12 +178,14 @@ export default function SingleProposal() {
     {
       chainId: 4,
       watch: true,
-      onSuccess(data) {
+      onSuccess() {
+        debug.$log('[summaryOutput]', summaryOutput)
         const endTime = parseInt(summaryOutput[10]) * 1000
         const endTimeFormatDate = dayjs(endTime).format('YYYY/MM/DD mm:ss')
         setIsAfterEndTime(dayjs().isAfter(endTime))
         debug.$log('endTimeFormatDate', endTimeFormatDate)
         setFormatEndTime(endTimeFormatDate)
+        setIsSSR(false)
       },
       onError(error) {
         debug.$error('[Summary]', error)
@@ -223,52 +233,9 @@ export default function SingleProposal() {
     },
   )
 
-  /* 
-    TODO: 尋找優化方式，使用此方式會報錯
-    Warning: React has detected a change in the order of Hooks called by SingleProposal. 
-    This will lead to bugs and errors if not fixed. 
-    For more information, read the Rules of Hooks: 
-    https://reactjs.org/link/rules-of-hooks
-  */
-  useEffect(() => {
-    setIsSSR(false)
-  }, [id])
 
 
-  useAsync(async () => {
-    try {
-      const result = await getEthPrice();
-      setEthPrice(result);
-    } catch (error) {
-      console.error('[🚸🚸]', error);
-    }
-  }, []);
 
-
-  // 送出表單
-  async function submitForm({ amount }) {
-    try {
-
-      donate({
-        overrides: {
-          from: account.address,
-          value: utils.parseEther(amount),
-        },
-      })
-
-      setAmountInUSD(null);
-      setIsSubmitted(true);
-      setError(false);
-
-      // 重置表單
-      reset({ amount: null }, { keepValues: false })
-    } catch (error) {
-      console.error('[🚸🚸]', error);
-      setError(error.message);
-    }
-  }
-
-  const showAmount = (amount) => `${utils.formatEther(amount)} ETH`
   const {
     data: donateOutput,
     isError: isDonateError,
@@ -286,19 +253,6 @@ export default function SingleProposal() {
       },
     },
   )
-
-  const { isError: txError, isLoading: txLoading } = useWaitForTransaction({
-    hash: donateOutput?.hash,
-    onSuccess(data) {
-      newToast({
-        message: '感謝贊助 🙏',
-        status: "success"
-      });
-    },
-    onError(error) {
-      handleError(error || txError)
-    },
-  })
 
   const {
     data: refundOutput,
@@ -318,6 +272,27 @@ export default function SingleProposal() {
     },
   )
 
+  // 等待 [贊助 Donate] 交易完成
+  const { isError: txError, isLoading: txLoading } = useWaitForTransaction({
+    hash: donateOutput?.hash,
+    onSuccess(data) {
+      setAmountInUSD(null);
+      setIsSubmitted(true);
+      setError(false);
+      newToast({
+        message: '感謝贊助 🙏',
+        status: "success"
+      });
+
+      // 重置表單
+      reset({ amount: null }, { keepValues: false })
+    },
+    onError(error) {
+      handleError(error || txError)
+    },
+  })
+
+  // 等待 [退款 Refund] 交易完成
   const { isError: txRefundError, isLoading: txRefundLoading } = useWaitForTransaction({
     hash: refundOutput?.hash,
     onSuccess(data) {
@@ -331,6 +306,22 @@ export default function SingleProposal() {
     },
   })
 
+  // 送出表單
+  async function submitForm({ amount }) {
+    try {
+      donate({
+        overrides: {
+          from: account.address,
+          value: utils.parseEther(amount),
+        },
+      })
+
+    } catch (error) {
+      console.error('[🚸🚸]', error);
+      setError(error.message);
+    }
+  }
+
   if (donateOutput?.hash && txLoading) {
     return (<>
       <div>
@@ -339,6 +330,7 @@ export default function SingleProposal() {
     </>)
   }
 
+
   if (refundOutput?.hash && txRefundLoading) {
     return (<>
       <div>
@@ -346,6 +338,9 @@ export default function SingleProposal() {
       </div>
     </>)
   }
+
+  const showAmount = (amount) => `${utils.formatEther(amount)} ETH`
+  const target = targetAmount + ' ETH'
 
 
   return (
@@ -356,7 +351,7 @@ export default function SingleProposal() {
         <link rel="icon" href="/logo.svg" />
       </Head>
 
-      {!isSSR && id && summaryOutput?.length > 0 && sponsorTotalContributionOutput ?
+      {!isSSR && summaryOutput?.length > 0 && sponsorTotalContributionOutput ?
         (
           <main>
 
