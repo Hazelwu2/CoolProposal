@@ -3,43 +3,6 @@
   "contractName": "ProposalFactory",
   "sourceName": "contracts/Proposal.sol",
   "abi": [{
-      "inputs": [{
-          "internalType": "uint256",
-          "name": "_targetAmount",
-          "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "_title",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "_desc",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "_imageUrl",
-          "type": "string"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_minimunContribution",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_endTime",
-          "type": "uint256"
-        }
-      ],
-      "name": "createProposal",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
       "anonymous": false,
       "inputs": [{
           "indexed": false,
@@ -86,6 +49,43 @@
       ],
       "name": "CreateProposal",
       "type": "event"
+    },
+    {
+      "inputs": [{
+          "internalType": "uint256",
+          "name": "_targetAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "_title",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "_desc",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "_imageUrl",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_minimunContribution",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_endTime",
+          "type": "uint256"
+        }
+      ],
+      "name": "createProposal",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
     },
     {
       "inputs": [],
