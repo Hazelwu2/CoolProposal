@@ -16,12 +16,13 @@ import {
   Tag,
   TagLabel,
   TagRightIcon,
-  CheckCircleIcon
+  CheckCircleIcon,
+  Tooltip
 } from "@chakra-ui/react";
 import debug from '../utils/debug'
 
 function ProposalCard(
-  { name, desc, proposer, id, balance, imageUrl, ethPrice, targetAmount }) {
+  { name, desc, proposer, id, balance, imageUrl, ethPrice, targetAmount, index }) {
 
   return (
     <NextLink href={`/proposal/${id}`}>
@@ -103,13 +104,26 @@ function ProposalCard(
                 {parseFloat(utils.formatEther(targetAmount)).toFixed(2)} ETH
               </Text>
 
-              <Tag ml={2} size={'sm'} key={'sm'}
-                variant='outline'
-                colorScheme='teal'
-              >
-                <TagLabel>KYC 認證</TagLabel>
-                <TagRightIcon as={CheckCircleIcon} />
-              </Tag>
+              {
+                (index === 1 || index === 3) && (
+
+                  <Tag ml={2} size={'sm'} key={'sm'}
+                    variant='outline'
+                    colorScheme='teal'
+                  >
+                    <TagLabel>KYC 認證</TagLabel>
+                    <Tooltip
+                      bg={useColorModeValue("white", "gray.700")}
+                      color={useColorModeValue("gray.800", "white")}
+                      label={'提案者完成平台 KYC 認證，有 KYC 認證提案會更有保障'}
+                      fontSize={"1em"}
+                      px="4"
+                    >
+                      <TagRightIcon as={CheckCircleIcon} />
+                    </Tooltip>
+                  </Tag>
+                )
+              }
 
               <Progress
                 colorScheme="teal"
@@ -153,6 +167,7 @@ export default function Proposal({ proposalList, ethPrice, proposals, hasProposa
               return (
                 <div key={index}>
                   <ProposalCard
+                    index={index}
                     balance={proposal[0]}
                     targetAmount={proposal[1]}
                     proposer={proposal[4]}
