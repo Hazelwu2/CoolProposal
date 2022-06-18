@@ -181,11 +181,13 @@ export default function SingleProposal() {
       watch: true,
       onSuccess() {
         debug.$log('[summaryOutput]', summaryOutput)
-        const endTime = parseInt(summaryOutput[10]) * 1000
-        const endTimeFormatDate = dayjs(endTime).format('YYYY/MM/DD mm:ss')
-        setIsAfterEndTime(dayjs().isAfter(endTime))
-        debug.$log('endTimeFormatDate', endTimeFormatDate)
-        setFormatEndTime(endTimeFormatDate)
+        if (summaryOutput && summaryOutput[10]) {
+          const endTime = parseInt(summaryOutput[10]) * 1000
+          const endTimeFormatDate = dayjs(endTime).format('YYYY/MM/DD mm:ss')
+          setIsAfterEndTime(dayjs().isAfter(endTime))
+          debug.$log('endTimeFormatDate', endTimeFormatDate)
+          setFormatEndTime(endTimeFormatDate)
+        }
         setIsSSR(false)
       },
       onError(error) {
