@@ -52,7 +52,6 @@ const RequestRow = ({
   sponsorsCount,
   disabled,
   ethPrice,
-  isApprovers,
   updateIsLoading
 }) => {
   const [errorMessageApprove, setErrorMessageApprove] = useState();
@@ -195,14 +194,8 @@ const RequestRow = ({
                 boxShadow: "xl",
               }}
               onClick={onApprove}
-              /* 
-                同意提款 可點擊條件：
-                1. 已完成募資 ( complete = true )
-                2. 是贊助者身份
-              */
-              isDisabled={disabled || (request.complete && isApprovers === 0)}
-              isLoading={txLoading}
-              position={'relative'}
+              isDisabled={disabled}
+              isLoading={loadingApprove}
             >
               同意提款
             </Button>
@@ -220,7 +213,6 @@ export default function Requests({
   const [ethPrice, setEthPrice] = useState(0);
   const [requestsList, setRequestsList] = useState([]);
   const [name, setName] = useState([]);
-  const [FundNotAvailable, setFundNotAvailable] = useState(false);
   const [requestCount, setRequestCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [txHash, setTxHash] = useState(false);
@@ -271,6 +263,13 @@ export default function Requests({
       }
     }
   )
+
+  // 切換錢包時重新判斷notProposer
+  useEffect (() => {
+    if(summaryOutput){
+      setNotProposer(account?.address !== summaryOutput[4])
+    }
+  },[account])
 
   // 取得 [提款明細]
   const {
@@ -449,9 +448,13 @@ export default function Requests({
                         id={id}
                         request={request}
                         sponsorsCount={parseInt(summaryOutput[11])}
-                        disabled={FundNotAvailable}
+                        /* 
+                        同意提款 disable條件：
+                        1. 已完成提款 ( complete = true )
+                        2. 非贊助者身份 (贊助金額為0)
+                        */
+                        disabled={(request.complete || parseInt(isApprovers?._hex) === 0)}
                         ethPrice={ethPrice}
-                        isApprovers={parseInt(isApprovers?._hex)}
                         updateIsLoading={onIsLoadingFunction}
                       />
                     );
