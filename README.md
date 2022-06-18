@@ -23,8 +23,46 @@ Web版群眾集資平台，實現夢想，透過 Web3 與區塊鏈技術，讓�
 
 
 ## 🛠️ 操作教學
-...
 
+### 建立提案
+設定提案標題、描述、最小募資金額、目標金額、封面圖片、募資結束時間
+- 目標金額需 > 最小募資金額
+- 募資結束時間：最多可設定半年，不可設定過去時間
+
+...待補上影片
+
+### 贊助
+- 提案者無法贊助，Error：「proposer can't donate」
+- 贊助金額必須大於提案設定的「最小募資金額」
+- 贊助金額必須 > 0
+- 超過募資截止時間，Error：「it already over, can't donate」
+- 提案狀態完成，表示募資金額已達標
+
+...待補上影片
+
+### 申請提款
+- 必須是提案者錢包，才可申請提款，否則 Error：「Only Proposer can create request.」
+- 提案必須達成募款金額，否則 Error：「target not Achieve」
+- 該提案合約必須有錢，否則 Error：「The contract has no money」
+- 提領金額必須 > 0，否則 Error：「The contract has no money」
+- 合約的錢必須 > 提領金額，否則 Error：「insufficient balance」
+
+...待補上影片
+
+### 同意提款
+- 錢包必須是贊助過這個提案，才可同意提款，否則 Error：「Only approvers can approve」
+- 不可是提案者錢包，否則 Error：「proposal can't approve」
+- 此提款已完成，再次同意提款 Error：「proposal is complete」
+- 若已同意過，再次同意會 Error：「Only sign once」
+- 同意數 >= 贊助人數 50%，合約將自動轉錢給提案者
+
+...待補上影片
+
+### 退款
+- 贊助者才能退款，否則 Error：「only sponsor allow refund」
+- 提案尚未達成募資金額 && 尚未結束募資，將不可退款，Error：「target to Achieve can't refund」
+
+...待補上影片
 
 ## 🛠️ 開發
 本專案分為 Solidity 智能合約、前端開發。
@@ -134,5 +172,6 @@ RINKEBY_PRIVATE_KEY=
 |v1|2022/06/11|Hazel|Readme初版|
 |v2|2022/06/11|Hazel|更改說明|
 |v3|2022/06/13|Hazel|新增Contributors, Env|
+|v4|2022/06/18|Hazel|新增情境|
 
 ###### tags: `期末報告` `3期第6組`
