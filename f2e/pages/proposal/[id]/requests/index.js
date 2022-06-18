@@ -50,7 +50,7 @@ const RequestRow = ({
   index,
   id,
   request,
-  approversCount,
+  sponsorsCount,
   disabled,
   ethPrice,
   isApprovers
@@ -141,7 +141,7 @@ const RequestRow = ({
 
       {/* 同意人數 / 捐贈人數 */}
       <Td>
-        {request.approvalCount}/{approversCount}
+        {request.approvalCount}/{sponsorsCount}
       </Td>
 
       {/* 同意按鈕 */}
@@ -418,7 +418,7 @@ export default function Requests({
                         index={index}
                         id={id}
                         request={request}
-                        approversCount={parseInt(summaryOutput[3])}
+                        sponsorsCount={parseInt(summaryOutput[11])}
                         disabled={FundNotAvailable}
                         ethPrice={ethPrice}
                         isApprovers={parseInt(isApprovers?._hex)}
