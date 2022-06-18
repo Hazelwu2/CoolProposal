@@ -156,6 +156,15 @@ export default function SingleProposal() {
   const [formatEndTime, setFormatEndTime] = useState('');
   const [canRefund, setCanRefund] = useState(false);
 
+  // 確認是否可點擊募資
+  const checkDonateStatus = () => {
+    // summaryOutput[8]：募資狀態，true 表示已達標
+    if (summaryOutput[8]) return '募資已結束:)'
+    // isAfterEndTime：募資結束時間
+    if (isAfterEndTime) '已達標'
+    return '贊助'
+  }
+
 
   useAsync(async () => {
     try {
@@ -237,8 +246,6 @@ export default function SingleProposal() {
   )
 
 
-
-
   const {
     data: donateOutput,
     isError: isDonateError,
@@ -312,6 +319,11 @@ export default function SingleProposal() {
   // 送出表單
   async function submitForm({ amount }) {
     try {
+      if (summaryOutput[8] || isAfterEndTime) {
+        handleError({ reason: '已結束募資，感謝支持:)' })
+        return
+      }
+
       donate({
         overrides: {
           from: account.address,
@@ -343,8 +355,6 @@ export default function SingleProposal() {
   }
 
   const showAmount = (amount) => `${utils.formatEther(amount)} ETH`
-  const target = targetAmount + ' ETH'
-
 
   return (
     <div>
@@ -665,9 +675,9 @@ export default function SingleProposal() {
                                 bgGradient: "linear(to-r, teal.400,blue.400)",
                                 boxShadow: "xl",
                               }}
-                              isDisabled={isAfterEndTime}
+                              isDisabled={isAfterEndTime || summaryOutput[8]}
                             >
-                              {isAfterEndTime ? '募資已結束:)' : '贊助'}
+                              {checkDonateStatus()}
                             </Button>
                           ) : (
                             <Alert status="warning" mt={4}>
