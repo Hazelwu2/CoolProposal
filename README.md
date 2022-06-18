@@ -131,7 +131,7 @@ RINKEBY_PRIVATE_KEY=
 <table>
   <tr>
     <td align="center">
-    <a href="https://github.com/jimb0xcf">
+    <a href="https://github.com/hazelwu2">
       <img src="https://avatars.githubusercontent.com/u/24752360?v=4" width="100px;" alt=""/>
       <br /><sub><b>Hazel</b></sub>
       <br />
