@@ -246,6 +246,12 @@ export default function Requests({
     }
   )
 
+  useEffect (() => {
+    if(summaryOutput){
+      setNotProposer(account?.address !== summaryOutput[4])
+    }
+  },[account])
+
   // 取得 [提款明細]
   const {
     data: requestOutput,
