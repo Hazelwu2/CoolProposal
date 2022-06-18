@@ -452,10 +452,10 @@ export default function Requests({
                 </Text>
 
                 <Button
-                  fontSize={"md"}
-                  fontWeight={600}
+                  fontFamily={"heading"}
+                  w={"full"}
+                  bgGradient="linear(to-r, teal.400,blue.400)"
                   color={"white"}
-                  bg={"teal.400"}
                   _hover={{
                     bg: "teal.300",
                   }}
@@ -474,10 +474,10 @@ export default function Requests({
                 <Button
                   fontSize={"md"}
                   fontWeight={600}
+                  bgGradient="linear(to-r, gray.400,blue.400)"
                   color={"white"}
-                  bg={"gray.400"}
                   _hover={{
-                    bg: "gray.300",
+                    bg: "gray.500",
                   }}
                 >
                   <NextLink href={`/proposal/${id}/`}>
