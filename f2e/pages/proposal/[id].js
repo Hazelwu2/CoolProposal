@@ -457,8 +457,6 @@ export default function SingleProposal() {
                             {/* endTime */}
                             <InfoCard
                               title="募資截止日期"
-                              // content={dayjs(parseInt(summaryOutput[10]) * 1000).format('YYYY/MM/DD HH:mm')}
-                              // content={dayjs(parseInt(summaryOutput[10])).format('YYYY/MM/DD HH:mm')}
                               content={formatEndTime}
                               tip="募資截止日期"
                             />
@@ -725,7 +723,6 @@ export default function SingleProposal() {
                             boxShadow: "xl",
                           }}
                           onClick={refund}
-                          // disabled={parseInt(sponsorTotalContributionOutput?._hex) === 0}
                           disabled={canRefund}
                         >
                           退款
