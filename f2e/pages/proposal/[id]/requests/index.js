@@ -144,11 +144,11 @@ const RequestRow = ({
         (美金約 $ {getWEIPriceInUSD(ethPrice, request.amount)})
         <br />
         {/* For Test Preloader */}
-        <Button
+        {/* <Button
           onClick={callParent}
         >
           測試 Preloader
-        </Button>
+        </Button> */}
       </Td>
 
 
