@@ -368,10 +368,10 @@ export default function Requests({
                 <Button
                   fontFamily={"heading"}
                   w={"full"}
-                  bgGradient="linear(to-r, teal.400, blue.400)"
+                  bgGradient="linear(to-r, red.300,pink.400)"
                   color={"white"}
                   _hover={{
-                    bgGradient: "linear(to-r, teal.400,blue.400)",
+                    bgGradient: "linear(to-r, red.200,pink.500)",
                     boxShadow: "xl",
                   }}
                   isDisabled={notProposer}
@@ -446,18 +446,20 @@ export default function Requests({
                 <Text
                   textAlign={useBreakpointValue({ base: "center" })}
                   color={useColorModeValue("gray.600", "gray.300")}
-                  fontSize="sm"
+                  fontSize="md"
                 >
-                  😄 建立提款請求，提案所籌取的資金將會發放
+                  😄 建立提款請求，超過 50% 贊助者同意後，所籌取的資金將會發放
                 </Text>
 
                 <Button
                   fontFamily={"heading"}
                   w={"full"}
-                  bgGradient="linear(to-r, teal.400,blue.400)"
+                  bgGradient="linear(to-r, red.300,pink.400)"
                   color={"white"}
+                  mt={5}
                   _hover={{
-                    bg: "teal.300",
+                    bgGradient: "linear(to-r, red.200,pink.500)",
+                    boxShadow: "xl",
                   }}
                   isDisabled={notProposer}
                   onClick={() => toWithdrawalPage(id)}
