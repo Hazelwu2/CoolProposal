@@ -2,6 +2,7 @@
 import NextLink from "next/link";
 import { useState, useEffect } from 'react'
 import { utils } from 'ethers'
+import dayjs from 'dayjs'
 // UI
 import {
   SimpleGrid,
@@ -22,7 +23,14 @@ import {
 import debug from '../utils/debug'
 
 function ProposalCard(
-  { name, desc, proposer, id, balance, imageUrl, ethPrice, targetAmount, index }) {
+  { name, desc, proposer, id, balance, imageUrl, ethPrice, targetAmount, index, endTime }) {
+
+  const [isAfterEndTime, setIsAfterEndTime] = useState(false);
+
+  useState(() => {
+    endTime = endTime * 1000
+    setIsAfterEndTime(dayjs().isAfter(endTime))
+  }, [endTime])
 
   return (
     <NextLink href={`/proposal/${id}`}>
@@ -78,61 +86,66 @@ function ProposalCard(
           </Flex>
 
           <Flex py={2}>
-            <Box
-              maxW={{ base: "15rem", sm: "sm" }}
-              pt="2"
-              w="full"
-            >
-              {/* 目前金額 ETH / USD */}
-              <Text
-                as="span"
-                pr={2}
-                fontWeight={"bold"}
-                display="inline"
-              >
-                {balance > 0
-                  ? utils.formatEther(balance) + ' ETH'
-                  : "0, 成為第一位贊助者"
-                }
-              </Text>
-              {/* 目標金額 */}
-              <Text
-                as="span"
-                fontWeight={"300"}
-                color={useColorModeValue("gray.500", "gray.200")}
-              >
-                {parseFloat(utils.formatEther(targetAmount)).toFixed(2)} ETH
-              </Text>
-
-              {
-                (index === 1 || index === 3) && (
-
-                  <Tag ml={2} size={'sm'} key={'sm'}
-                    variant='outline'
-                    colorScheme='teal'
+            {isAfterEndTime ? ('募資已結束')
+              : (
+                <Box
+                  maxW={{ base: "15rem", sm: "sm" }}
+                  pt="2"
+                  w="full"
+                >
+                  {/* 目前金額 ETH / USD */}
+                  <Text
+                    as="span"
+                    pr={2}
+                    fontWeight={"bold"}
+                    display="inline"
                   >
-                    <TagLabel>KYC 認證</TagLabel>
-                    <Tooltip
-                      bg={useColorModeValue("white", "gray.700")}
-                      color={useColorModeValue("gray.800", "white")}
-                      label={'提案者完成平台 KYC 認證，有 KYC 認證提案會更有保障'}
-                      fontSize={"1em"}
-                      px="4"
-                    >
-                      <TagRightIcon as={CheckCircleIcon} />
-                    </Tooltip>
-                  </Tag>
-                )
-              }
+                    {balance > 0
+                      ? utils.formatEther(balance) + ' ETH'
+                      : "0, 成為第一位贊助者"
+                    }
+                  </Text>
+                  {/* 目標金額 */}
+                  <Text
+                    as="span"
+                    fontWeight={"300"}
+                    color={useColorModeValue("gray.500", "gray.200")}
+                  >
+                    {parseFloat(utils.formatEther(targetAmount)).toFixed(2)} ETH
+                  </Text>
 
-              <Progress
-                colorScheme="teal"
-                size="sm"
-                value={utils.formatEther(balance)}
-                max={utils.formatEther(targetAmount)}
-                mt="2"
-              />
-            </Box>
+                  {
+                    (index === 1 || index === 3) && (
+
+                      <Tag ml={2} size={'sm'} key={'sm'}
+                        variant='outline'
+                        colorScheme='teal'
+                      >
+                        <TagLabel>KYC 認證</TagLabel>
+                        <Tooltip
+                          bg={useColorModeValue("white", "gray.700")}
+                          color={useColorModeValue("gray.800", "white")}
+                          label={'提案者完成平台 KYC 認證，有 KYC 認證提案會更有保障'}
+                          fontSize={"1em"}
+                          px="4"
+                        >
+                          <TagRightIcon as={CheckCircleIcon} />
+                        </Tooltip>
+                      </Tag>
+                    )
+                  }
+
+                  <Progress
+                    colorScheme="teal"
+                    size="sm"
+                    value={utils.formatEther(balance)}
+                    max={utils.formatEther(targetAmount)}
+                    mt="2"
+                  />
+                </Box>
+
+              )
+            }
           </Flex>
         </Box>
       </Box>
@@ -141,7 +154,6 @@ function ProposalCard(
 }
 
 export default function Proposal({ proposalList, ethPrice, proposals, hasProposal }) {
-  debug.$log(hasProposal)
   return (
     <div>
       <Container maxW={"6xl"} align={"left"} mt={'16'}>
@@ -176,6 +188,7 @@ export default function Proposal({ proposalList, ethPrice, proposals, hasProposa
                     imageUrl={proposal[7]}
                     ethPrice={ethPrice}
                     id={proposals[index]}
+                    endTime={proposal[10]}
                   />
                 </div>
               )
