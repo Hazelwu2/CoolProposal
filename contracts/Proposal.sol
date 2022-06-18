@@ -132,7 +132,11 @@ contract Proposal {
         require(msg.value > 0, "unenough value");
         // 檢查募資截止時間
         require(endTime > block.timestamp, "it already over, can't donate");
-        approversCount++;
+
+        // 檢查使用者沒贊助過，贊助人數+1
+        if (sponsorTotalContribution[msg.sender] == 0){
+            approversCount++;
+        }
         // 記錄使用者總共贊助多少金額
         sponsorTotalContribution[msg.sender] += msg.value;
         // 紀錄專案贊助紀錄
