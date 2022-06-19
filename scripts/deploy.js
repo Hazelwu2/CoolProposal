@@ -34,28 +34,28 @@ async function main() {
   await proposalFactory.deployed();
 
   // 呼叫 proposalFactory 建立提案合約
-  try {
-    for (let i = 0; i < list.length; i++) {
-      await proposalFactory.createProposal(
-        list[i].targetAmount,
-        list[i].title,
-        list[i].desc,
-        list[i].imageUrl,
-        list[i].minimunContribution,
-        list[i].endTime
-      )
-    }
+  // try {
+  //   for (let i = 0; i < list.length; i++) {
+  //     await proposalFactory.createProposal(
+  //       list[i].targetAmount,
+  //       list[i].title,
+  //       list[i].desc,
+  //       list[i].imageUrl,
+  //       list[i].minimunContribution,
+  //       list[i].endTime
+  //     )
+  //   }
 
-  } catch (error) {
-    console.log('[發生錯誤]', error)
-  }
+  // } catch (error) {
+  //   console.log('[發生錯誤]', error)
+  // }
 
   const getProposalList = await proposalFactory.getProposalList()
 
   console.log("Proposal 酷提案 deployed to: ", proposalFactory.address);
   console.log('所有提案合約列表', getProposalList)
-  console.log(list[0].title, getProposalList[0])
-  console.log(list[1].title, getProposalList[1])
+  // console.log(list[0].title, getProposalList[0])
+  // console.log(list[1].title, getProposalList[1])
 
 }
 
