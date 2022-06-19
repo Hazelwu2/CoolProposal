@@ -58,11 +58,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 // Wallet
-import { instance as ProposalFactory } from "../../contract/ProposalFactory";
 import web3 from "../../contract/web3";
-import { ProposalFactoryAddress, ProposalFactoryABI } from "../../contract/ProposalFactory"
+import { proposalFactory } from "../../contract/ProposalFactory"
 import { handleError } from '../../utils/handle-error';
 import { NewProposalSchema } from '../../utils/form-schema'
+
+console.log('proposalFactory', proposalFactory)
 
 export default function NewProposal() {
   const { activeChain, switchNetwork } = useNetwork({
@@ -117,6 +118,8 @@ export default function NewProposal() {
 
   // 送出表單
   async function onSubmit({ name, description, imageUrl, target, minAmount, deadline }) {
+    debug.$log('[1]', utils.parseEther(target))
+    debug.$log('[2]', utils.parseEther(minAmount))
     try {
       debug.$log('deadline', deadline, dayjs(deadline).unix())
       createProposal({
@@ -143,8 +146,8 @@ export default function NewProposal() {
     write: createProposal
   } = useContractWrite(
     {
-      addressOrName: ProposalFactoryAddress,
-      contractInterface: ProposalFactoryABI,
+      addressOrName: proposalFactory.address,
+      contractInterface: proposalFactory.abi,
     },
     'createProposal',
     {
