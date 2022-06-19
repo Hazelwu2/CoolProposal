@@ -156,12 +156,12 @@ export default function SingleProposal() {
   const [formatEndTime, setFormatEndTime] = useState('');
   const [canRefund, setCanRefund] = useState(false);
 
-  // 確認是否可點擊募資，true：可繼續 donate，false：不可donate
+  // 確認是否可點擊募資，false：可繼續 donate，true：不可donate
   const checkDonateStatus = () => {
     // summaryOutput[8]：募資狀態，true 表示已達標
     if (summaryOutput[8]) return true
     // isAfterEndTime：仍在募資時間範圍內，募資結束時間
-    if (!isAfterEndTime) return true
+    if (isAfterEndTime) return true
     return false
   }
 
