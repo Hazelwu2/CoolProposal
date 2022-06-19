@@ -26,17 +26,26 @@ function ProposalCard(
   { name, desc, proposer, id, balance, imageUrl, ethPrice, targetAmount, index, endTime, targetToAchieve }) {
 
   const [isAfterEndTime, setIsAfterEndTime] = useState(false);
-  const [isFinish, setIsFinish] = useState(false)
 
+  // 檢查是否不可 Donate
   const checkIsFinish = () => {
-    debug.$log(targetToAchieve || !isAfterEndTime)
-    return targetToAchieve || isAfterEndTime
+    if (targetToAchieve) return true
+    if (isAfterEndTime) return true
+    return false
+  }
+
+  // 產生募資失敗 / 已結束募資字
+  const checkText = () => {
+    if (!checkIsFinish()) return
+
+    if (!targetToAchieve && isAfterEndTime) return '募資失敗，可申請退款'
+    if (targetToAchieve) return '已結束募資，感謝支持'
+
   }
 
   useState(() => {
     endTime = endTime * 1000
     setIsAfterEndTime(dayjs().isAfter(endTime))
-    setIsFinish(checkIsFinish)
   }, [endTime])
 
   return (
@@ -59,7 +68,7 @@ function ProposalCard(
       >
         {/* 顯示結束募資狀態 */}
         {
-          isFinish ? (
+          checkIsFinish() ? (
             <Box
               position={'absolute'}
               top={'0'}
@@ -75,14 +84,14 @@ function ProposalCard(
                 <Text
                   fontSize={'lg'}
                   color={useColorModeValue("teal.700", "white")}>
-                  已結束募資，感謝支持
+                  {checkText()}
                 </Text>
               </Flex>
             </Box>
           ) : null
         }
 
-        <Box opacity={isFinish ? '0.15' : {}}>
+        <Box opacity={checkIsFinish() ? '0.15' : {}}>
           <Box height="18em">
             <Img
               src={imageUrl}
