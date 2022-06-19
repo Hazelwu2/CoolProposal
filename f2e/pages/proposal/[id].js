@@ -218,6 +218,7 @@ export default function SingleProposal() {
     },
   )
 
+  // 提案的總贊助金額
   const {
     data: sponsorTotalContributionOutput
   } = useContractRead(
@@ -464,6 +465,12 @@ export default function SingleProposal() {
                               title="募資截止日期"
                               content={formatEndTime}
                               tip="募資截止日期"
+                            />
+                            {/* sponsorCount */}
+                            <InfoCard
+                              title="贊助人數"
+                              content={parseInt(summaryOutput[11]._hex)}
+                              tip="贊助人數"
                             />
                           </SimpleGrid>
                         </Box>
