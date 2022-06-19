@@ -253,15 +253,15 @@ export default function Requests({
       watch: true,
       onSuccess(data) {
         if (data) {
-          debug.$error('有權限可進入提款頁？', account.address === summaryOutput[4]
+          debug.$error('有權限可進入提款頁？', account.address === data[4]
             ? '有啊' : '沒有捏')
           // 使用者錢包地址 !== 提案者錢包地址，確定是否為提案者錢包
-          setNotProposer(account.address !== summaryOutput[4])
+          setNotProposer(account.address !== data[4])
           debug.$error('notProposer', notProposer)
-          debug.$error('提案者的錢包地址：', summaryOutput[4])
+          debug.$error('提案者的錢包地址：', data[4])
 
           // 設定提案名稱
-          setName(summaryOutput[5])
+          setName(data[5])
         }
       }
     }
