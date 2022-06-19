@@ -26,10 +26,17 @@ function ProposalCard(
   { name, desc, proposer, id, balance, imageUrl, ethPrice, targetAmount, index, endTime, targetToAchieve }) {
 
   const [isAfterEndTime, setIsAfterEndTime] = useState(false);
+  const [isFinish, setIsFinish] = useState(false)
+
+  const checkIsFinish = () => {
+    debug.$log(targetToAchieve || !isAfterEndTime)
+    return targetToAchieve || isAfterEndTime
+  }
 
   useState(() => {
     endTime = endTime * 1000
     setIsAfterEndTime(dayjs().isAfter(endTime))
+    setIsFinish(checkIsFinish)
   }, [endTime])
 
   return (
@@ -52,7 +59,7 @@ function ProposalCard(
       >
         {/* 顯示結束募資狀態 */}
         {
-          targetToAchieve && (
+          isFinish ? (
             <Box
               position={'absolute'}
               top={'0'}
@@ -65,15 +72,17 @@ function ProposalCard(
                 alignItems={'center'}
                 justifyContent={'center'}
               >
-                <Text fontSize={'lg'} color={useColorModeValue("teal.700", "white")}>
+                <Text
+                  fontSize={'lg'}
+                  color={useColorModeValue("teal.700", "white")}>
                   已結束募資，感謝支持
                 </Text>
               </Flex>
             </Box>
-          )
+          ) : null
         }
 
-        <Box opacity={targetToAchieve ? '0.15' : {}}>
+        <Box opacity={isFinish ? '0.15' : {}}>
           <Box height="18em">
             <Img
               src={imageUrl}
@@ -110,66 +119,61 @@ function ProposalCard(
             </Flex>
 
             <Flex py={2}>
-              {isAfterEndTime ? ('募資已結束')
-                : (
-                  <Box
-                    maxW={{ base: "15rem", sm: "sm" }}
-                    pt="2"
-                    w="full"
-                  >
-                    {/* 目前金額 ETH / USD */}
-                    <Text
-                      as="span"
-                      pr={2}
-                      fontWeight={"bold"}
-                      display="inline"
+              <Box
+                maxW={{ base: "15rem", sm: "sm" }}
+                pt="2"
+                w="full"
+              >
+                {/* 目前金額 ETH / USD */}
+                <Text
+                  as="span"
+                  pr={2}
+                  fontWeight={"bold"}
+                  display="inline"
+                >
+                  {balance > 0
+                    ? utils.formatEther(balance) + ' ETH'
+                    : "0, 成為第一位贊助者"
+                  }
+                </Text>
+                {/* 目標金額 */}
+                <Text
+                  as="span"
+                  fontWeight={"300"}
+                  color={useColorModeValue("gray.500", "gray.200")}
+                >
+                  {parseFloat(utils.formatEther(targetAmount)).toFixed(2)} ETH
+                </Text>
+
+                {
+                  (index === 0 || index === 1 || index === 3 || index === 4) && (
+
+                    <Tag ml={2} size={'sm'} key={'sm'}
+                      variant='outline'
+                      colorScheme='teal'
                     >
-                      {balance > 0
-                        ? utils.formatEther(balance) + ' ETH'
-                        : "0, 成為第一位贊助者"
-                      }
-                    </Text>
-                    {/* 目標金額 */}
-                    <Text
-                      as="span"
-                      fontWeight={"300"}
-                      color={useColorModeValue("gray.500", "gray.200")}
-                    >
-                      {parseFloat(utils.formatEther(targetAmount)).toFixed(2)} ETH
-                    </Text>
+                      <TagLabel>KYC 認證</TagLabel>
+                      <Tooltip
+                        bg={useColorModeValue("white", "gray.700")}
+                        color={useColorModeValue("gray.800", "white")}
+                        label={'提案者完成平台 KYC 認證，有 KYC 認證提案會更有保障'}
+                        fontSize={"1em"}
+                        px="4"
+                      >
+                        <TagRightIcon as={CheckCircleIcon} />
+                      </Tooltip>
+                    </Tag>
+                  )
+                }
 
-                    {
-                      (index === 1 || index === 3) && (
-
-                        <Tag ml={2} size={'sm'} key={'sm'}
-                          variant='outline'
-                          colorScheme='teal'
-                        >
-                          <TagLabel>KYC 認證</TagLabel>
-                          <Tooltip
-                            bg={useColorModeValue("white", "gray.700")}
-                            color={useColorModeValue("gray.800", "white")}
-                            label={'提案者完成平台 KYC 認證，有 KYC 認證提案會更有保障'}
-                            fontSize={"1em"}
-                            px="4"
-                          >
-                            <TagRightIcon as={CheckCircleIcon} />
-                          </Tooltip>
-                        </Tag>
-                      )
-                    }
-
-                    <Progress
-                      colorScheme="teal"
-                      size="sm"
-                      value={utils.formatEther(balance)}
-                      max={utils.formatEther(targetAmount)}
-                      mt="2"
-                    />
-                  </Box>
-
-                )
-              }
+                <Progress
+                  colorScheme="teal"
+                  size="sm"
+                  value={utils.formatEther(balance)}
+                  max={utils.formatEther(targetAmount)}
+                  mt="2"
+                />
+              </Box>
             </Flex>
           </Box>
         </Box>
