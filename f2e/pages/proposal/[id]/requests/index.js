@@ -137,7 +137,9 @@ const RequestRow = ({
       opacity={request.complete ? "0.4" : "1"}
     >
       <Td>{index} </Td>
-      <Td>{request.description}</Td>
+      <Td letterSpacing={'2.1px'} lineHeight={'22px'}>
+        {request.description}
+      </Td>
       <Td isNumeric>
         {utils.formatEther(request.amount)} ETH
         <br />
@@ -155,6 +157,7 @@ const RequestRow = ({
       {/* 同意人數 / 捐贈人數 */}
       <Td>
         {request.approvalCount}/{sponsorsCount}
+        {/* {request.approvalCount}/4 */}
       </Td>
 
       {/* 同意按鈕 */}
