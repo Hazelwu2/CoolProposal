@@ -198,8 +198,8 @@ contract Proposal {
         requests[index].approvals[msg.sender] = true;
         // 同意數+1
         requests[index].approvalCount++;
-        // 同意數 >= 贊助人數的1/2 就轉錢給提案者
-        if (requests[index].approvalCount >= sponsorCount / 2) {
+        // 同意數 >= 贊助人數的1/2 就轉錢給提案者 (因solidity沒有float，所以都先 *2 保證是偶數)
+        if (requests[index].approvalCount *2 >= sponsorCount *2 /2) {
             finalizeRequest(index);
         }
     }
