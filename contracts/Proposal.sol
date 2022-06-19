@@ -63,11 +63,11 @@ contract Proposal {
     // 提案圖片
     string public imageUrl;
     // 贊助次數
-    uint256 public approversCount;
+    uint256 public approversCount = 0;
     // 贊助人數
-    uint256 public sponsorCount;
+    uint256 public sponsorCount = 0;
     // 是否達成目標
-    bool public targetToAchieve;
+    bool public targetToAchieve = false;
     // 提款要求
     Request[] public requests;
     // 贊助最低金額
@@ -84,7 +84,7 @@ contract Proposal {
         uint256 amount; // 提款金額
         bool complete; // 是否完成
         uint256 approvalCount; // 同意提款人數
-        mapping(address => bool) approvals; // 有權利按贊助名單
+        mapping(address => bool) approvals; // 有權利按同意提款名單
     }
 
     // 贊助明細
