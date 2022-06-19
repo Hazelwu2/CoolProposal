@@ -159,9 +159,9 @@ export default function SingleProposal() {
   // 確認是否可點擊募資
   const checkDonateStatus = () => {
     // summaryOutput[8]：募資狀態，true 表示已達標
-    if (summaryOutput[8]) return '募資已結束:)'
+    if (summaryOutput[8]) return '已達標'
     // isAfterEndTime：募資結束時間
-    if (isAfterEndTime) '已達標'
+    if (isAfterEndTime) '募資已結束:)'
     return '贊助'
   }
 
@@ -188,15 +188,12 @@ export default function SingleProposal() {
     {
       chainId: 4,
       watch: true,
-      onSuccess() {
-        debug.$log('[summaryOutput]', summaryOutput)
-        if (summaryOutput && summaryOutput[10]) {
-          const endTime = parseInt(summaryOutput[10]) * 1000
-          const endTimeFormatDate = dayjs(endTime).format('YYYY/MM/DD mm:ss')
-          setIsAfterEndTime(dayjs().isAfter(endTime))
-          debug.$log('endTimeFormatDate', endTimeFormatDate)
-          setFormatEndTime(endTimeFormatDate)
-        }
+      onSuccess(data) {
+        debug.$log('[data]', data)
+        const endTime = parseInt(data[10]) * 1000
+        const endTimeFormatDate = dayjs(endTime).format('YYYY/MM/DD mm:ss')
+        setIsAfterEndTime(dayjs().isAfter(endTime))
+        setFormatEndTime(endTimeFormatDate)
         setIsSSR(false)
       },
       onError(error) {
