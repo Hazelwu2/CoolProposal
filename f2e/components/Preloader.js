@@ -13,12 +13,11 @@ export default function Preloader({ txHash }) {
 
   return (
     <Box
-      bg={useColorModeValue("white", "gray.700")}
       position={'fixed'}
       t={'0'}
       l={'0'}
       w={'100%'}
-      h={'100%'}
+      h={'calc(100% - 64px)'}
     >
       <Flex
         flexDirection={'column'}
@@ -26,7 +25,7 @@ export default function Preloader({ txHash }) {
         h={'100%'}
         alignItems={'center'}
         justifyContent={'center'}
-        bg={'white'}
+        bg={useColorModeValue("white", "gray.700")}
       >
         <Spinner size="lg" color={useColorModeValue("gray.700", "teal.700")} />
         <Text mt={2} fontSize={'lg'} color={'teal.400'}>

@@ -2,6 +2,7 @@
 import NextLink from "next/link";
 import { useState, useEffect } from 'react'
 import { utils } from 'ethers'
+import dayjs from 'dayjs'
 // UI
 import {
   SimpleGrid,
@@ -16,12 +17,36 @@ import {
   Tag,
   TagLabel,
   TagRightIcon,
-  CheckCircleIcon
+  CheckCircleIcon,
+  Tooltip
 } from "@chakra-ui/react";
 import debug from '../utils/debug'
 
 function ProposalCard(
-  { name, desc, proposer, id, balance, imageUrl, ethPrice, targetAmount }) {
+  { name, desc, proposer, id, balance, imageUrl, ethPrice, targetAmount, index, endTime, targetToAchieve }) {
+
+  const [isAfterEndTime, setIsAfterEndTime] = useState(false);
+
+  // 檢查是否不可 Donate
+  const checkIsFinish = () => {
+    if (targetToAchieve) return true
+    if (isAfterEndTime) return true
+    return false
+  }
+
+  // 產生募資失敗 / 已結束募資字
+  const checkText = () => {
+    if (!checkIsFinish()) return
+
+    if (!targetToAchieve && isAfterEndTime) return '募資失敗，可申請退款'
+    if (targetToAchieve) return '已結束募資，感謝支持'
+
+  }
+
+  useState(() => {
+    endTime = endTime * 1000
+    setIsAfterEndTime(dayjs().isAfter(endTime))
+  }, [endTime])
 
   return (
     <NextLink href={`/proposal/${id}`}>
@@ -39,87 +64,127 @@ function ProposalCard(
         _hover={{
           transform: "translateX(-12px)",
         }}
+        h={'100%'}
       >
-
-        <Box height="18em">
-          <Img
-            src={imageUrl}
-            roundedTop="lg"
-            objectFit="cover"
-            w="full"
-            h="full"
-            display="block"
-          />
-        </Box>
-        <Box p="4">
-          <Flex
-            mt="1"
-            justifyContent="space-between"
-            alignContent="center"
-            py={2}
-          >
+        {/* 顯示結束募資狀態 */}
+        {
+          checkIsFinish() ? (
             <Box
-              fontSize="md"
-              fontWeight={'300'}
-              as="h5"
-            >
-              {name}
+              position={'absolute'}
+              top={'0'}
+              left={'0'}
+              w={'full'}
+              h={'full'}>
+              <Flex
+                w={'100%'}
+                h={'100%'}
+                alignItems={'center'}
+                justifyContent={'center'}
+              >
+                <Text
+                  fontSize={'lg'}
+                  color={useColorModeValue("teal.700", "white")}>
+                  {checkText()}
+                </Text>
+              </Flex>
             </Box>
-          </Flex>
+          ) : null
+        }
 
-          <Flex alignContent='center' py={2}>
-            <Text fontSize="sm" color={'gray.400'} pr={2}>
-              提案 by
-            </Text>
-            <Text fontSize="sm" color={'blue.300'} pr={2}>
-              {proposer ? proposer.substr(0, 18) + '...' : null}
-            </Text>
-          </Flex>
-
-          <Flex py={2}>
-            <Box
-              maxW={{ base: "15rem", sm: "sm" }}
-              pt="2"
+        <Box opacity={checkIsFinish() ? '0.15' : {}}>
+          <Box height="18em">
+            <Img
+              src={imageUrl}
+              roundedTop="lg"
+              objectFit="cover"
               w="full"
+              h="full"
+              display="block"
+            />
+          </Box>
+          <Box p="4">
+            <Flex
+              mt="1"
+              justifyContent="space-between"
+              alignContent="center"
+              py={2}
             >
-              {/* 目前金額 ETH / USD */}
-              <Text
-                as="span"
-                pr={2}
-                fontWeight={"bold"}
-                display="inline"
+              <Box
+                fontSize="md"
+                fontWeight={'300'}
+                as="h5"
               >
-                {balance > 0
-                  ? utils.formatEther(balance) + ' ETH'
-                  : "0, 成為第一位贊助者"
+                {name}
+              </Box>
+            </Flex>
+
+            <Flex alignContent='center' py={2}>
+              <Text fontSize="sm" color={'gray.400'} pr={2}>
+                提案 by
+              </Text>
+              <Text fontSize="sm" color={'blue.300'} pr={2}>
+                {proposer ? proposer.substr(0, 18) + '...' : null}
+              </Text>
+            </Flex>
+
+            <Flex py={2}>
+              <Box
+                maxW={{ base: "15rem", sm: "sm" }}
+                pt="2"
+                w="full"
+              >
+                {/* 目前金額 ETH / USD */}
+                <Text
+                  as="span"
+                  pr={2}
+                  fontWeight={"bold"}
+                  display="inline"
+                >
+                  {balance > 0
+                    ? utils.formatEther(balance) + ' ETH'
+                    : "0, 成為第一位贊助者"
+                  }
+                </Text>
+                {/* 目標金額 */}
+                <Text
+                  as="span"
+                  fontWeight={"300"}
+                  color={useColorModeValue("gray.500", "gray.200")}
+                >
+                  {parseFloat(utils.formatEther(targetAmount)).toFixed(2)} ETH
+                </Text>
+
+                {
+                  (index === 0 || index === 1 || index === 3 || index === 4) && (
+
+                    <Tag ml={2} size={'sm'} key={'sm'}
+                      variant='outline'
+                      colorScheme='teal'
+                    >
+                      <TagLabel>KYC 認證</TagLabel>
+                      <Tooltip
+                        bg={useColorModeValue("white", "gray.700")}
+                        color={useColorModeValue("gray.800", "white")}
+                        label={'提案者完成平台 KYC 認證，有 KYC 認證提案會更有保障'}
+                        fontSize={"1em"}
+                        px="4"
+                      >
+                        <TagRightIcon as={CheckCircleIcon} />
+                      </Tooltip>
+                    </Tag>
+                  )
                 }
-              </Text>
-              {/* 目標金額 */}
-              <Text
-                as="span"
-                fontWeight={"300"}
-                color={useColorModeValue("gray.500", "gray.200")}
-              >
-                {parseFloat(utils.formatEther(targetAmount)).toFixed(2)} ETH
-              </Text>
 
-              <Tag ml={2} size={'sm'} key={'sm'}
-                variant='outline'
-                colorScheme='teal'
-              >
-                <TagLabel>KYC 認證</TagLabel>
-                <TagRightIcon as={CheckCircleIcon} />
-              </Tag>
-
-              <Progress
-                colorScheme="teal"
-                size="sm"
-                value={utils.formatEther(balance)}
-                max={utils.formatEther(targetAmount)}
-                mt="2"
-              />
-            </Box>
-          </Flex>
+                <Progress
+                  colorScheme="teal"
+                  size="sm"
+                  value={utils.formatEther(balance)}
+                  max={utils.formatEther(targetAmount)}
+                  mt="2"
+                />
+              </Box>
+            </Flex>
+          </Box>
         </Box>
       </Box>
     </NextLink>
@@ -127,7 +192,6 @@ function ProposalCard(
 }
 
 export default function Proposal({ proposalList, ethPrice, proposals, hasProposal }) {
-  debug.$log(hasProposal)
   return (
     <div>
       <Container maxW={"6xl"} align={"left"} mt={'16'}>
@@ -153,6 +217,7 @@ export default function Proposal({ proposalList, ethPrice, proposals, hasProposa
               return (
                 <div key={index}>
                   <ProposalCard
+                    index={index}
                     balance={proposal[0]}
                     targetAmount={proposal[1]}
                     proposer={proposal[4]}
@@ -161,6 +226,8 @@ export default function Proposal({ proposalList, ethPrice, proposals, hasProposa
                     imageUrl={proposal[7]}
                     ethPrice={ethPrice}
                     id={proposals[index]}
+                    endTime={proposal[10]}
+                    targetToAchieve={proposal[8]}
                   />
                 </div>
               )

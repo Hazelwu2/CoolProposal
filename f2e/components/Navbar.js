@@ -106,7 +106,7 @@ export default function Navbar() {
                   zIndex: -1,
                 }}
               >
-                <NextLink href="/">來個酷提案</NextLink>
+                <NextLink href="/">來點酷提案</NextLink>
               </Box>
             </Heading>
           </Flex>

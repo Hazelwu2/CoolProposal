@@ -58,7 +58,7 @@ export default function HowItWork() {
           icon={<Icon as={FcShare} w={10} h={10} />}
           title={"分享你的提案"}
           desc={
-            "接下來你要做的就是推廣，將你的提案推廣給朋友們，讓越來越多人知道你的計畫"
+            "接下來你要做的就是推廣，將你的提案推廣給朋友們，讓越來越多人知道你的計畫。除此之外，至項目方 DC 頻道申請 KYC 認證，有 KYC 認證會讓提案會更有保障、提高贊助機會"
           }
         />
         <Feature

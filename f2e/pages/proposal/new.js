@@ -181,8 +181,8 @@ export default function NewProposal() {
   return (
     <div>
       <Head>
-        <title>來個酷提案</title>
-        <meta name="description" content="建立個酷提案" />
+        <title>來點酷提案</title>
+        <meta name="description" content="建立酷提案" />
         <link rel="icon" href="/logo.svg" />
       </Head>
 

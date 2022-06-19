@@ -2,8 +2,10 @@
   "_format": "hh-sol-artifact-1",
   "contractName": "Proposal",
   "sourceName": "contracts/Proposal.sol",
-  "abi": [{
-      "inputs": [{
+  "abi": [
+    {
+      "inputs": [
+        {
           "internalType": "address",
           "name": "_proposer",
           "type": "address"
@@ -45,31 +47,37 @@
     {
       "inputs": [],
       "name": "ProposalDescription",
-      "outputs": [{
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }],
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "ProposalTitle",
-      "outputs": [{
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }],
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [{
-        "internalType": "uint256",
-        "name": "index",
-        "type": "uint256"
-      }],
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "index",
+          "type": "uint256"
+        }
+      ],
       "name": "approveRequest",
       "outputs": [],
       "stateMutability": "nonpayable",
@@ -78,16 +86,19 @@
     {
       "inputs": [],
       "name": "approversCount",
-      "outputs": [{
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }],
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [{
+      "inputs": [
+        {
           "internalType": "string",
           "name": "_description",
           "type": "string"
@@ -113,20 +124,24 @@
     {
       "inputs": [],
       "name": "endTime",
-      "outputs": [{
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }],
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [{
-        "internalType": "uint256",
-        "name": "index",
-        "type": "uint256"
-      }],
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "index",
+          "type": "uint256"
+        }
+      ],
       "name": "finalizeRequest",
       "outputs": [],
       "stateMutability": "nonpayable",
@@ -135,34 +150,38 @@
     {
       "inputs": [],
       "name": "getDonateList",
-      "outputs": [{
-        "components": [{
-            "internalType": "address",
-            "name": "sponsor",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "amount",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "donateTime",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct Proposal.DonateInfo[]",
-        "name": "",
-        "type": "tuple[]"
-      }],
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "sponsor",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "donateTime",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct Proposal.DonateInfo[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "getProposalSummary",
-      "outputs": [{
+      "outputs": [
+        {
           "internalType": "uint256",
           "name": "",
           "type": "uint256"
@@ -216,6 +235,11 @@
           "internalType": "uint256",
           "name": "",
           "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -224,44 +248,52 @@
     {
       "inputs": [],
       "name": "getRequestsCount",
-      "outputs": [{
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }],
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "imageUrl",
-      "outputs": [{
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }],
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "minimunContribution",
-      "outputs": [{
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }],
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "proposer",
-      "outputs": [{
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }],
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
       "stateMutability": "view",
       "type": "function"
     },
@@ -273,13 +305,16 @@
       "type": "function"
     },
     {
-      "inputs": [{
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }],
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
       "name": "requests",
-      "outputs": [{
+      "outputs": [
+        {
           "internalType": "string",
           "name": "description",
           "type": "string"
@@ -304,39 +339,60 @@
       "type": "function"
     },
     {
-      "inputs": [{
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }],
+      "inputs": [],
+      "name": "sponsorCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
       "name": "sponsorTotalContribution",
-      "outputs": [{
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }],
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "targetAmount",
-      "outputs": [{
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }],
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "targetToAchieve",
-      "outputs": [{
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }],
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
       "stateMutability": "view",
       "type": "function"
     }
