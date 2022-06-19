@@ -156,13 +156,13 @@ export default function SingleProposal() {
   const [formatEndTime, setFormatEndTime] = useState('');
   const [canRefund, setCanRefund] = useState(false);
 
-  // 確認是否可點擊募資
+  // 確認是否可點擊募資，true：可繼續 donate，false：不可donate
   const checkDonateStatus = () => {
     // summaryOutput[8]：募資狀態，true 表示已達標
-    if (summaryOutput[8]) return '已達標'
-    // isAfterEndTime：募資結束時間
-    if (isAfterEndTime) '募資已結束:)'
-    return '贊助'
+    if (summaryOutput[8]) return true
+    // isAfterEndTime：仍在募資時間範圍內，募資結束時間
+    if (!isAfterEndTime) return true
+    return false
   }
 
 
@@ -634,7 +634,7 @@ export default function SingleProposal() {
                           <InputGroup>
                             <Input
                               {...register('amount', { required: true })}
-                              isDisabled={formState.isSubmitting}
+                              isDisabled={formState.isSubmitting || checkDonateStatus()}
                               onChange={(e) => {
                                 setAmountInUSD(Math.abs(e.target.value));
                               }}
@@ -664,7 +664,7 @@ export default function SingleProposal() {
                             <Button
                               mt={4}
                               w={"full"}
-                              bgGradient="linear(to-r, teal.300,blue.400)"
+                              bgGradient={checkDonateStatus() ? "linear(to-r, gray.400, gray.900)" : "linear(to-r, teal.300,blue.400)"}
                               color={"white"}
                               isLoading={formState.isSubmitting}
                               type="submit"
@@ -672,9 +672,9 @@ export default function SingleProposal() {
                                 bgGradient: "linear(to-r, teal.400,blue.400)",
                                 boxShadow: "xl",
                               }}
-                              isDisabled={isAfterEndTime || summaryOutput[8]}
+                              isDisabled={checkDonateStatus()}
                             >
-                              {checkDonateStatus()}
+                              {checkDonateStatus() ? '已結束募資' : '贊助'}
                             </Button>
                           ) : (
                             <Alert status="warning" mt={4}>
