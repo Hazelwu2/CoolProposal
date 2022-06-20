@@ -1,4 +1,7 @@
-![Logo](./logo.png)
+<p align="center">
+  <img src="./logo.png" width="700px">
+</p>
+
 [![Cool](https://img.shields.io/badge/%E6%9B%B4%E5%A4%9A%E8%AA%AA%E6%98%8E-%E5%9C%A8%E7%99%BD%E5%90%8D%E6%9B%B8-green)](https://ku-ti-an-de-bai-pi-shu.gitbook.io/come-up-with-a-cool-proposal/)
 [![Demo](https://img.shields.io/badge/%E7%B7%9A%E4%B8%8A-Demo-orange)](https://cool-proposal.vercel.app/)
 [![Documentation](https://img.shields.io/badge/KryptoCamp-%E6%8A%80%E8%A1%93%E6%8C%87%E5%B0%8E-brightgreen)](https://kryptocamp.tw/)
