@@ -1,12 +1,13 @@
-<h1 align="center">
-  來點🆒提案
-</h1>
-<p align="center">Crowdfunding in Blockchain</p>
-<p align="center">讓我們集合力量，讓美好的事物發生。</p>
+![Logo](./logo.png)
+[![Cool](https://img.shields.io/badge/%E6%9B%B4%E5%A4%9A%E8%AA%AA%E6%98%8E-%E5%9C%A8%E7%99%BD%E5%90%8D%E6%9B%B8-green)](https://ku-ti-an-de-bai-pi-shu.gitbook.io/come-up-with-a-cool-proposal/)
+[![Demo](https://img.shields.io/badge/%E7%B7%9A%E4%B8%8A-Demo-orange)](https://cool-proposal.vercel.app/)
+[![Documentation](https://img.shields.io/badge/KryptoCamp-%E6%8A%80%E8%A1%93%E6%8C%87%E5%B0%8E-brightgreen)](https://kryptocamp.tw/)
+
+「來點酷提案」利用區塊鏈技術導入慈善組織，可直接追蹤金流流向，企圖消滅傳統捐款層出不窮的詐騙案件，將透過 KYC 認證、多簽同意提款打造全新慈善型態
+
 
 <p align="center">
   <img src="./cover.png" width="700px">
-  <img src="./example.gif" width="700px">
 </p>
 
 <p align="center">
@@ -16,10 +17,6 @@
 </p>
 
 ## 🚤 Introduce 專案簡介
-### 👩‍👩‍👧‍👧 來點酷提案吧
-Web版群眾集資平台，實現夢想，透過 Web3 與區塊鏈技術，讓金流更透明，需要達到贊助人數 50% 以上同意，提案者才可領取款項。
-
-[🧐 更多說明在白皮書](https://ku-ti-an-de-bai-pi-shu.gitbook.io/come-up-with-a-cool-proposal/)
 
 
 ## 🛠️ 操作教學
@@ -174,5 +171,6 @@ RINKEBY_PRIVATE_KEY=
 |v3|2022/06/13|Hazel|新增Contributors, Env|
 |v4|2022/06/18|Hazel|新增情境|
 |v5|2022/06/20|Hazel|新增Demo GIF示範|
+|v6|2022/06/20|Hazel|新增Logo, Badge|
 
 ###### tags: `期末報告` `3期第6組`
