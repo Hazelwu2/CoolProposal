@@ -1,5 +1,4 @@
 import web3 from './web3'
-// import Proposal from './json/proposal.json'
 import Proposal from '../../artifacts/contracts/Proposal.sol/Proposal.json'
 
 console.log(Proposal.abi)
