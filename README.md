@@ -8,7 +8,7 @@
 
 「來點酷提案」利用區塊鏈技術導入慈善組織，可直接追蹤金流流向，企圖消滅傳統捐款層出不窮的詐騙案件，將透過 KYC 認證、多簽同意提款打造全新慈善型態
 
-
+<!-- 
 <p align="center">
   <img src="./cover.png" width="700px">
 </p>
@@ -17,10 +17,7 @@
     <a href="https://cool-proposal.vercel.app/" target="blank">Online Demo</a>
     ·
      <a href="https://ku-ti-an-de-bai-pi-shu.gitbook.io/come-up-with-a-cool-proposal/" target="blank">白皮書</a>
-</p>
-
-## 🚤 Introduce 專案簡介
-
+</p> -->
 
 ## 🛠️ 操作教學
 
