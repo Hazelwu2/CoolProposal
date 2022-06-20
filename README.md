@@ -24,7 +24,6 @@
 ### 建立提案
 設定提案標題、描述、最小募資金額、目標金額、封面圖片、募資結束時間
 - 目標金額需 > 最小募資金額
-- 募資結束時間：最多可設定半年，不可設定過去時間
 
 ![建立提案](./demo/0-%E5%BB%BA%E7%AB%8B%E6%8F%90%E6%A1%88.gif)
 
@@ -123,6 +122,31 @@ ALCHEMY_API_KEY=
 RINKEBY_PRIVATE_KEY=
 ```
 
+## 檔案結構
+以下是專案檔案結構介紹
+
+```
+├── artifacts
+│   ├── @openzeppelin
+│   ├── address
+│   ├── build-info
+│   ├── contracts
+│   └── hardhat
+├── cache
+├── contracts
+├── demo
+├── f2e 前端資料夾
+│   ├── components 元件
+│   ├── contract 引入智能合約的ABI、地址
+│   ├── node_modules 前端使用到的套件
+│   ├── pages 前端頁面
+│   ├── public Webpack打包後的靜態檔案
+│   ├── styles CSS檔案
+│   └── utils 小工具 js
+├── node_modules hardhat 依賴套件
+├── scripts hardhat 跑部署的 script
+└── test hardhat 測試的 script
+```
 
 ## ✨ Contributors 
 <table>
