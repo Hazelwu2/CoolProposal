@@ -52,21 +52,21 @@ async function main() {
 
 
   // 呼叫 proposalFactory 建立提案合約
-  try {
-    for (let i = 0; i < list.length; i++) {
-      await proposalFactory.createProposal(
-        list[i].targetAmount,
-        list[i].title,
-        list[i].desc,
-        list[i].imageUrl,
-        list[i].minimunContribution,
-        list[i].endTime
-      )
-    }
+  // try {
+  //   for (let i = 0; i < list.length; i++) {
+  //     await proposalFactory.createProposal(
+  //       list[i].targetAmount,
+  //       list[i].title,
+  //       list[i].desc,
+  //       list[i].imageUrl,
+  //       list[i].minimunContribution,
+  //       list[i].endTime
+  //     )
+  //   }
 
-  } catch (error) {
-    console.log('[發生錯誤]', error)
-  }
+  // } catch (error) {
+  //   console.log('[發生錯誤]', error)
+  // }
 
   console.log("ProposalFactory 酷提案，合約地址: ", proposalFactory.address);
   const getProposalList = await proposalFactory.getProposalList()

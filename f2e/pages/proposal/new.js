@@ -130,6 +130,7 @@ export default function NewProposal() {
           imageUrl,
           utils.parseEther(minAmount),
           dayjs(deadline).unix()
+          // dayjs().add(5, 'minutes').unix()
         ],
         overrides: { from: account.address },
       })
