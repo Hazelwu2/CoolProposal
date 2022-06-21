@@ -63,7 +63,6 @@ import { proposalFactory } from "../../contract/ProposalFactory"
 import { handleError } from '../../utils/handle-error';
 import { NewProposalSchema } from '../../utils/form-schema'
 
-console.log('proposalFactory', proposalFactory)
 
 export default function NewProposal() {
   const { activeChain, switchNetwork } = useNetwork({

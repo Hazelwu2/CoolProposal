@@ -82,7 +82,7 @@ export default function NewWithdrawal() {
       debug.$error(result)
       setETHPrice(result);
     } catch (error) {
-      console.error(error);
+      console.error('[🚸🚸]', error);
     }
   }, [])
 
@@ -104,7 +104,7 @@ export default function NewWithdrawal() {
       })
       debug.$error(data)
     } catch (error) {
-      console.error(error)
+      console.error('[🚸🚸]', error);
     }
   }
 
