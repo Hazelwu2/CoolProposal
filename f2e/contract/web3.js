@@ -3,8 +3,6 @@ let web3
 
 if (typeof window !== "undefined"
   && typeof window.web3 !== "undefined") {
-  // we are in the browser and meta mask is installed
-  // web3 = new Web3(window.ethereum);
   web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 } else {
   // we are on the server *OR* meta mask is not running
